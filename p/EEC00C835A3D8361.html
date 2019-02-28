@@ -1,0 +1,845 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="我打算使用`RingBuffer`来创建一个非常简单的小型网络测试工具，叫做`netclient`。为此我需要向`Makefile`添加一些工具，来处理`bin/`目录下的小程序。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="一个简单的TCP/IP客户端" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="我打算使用`RingBuffer`来创建一个非常简单的小型网络测试工具，叫做`netclient`。为此我需要向`Makefile`添加一些工具，来处理`bin/`目录下的小程序。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="一个简单的TCP/IP客户端" /> 
+    <meta name="twitter:description" content="我打算使用`RingBuffer`来创建一个非常简单的小型网络测试工具，叫做`netclient`。为此我需要向`Makefile`添加一些工具，来处理`bin/`目录下的小程序。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>一个简单的TCP/IP客户端 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/p/EEC00C835A3D8361.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">一个简单的TCP/IP客户端</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:35:59">2019-02-27 16:35:59</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/BC9C4B7FD7128591/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习20</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">我打算使用`RingBuffer`来创建一个非常简单的小型网络测试工具，叫做`netclient`。为此我需要向`Makefile`添加一些工具，来处理`bin/`目录下的小程序。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84TCP%2FIP%E5%AE%A2%E6%88%B7%E7%AB%AF" name="%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84TCP%2FIP%E5%AE%A2%E6%88%B7%E7%AB%AF">一个简单的TCP/IP客户端</h1>
+<p>我打算使用<code>RingBuffer</code>来创建一个非常简单的小型网络测试工具，叫做<code>netclient</code>。为此我需要向<code>Makefile</code>添加一些工具，来处理<code>bin/</code>目录下的小程序。</p>
+<h2 id="%E6%89%A9%E5%B1%95Makefile" name="%E6%89%A9%E5%B1%95Makefile">扩展Makefile</h2>
+<p>首先，为程序添加一些变量，就像单元测试的<code>TESTS</code>和<code>TEST_SRC</code>变量：</p>
+<pre><code class="make">PROGRAMS_SRC=$(wildcard bin/*.c)
+PROGRAMS=$(patsubst %.c,%,$(PROGRAMS_SRC))</code></pre>
+<p>之后你可能想要添加<code>PROGRAMS</code>到所有目标中：</p>
+<pre><code class="make">all: $(TARGET) $(SO_TARGET) tests $(PROGRAMS)</code></pre>
+<p>之后在<code>clean</code>目标中向<code>rm</code>那一行添加<code>PROGRAMS</code>：</p>
+<pre><code class="make">rm -rf build $(OBJECTS) $(TESTS) $(PROGRAMS)</code></pre>
+<p>最后你还需要在最后添加一个目标来构建它们：</p>
+<pre><code class="make">$(PROGRAMS): CFLAGS += $(TARGET)</code></pre>
+<p>做了这些修改你就能够将<code>.c</code>文件扔到<code>bin</code>中，并且编译它们以及为其链接库文件，就像测试那样。</p>
+<h2 id="netclient+%E4%BB%A3%E7%A0%81" name="netclient+%E4%BB%A3%E7%A0%81">netclient 代码</h2>
+<p>netclient的代码是这样的：</p>
+<pre><code class="c">#undef NDEBUG
+#include &lt;stdlib.h&gt;
+#include &lt;sys/select.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;lcthw/ringbuffer.h&gt;
+#include &lt;lcthw/dbg.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/uio.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;netdb.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+
+struct tagbstring NL = bsStatic("\n");
+struct tagbstring CRLF = bsStatic("\r\n");
+
+int nonblock(int fd) {
+    int flags = fcntl(fd, F_GETFL, 0);
+    check(flags &gt;= 0, "Invalid flags on nonblock.");
+
+    int rc = fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+    check(rc == 0, "Can't set nonblocking.");
+
+    return 0;
+error:
+    return -1;
+}
+
+int client_connect(char *host, char *port)
+{
+    int rc = 0;
+    struct addrinfo *addr = NULL;
+
+    rc = getaddrinfo(host, port, NULL, &amp;addr);
+    check(rc == 0, "Failed to lookup %s:%s", host, port);
+
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    check(sock &gt;= 0, "Cannot create a socket.");
+
+    rc = connect(sock, addr-&gt;ai_addr, addr-&gt;ai_addrlen);
+    check(rc == 0, "Connect failed.");
+
+    rc = nonblock(sock);
+    check(rc == 0, "Can't set nonblocking.");
+
+    freeaddrinfo(addr);
+    return sock;
+
+error:
+    freeaddrinfo(addr);
+    return -1;
+}
+
+int read_some(RingBuffer *buffer, int fd, int is_socket)
+{
+    int rc = 0;
+
+    if(RingBuffer_available_data(buffer) == 0) {
+        buffer-&gt;start = buffer-&gt;end = 0;
+    }
+
+    if(is_socket) {
+        rc = recv(fd, RingBuffer_starts_at(buffer), RingBuffer_available_space(buffer), 0);
+    } else {
+        rc = read(fd, RingBuffer_starts_at(buffer), RingBuffer_available_space(buffer));
+    }
+
+    check(rc &gt;= 0, "Failed to read from fd: %d", fd);
+
+    RingBuffer_commit_write(buffer, rc);
+
+    return rc;
+
+error:
+    return -1;
+}
+
+
+int write_some(RingBuffer *buffer, int fd, int is_socket)
+{
+    int rc = 0;
+    bstring data = RingBuffer_get_all(buffer);
+
+    check(data != NULL, "Failed to get from the buffer.");
+    check(bfindreplace(data, &amp;NL, &amp;CRLF, 0) == BSTR_OK, "Failed to replace NL.");
+
+    if(is_socket) {
+        rc = send(fd, bdata(data), blength(data), 0);
+    } else {
+        rc = write(fd, bdata(data), blength(data));
+    }
+
+    check(rc == blength(data), "Failed to write everything to fd: %d.", fd);
+    bdestroy(data);
+
+    return rc;
+
+error:
+    return -1;
+}
+
+
+int main(int argc, char *argv[])
+{
+    fd_set allreads;
+    fd_set readmask;
+
+    int socket = 0;
+    int rc = 0;
+    RingBuffer *in_rb = RingBuffer_create(1024 * 10);
+    RingBuffer *sock_rb = RingBuffer_create(1024 * 10);
+
+    check(argc == 3, "USAGE: netclient host port");
+
+    socket = client_connect(argv[1], argv[2]);
+    check(socket &gt;= 0, "connect to %s:%s failed.", argv[1], argv[2]);
+
+    FD_ZERO(&amp;allreads);
+    FD_SET(socket, &amp;allreads);
+    FD_SET(0, &amp;allreads);
+
+    while(1) {
+        readmask = allreads;
+        rc = select(socket + 1, &amp;readmask, NULL, NULL, NULL);
+        check(rc &gt;= 0, "select failed.");
+
+        if(FD_ISSET(0, &amp;readmask)) {
+            rc = read_some(in_rb, 0, 0);
+            check_debug(rc != -1, "Failed to read from stdin.");
+        }
+
+        if(FD_ISSET(socket, &amp;readmask)) {
+            rc = read_some(sock_rb, socket, 0);
+            check_debug(rc != -1, "Failed to read from socket.");
+        }
+
+        while(!RingBuffer_empty(sock_rb)) {
+            rc = write_some(sock_rb, 1, 0);
+            check_debug(rc != -1, "Failed to write to stdout.");
+        }
+
+        while(!RingBuffer_empty(in_rb)) {
+            rc = write_some(in_rb, socket, 1);
+            check_debug(rc != -1, "Failed to write to socket.");
+        }
+    }
+
+    return 0;
+
+error:
+    return -1;
+}</code></pre>
+<p>代码中使用了<code>select</code>来处理<code>stdin</code>（文件描述符0）和用于和服务器交互的<code>socket</code>中的事件。它使用了<code>RingBuffer</code>来储存和复制数据，并且你可以认为<code>read_some</code>和<code>write_some</code>函数都是<code>RingBuffer</code>中相似函数的原型。</p>
+<p>在这一小段代码中，可能有一些你并不知道的网络函数。当你碰到不知道的函数时，在手册页上查询它来确保你理解了它。这一小段代码可能需要让你研究用于小型服务器编程的所有C语言API。</p>
+<h2 id="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88" name="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">你会看到什么</h2>
+<p>如果你完成了所有构建，测试的最快方式就是看看你能否从learncodethehardway.org上得到一个特殊的文件：</p>
+<pre><code class="sh">$
+$ ./bin/netclient learncodethehardway.org 80
+GET /ex45.txt HTTP/1.1
+Host: learncodethehardway.org
+
+HTTP/1.1 200 OK
+Date: Fri, 27 Apr 2012 00:41:25 GMT
+Content-Type: text/plain
+Content-Length: 41
+Last-Modified: Fri, 27 Apr 2012 00:42:11 GMT
+ETag: 4f99eb63-29
+Server: Mongrel2/1.7.5
+
+Learn C The Hard Way, Exercise 45 works.
+^C
+$</code></pre>
+<p>这里我所做的事情是键入创建<code>/ex45.txt</code>的HTTP请求所需的语法，在<code>Host:</code>请求航之后，按下ENTER键来输入空行。接着我获取相应，包括响应头和内容。最后我按下CTRL-C来退出。</p>
+<h2 id="%E5%A6%82%E4%BD%95%E4%BD%BF%E5%AE%83%E5%B4%A9%E6%BA%83" name="%E5%A6%82%E4%BD%95%E4%BD%BF%E5%AE%83%E5%B4%A9%E6%BA%83">如何使它崩溃</h2>
+<p>这段代码肯定含有bug，但是当前在本书的草稿中，我会继续完成它。与此同时，尝试分析代码，并且用其它服务器来击溃它。一种叫做<code>netcat</code>的工具可以用于建立这种服务器。另一种方法就是使用<code>Python</code>或<code>Ruby</code>之类的语言创建一个简单的“垃圾服务器”，来产生垃圾数据，随机关闭连接，或者其它异常行为。</p>
+<p>如果你找到了bug，在评论中报告它们，我会修复它。</p>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>像我提到的那样，这里面有一些你不知道的函数，去查询他们。实际上，即使你知道它们也要查询。</li>
+<li>在<code>valgrind</code>下运行它来寻找错误。</li>
+<li>为函数添加各种防御性编程检查，来改进它们。</li>
+<li>使用<code>getopt</code>函数，运行用户提供选项来防止将<code>\n</code>转换为<code>\r\n</code>。这仅仅用于需要处理行尾的协议例如HTTP。有时你可能不想执行转换，所以要给用户一个选择。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/p/EEC00C835A3D8361.html" title="一个简单的TCP/IP客户端">https://naka507.github.io/p/EEC00C835A3D8361.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/092C041797CE79CA/index.html" rel="tag"># Makefile</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/p/E0AFFDAFB6FE468C.html" rel="next" title="环形缓冲区">
+                                        <i class="fa fa-chevron-left"></i>
+                                        环形缓冲区                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/p/51762D35312252D6.html" rel="prev" title="三叉搜索树">
+                                        三叉搜索树                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84TCP%2FIP%E5%AE%A2%E6%88%B7%E7%AB%AF">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">一个简单的TCP/IP客户端</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E6%89%A9%E5%B1%95Makefile">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">扩展Makefile</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#netclient+%E4%BB%A3%E7%A0%81">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">netclient 代码</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">你会看到什么</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E5%AE%83%E5%B4%A9%E6%BA%83">
+                                <span class="nav-number">1.4.</span> 
+                                <span class="nav-text">如何使它崩溃</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.5.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = 'EEC00C835A3D8361';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: '一个简单的TCP/IP客户端',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>

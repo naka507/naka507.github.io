@@ -1,0 +1,984 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="我打算向你介绍的最后一种数据结构就是三叉搜索树（`TSTree`），它和`BSTree`很像，除了它有三个分支，`low`、`equal`和`high`。它的用法和`BStree`以及`Hashmap`基本相同，用于储存键值对的数据，但是它通过键中的独立字符来控制。这使得`TSTree`具有一些`BStree`和`Hashmap`不具备的功能。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="三叉搜索树" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="我打算向你介绍的最后一种数据结构就是三叉搜索树（`TSTree`），它和`BSTree`很像，除了它有三个分支，`low`、`equal`和`high`。它的用法和`BStree`以及`Hashmap`基本相同，用于储存键值对的数据，但是它通过键中的独立字符来控制。这使得`TSTree`具有一些`BStree`和`Hashmap`不具备的功能。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="三叉搜索树" /> 
+    <meta name="twitter:description" content="我打算向你介绍的最后一种数据结构就是三叉搜索树（`TSTree`），它和`BSTree`很像，除了它有三个分支，`low`、`equal`和`high`。它的用法和`BStree`以及`Hashmap`基本相同，用于储存键值对的数据，但是它通过键中的独立字符来控制。这使得`TSTree`具有一些`BStree`和`Hashmap`不具备的功能。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>三叉搜索树 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/p/51762D35312252D6.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">三叉搜索树</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:40:30">2019-02-27 16:40:30</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/AA2C66003E9D3723/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习21</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">我打算向你介绍的最后一种数据结构就是三叉搜索树（`TSTree`），它和`BSTree`很像，除了它有三个分支，`low`、`equal`和`high`。它的用法和`BStree`以及`Hashmap`基本相同，用于储存键值对的数据，但是它通过键中的独立字符来控制。这使得`TSTree`具有一些`BStree`和`Hashmap`不具备的功能。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="%E4%B8%89%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91" name="%E4%B8%89%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91">三叉搜索树</h1>
+<p>我打算向你介绍的最后一种数据结构就是三叉搜索树（<code>TSTree</code>），它和<code>BSTree</code>很像，除了它有三个分支，<code>low</code>、<code>equal</code>和<code>high</code>。它的用法和<code>BStree</code>以及<code>Hashmap</code>基本相同，用于储存键值对的数据，但是它通过键中的独立字符来控制。这使得<code>TSTree</code>具有一些<code>BStree</code>和<code>Hashmap</code>不具备的功能。</p>
+<p><code>TSTree</code>的工作方式是，每个键都是字符串，根据字符串中字符的等性，通过构建或者遍历一棵树来进行插入。首先由根节点开始，观察每个节点的字符，如果小于、等于或大于则去往相应的方向。你可以参考这个头文件：</p>
+<pre><code class="c">#ifndef _lcthw_TSTree_h
+#define _lctwh_TSTree_h
+
+#include &lt;stdlib.h&gt;
+#include &lt;lcthw/darray.h&gt;
+
+typedef struct TSTree {
+    char splitchar;
+    struct TSTree *low;
+    struct TSTree *equal;
+    struct TSTree *high;
+    void *value;
+} TSTree;
+
+void *TSTree_search(TSTree *root, const char *key, size_t len);
+
+void *TSTree_search_prefix(TSTree *root, const char *key, size_t len);
+
+typedef void (*TSTree_traverse_cb)(void *value, void *data);
+
+TSTree *TSTree_insert(TSTree *node, const char *key, size_t len, void *value);
+
+void TSTree_traverse(TSTree *node, TSTree_traverse_cb cb, void *data);
+
+void TSTree_destroy(TSTree *root);
+
+#endif</code></pre>
+<p><code>TSTree</code>拥有下列成员：</p>
+<p>splitchar</p>
+<p>树中该节点的字符。</p>
+<p>low</p>
+<p>小于<code>splitchar</code>的分支。</p>
+<p>equal</p>
+<p>等于<code>splitchar</code>的分支。</p>
+<p>high</p>
+<p>大于<code>splitchar</code>的分支。</p>
+<p>value</p>
+<p>这个节点上符合当前<code>splitchar</code>的值的集合。</p>
+<p>你可以看到这个实现中含有下列操作：</p>
+<p>search</p>
+<p>为特定<code>key</code>寻找值的典型操作。</p>
+<p>search_prefix</p>
+<p>寻找第一个以<code>key</code>为前缀的值，这是你不能轻易使用<code>BSTree</code> 或 <code>Hashmap</code> 完成的操作。</p>
+<p>insert</p>
+<p>将<code>key</code>根据每个字符拆分，并把它插入到树中。</p>
+<p>traverse</p>
+<p>遍历整颗树，使你能够收集或分析所包含的所有键和值。</p>
+<p>唯一缺少的操作就是<code>TSTree_delete</code>，这是因为它是一个开销很大的操作，比<code>BSTree_delete</code>大得多。当我使用<code>TSTree</code>结构时，我将它们视为常量数据，我打算遍历许多次，但是永远不会移除任何东西。它们对于这样的操作会很快，但是不适于需要快速插入或删除的情况。为此我会使用<code>Hashmap</code>因为它优于<code>BSTree</code>和<code>TSTree</code>。</p>
+<p><code>TSTree</code>的实现非常简单，但是第一次可能难以理解。我会在你读完之后拆分它。</p>
+<pre><code class="c">#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;lcthw/dbg.h&gt;
+#include &lt;lcthw/tstree.h&gt;
+
+static inline TSTree *TSTree_insert_base(TSTree *root, TSTree *node,
+        const char *key, size_t len, void *value)
+{
+    if(node == NULL) {
+        node = (TSTree *) calloc(1, sizeof(TSTree));
+
+        if(root == NULL) {
+            root = node;
+        }
+
+        node-&gt;splitchar = *key;
+    }
+
+    if(*key &lt; node-&gt;splitchar) {
+        node-&gt;low = TSTree_insert_base(root, node-&gt;low, key, len, value);
+    } else if(*key == node-&gt;splitchar) {
+        if(len &gt; 1) {
+            node-&gt;equal = TSTree_insert_base(root, node-&gt;equal, key+1, len - 1, value);
+        } else {
+            assert(node-&gt;value == NULL &amp;&amp; "Duplicate insert into tst.");
+            node-&gt;value = value;
+        }
+    } else {
+        node-&gt;high = TSTree_insert_base(root, node-&gt;high, key, len, value);
+    }
+
+    return node;
+}
+
+TSTree *TSTree_insert(TSTree *node, const char *key, size_t len, void *value)
+{
+    return TSTree_insert_base(node, node, key, len, value);
+}
+
+void *TSTree_search(TSTree *root, const char *key, size_t len)
+{
+    TSTree *node = root;
+    size_t i = 0;
+
+    while(i &lt; len &amp;&amp; node) {
+        if(key[i] &lt; node-&gt;splitchar) {
+            node = node-&gt;low;
+        } else if(key[i] == node-&gt;splitchar) {
+            i++;
+            if(i &lt; len) node = node-&gt;equal;
+        } else {
+            node = node-&gt;high;
+        }
+    }
+
+    if(node) {
+        return node-&gt;value;
+    } else {
+        return NULL;
+    }
+}
+
+void *TSTree_search_prefix(TSTree *root, const char *key, size_t len)
+{
+    if(len == 0) return NULL;
+
+    TSTree *node = root;
+    TSTree *last = NULL;
+    size_t i = 0;
+
+    while(i &lt; len &amp;&amp; node) {
+        if(key[i] &lt; node-&gt;splitchar) {
+            node = node-&gt;low;
+        } else if(key[i] == node-&gt;splitchar) {
+            i++;
+            if(i &lt; len) {
+                if(node-&gt;value) last = node;
+                node = node-&gt;equal;
+            }
+        } else {
+            node = node-&gt;high;
+        }
+    }
+
+    node = node ? node : last;
+
+    // traverse until we find the first value in the equal chain
+    // this is then the first node with this prefix
+    while(node &amp;&amp; !node-&gt;value) {
+        node = node-&gt;equal;
+    }
+
+    return node ? node-&gt;value : NULL;
+}
+
+void TSTree_traverse(TSTree *node, TSTree_traverse_cb cb, void *data)
+{
+    if(!node) return;
+
+    if(node-&gt;low) TSTree_traverse(node-&gt;low, cb, data);
+
+    if(node-&gt;equal) {
+        TSTree_traverse(node-&gt;equal, cb, data);
+    }
+
+    if(node-&gt;high) TSTree_traverse(node-&gt;high, cb, data);
+
+    if(node-&gt;value) cb(node-&gt;value, data);
+}
+
+void TSTree_destroy(TSTree *node)
+{
+    if(node == NULL) return;
+
+    if(node-&gt;low) TSTree_destroy(node-&gt;low);
+
+    if(node-&gt;equal) {
+        TSTree_destroy(node-&gt;equal);
+    }
+
+    if(node-&gt;high) TSTree_destroy(node-&gt;high);
+
+    free(node);
+}</code></pre>
+<p>对于<code>TSTree_insert</code>，我使用了相同模式的递归结构，其中我创建了一个小型函数，它调用真正的递归函数。我对此并不做任何检查，但是你应该为之添加通常的防御性编程策略。要记住的一件事，就是它使用了一些不同的设计，这里并没有单独的<code>TSTree_create</code>函数，如果你将<code>node</code>传入为<code>NULL</code>，它会新建一个，然后返回最终的值。</p>
+<p>这意味着我需要为你分解<code>TSTree_insert_base</code>，使你理解插入操作。</p>
+<p>tstree.c:10-18</p>
+<p>像我提到的那样，如果函数接收到<code>NULL</code>，我需要创建节点，并且将<code>*key</code>（当前字符）赋值给它。这用于当我插入键时来构建树。</p>
+<p>tstree.c:20-21</p>
+<p>当<code>*key</code>小于<code>splitchar</code>时，选择<code>low</code>分支。</p>
+<p>tstree.c:22</p>
+<p>如果<code>splitchar</code>相等，我就要进一步确定等性。这会在我刚刚创建这个节点时发生，所以这里我会构建这棵树。</p>
+<p>tstree.c:23-24</p>
+<p>仍然有字符串需要处理，所以向下递归<code>equal</code>分支，并且移动到下一个<code>*key</code>字符。</p>
+<p>tstree.c:26-27</p>
+<p>这是最后一个字符的情况，所以我将值设置好。我编写了一个<code>assert</code>来避免重复。</p>
+<p>tstree.c:29-30</p>
+<p>最后的情况是<code>*key</code>大于<code>splitchar</code>，所以我需要向下递归<code>high</code>分支。</p>
+<p>这个数据结构的<code>key</code>实际上带有一些特性，我只会在<code>splitchar</code>相等时递增所要分析的字符。其它两种情况我只会继续遍历整个树，直到碰到了相等的字符，我才会递归处理下一个字符。这一操作使它对于找不到键的情况是非常快的。我可以传入一个不存在的键，简单地遍历一些<code>high</code>和<code>low</code>节点，直到我碰到了末尾并且知道这个键不存在。我并不需要处理键的每个字符，或者树的每个节点。</p>
+<p>一旦你理解了这些，之后来分析<code>TSTree_search</code>如何工作：</p>
+<p>tstree.c:46</p>
+<p>我并不需要递归处理整棵树，只需要使用<code>while</code>循环和当前的<code>node</code>节点。</p>
+<p>tstree.c:47-48</p>
+<p>如果当前字符小于节点中的<code>splitchar</code>，则选择<code>low</code>分支。</p>
+<p>tstree.c:49-51</p>
+<p>如果相等，自增<code>i</code>并且选择<code>equal</code>分支，只要不是最后一个字符。这就是<code>if(i &lt; len)</code>所做的，使我不会越过最后的<code>value</code>。</p>
+<p>tstree.c:52-53</p>
+<p>否则我会选择<code>high</code>分支，由于当前字符更大。</p>
+<p>tstree.c:57-61</p>
+<p>循环结束后如果<code>node</code>不为空，那么返回它的<code>value</code>，否则返回<code>NULL</code>。</p>
+<p>这并不难以理解，并且你可以看到<code>TSTree_search_prefix</code>函数用了几乎相同的算法。唯一的不同就是我并不试着寻找精确的匹配，而是可找到的最长前缀。我在相等时跟踪<code>last</code>节点来实现它，并且在搜索循环结束之后，遍历这个节点直到发现<code>value</code>。</p>
+<p>观察<code>TSTree_search_prefix</code>，你就会开始明白<code>TSTree</code>相对<code>BSTree</code> 和 <code>Hashmap</code>在查找操作上的另一个优点。给定一个长度为X的键，你可以在X步内找到任何键，但是也可以在X步加上额外的N步内找到第一个前缀，取决于匹配的键有多长。如果树中最长的键是十个字符，那么你就可以在10步之内找到任意的前缀。更重要的是，你可以通过对键的每个字符只比较一次来实现。</p>
+<p>相比之下，使用<code>BSTree</code>执行相同操作，你需要在<code>BSTree</code>的每一个可能匹配的节点中检查两个字符串是否有共同的前缀。这对于寻找键，或者检查键是否存在（<code>TSTree_search</code>）是相同的。你需要将每个字符与<code>BSTree</code>中的大多数字符对比，来确认是否匹配。</p>
+<p><code>Hashamp</code>对于寻找前缀更加糟糕，因为你不能够仅仅计算前缀的哈希值。你基本上不能高效在<code>Hashmap</code>中实现它，除非数据类似URL可以被解析。即使这样你还是需要遍历<code>Hashmap</code>的所有节点。</p>
+<blockquote>
+<p>译者注：二叉树和三叉树在搜索时都是走其中的一支，但由于二叉树中每个节点储存字符串，而三叉树储存的是字符。所以三叉树的整个搜索过程相当于一次字符串比较，而二叉树的每个节点都需要一次字符串比较。三叉树堆叠储存字符串使搜索起来更方便。</p>
+</blockquote>
+<blockquote>
+<p>至于哈希表，由于字符串整体和前缀计算出来的哈希值差别很大，所以按前缀搜索时，哈希的优势完全失效，所以只能改为暴力搜索，效果比二叉树还要差。</p>
+</blockquote>
+<p>最后的两个函数应该易于分析，因为它们是典型的遍历和销毁操作，你已经在其它数据结构中看到过了。</p>
+<p>最后，我编写了简单的单元测试，来确保我所做的全部东西正确。</p>
+<pre><code class="c">#include "minunit.h"
+#include &lt;lcthw/tstree.h&gt;
+#include &lt;string.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;lcthw/bstrlib.h&gt;
+
+
+TSTree *node = NULL;
+char *valueA = "VALUEA";
+char *valueB = "VALUEB";
+char *value2 = "VALUE2";
+char *value4 = "VALUE4";
+char *reverse = "VALUER";
+int traverse_count = 0;
+
+struct tagbstring test1 = bsStatic("TEST");
+struct tagbstring test2 = bsStatic("TEST2");
+struct tagbstring test3 = bsStatic("TSET");
+struct tagbstring test4 = bsStatic("T");
+
+char *test_insert()
+{
+    node = TSTree_insert(node, bdata(&amp;test1), blength(&amp;test1), valueA);
+    mu_assert(node != NULL, "Failed to insert into tst.");
+
+    node = TSTree_insert(node, bdata(&amp;test2), blength(&amp;test2), value2);
+    mu_assert(node != NULL, "Failed to insert into tst with second name.");
+
+    node = TSTree_insert(node, bdata(&amp;test3), blength(&amp;test3), reverse);
+    mu_assert(node != NULL, "Failed to insert into tst with reverse name.");
+
+    node = TSTree_insert(node, bdata(&amp;test4), blength(&amp;test4), value4);
+    mu_assert(node != NULL, "Failed to insert into tst with second name.");
+
+    return NULL;
+}
+
+char *test_search_exact()
+{
+    // tst returns the last one inserted
+    void *res = TSTree_search(node, bdata(&amp;test1), blength(&amp;test1));
+    mu_assert(res == valueA, "Got the wrong value back, should get A not B.");
+
+    // tst does not find if not exact
+    res = TSTree_search(node, "TESTNO", strlen("TESTNO"));
+    mu_assert(res == NULL, "Should not find anything.");
+
+    return NULL;
+}
+
+char *test_search_prefix()
+{
+    void *res = TSTree_search_prefix(node, bdata(&amp;test1), blength(&amp;test1));
+    debug("result: %p, expected: %p", res, valueA);
+    mu_assert(res == valueA, "Got wrong valueA by prefix.");
+
+    res = TSTree_search_prefix(node, bdata(&amp;test1), 1);
+    debug("result: %p, expected: %p", res, valueA);
+    mu_assert(res == value4, "Got wrong value4 for prefix of 1.");
+
+    res = TSTree_search_prefix(node, "TE", strlen("TE"));
+    mu_assert(res != NULL, "Should find for short prefix.");
+
+    res = TSTree_search_prefix(node, "TE--", strlen("TE--"));
+    mu_assert(res != NULL, "Should find for partial prefix.");
+
+
+    return NULL;
+}
+
+void TSTree_traverse_test_cb(void *value, void *data)
+{
+    assert(value != NULL &amp;&amp; "Should not get NULL value.");
+    assert(data == valueA &amp;&amp; "Expecting valueA as the data.");
+    traverse_count++;
+}
+
+char *test_traverse()
+{
+    traverse_count = 0;
+    TSTree_traverse(node, TSTree_traverse_test_cb, valueA);
+    debug("traverse count is: %d", traverse_count);
+    mu_assert(traverse_count == 4, "Didn't find 4 keys.");
+
+    return NULL;
+}
+
+char *test_destroy()
+{
+    TSTree_destroy(node);
+
+    return NULL;
+}
+
+char * all_tests() {
+    mu_suite_start();
+
+    mu_run_test(test_insert);
+    mu_run_test(test_search_exact);
+    mu_run_test(test_search_prefix);
+    mu_run_test(test_traverse);
+    mu_run_test(test_destroy);
+
+    return NULL;
+}
+
+RUN_TESTS(all_tests);</code></pre>
+<h2 id="%E4%BC%98%E7%82%B9%E5%92%8C%E7%BC%BA%E7%82%B9" name="%E4%BC%98%E7%82%B9%E5%92%8C%E7%BC%BA%E7%82%B9">优点和缺点</h2>
+<p><code>TSTree</code>可以用于实现一些其它实用的事情：</p>
+<ul>
+<li>除了寻找前缀，你可以反转插入的所有键，之后通过后缀来寻找。我使用它来寻找主机名称，因为我想要找到<code>*.learncodethehardway.com</code>，所以如果我反向来寻找，会更快匹配到它们。</li>
+<li>你可以执行“模糊”搜索，其中你可以收集所有与键的大多数字符相似的节点，或者使用其它算法用于搜索近似的匹配。</li>
+<li>你可以寻找所有中间带有特定部分的键。</li>
+</ul>
+<p>我已经谈论了<code>TSTree</code>能做的一些事情，但是它们并不总是最好的数据结构。<code>TSTree</code>的缺点在于：</p>
+<ul>
+<li>像我提到过的那样，删除操作非常麻烦。它们适用于需要快速检索并且从不移除的操作。如果你需要删除，可以简单地将<code>value</code>置空，之后当树过大时周期性重构它。</li>
+<li>与<code>BSTree</code>和<code>Hashmap</code>相比，它在相同的键上使用了大量的空间。它对于键中的每个字符都使用了完整的节点。它对于短的键效果更好，但如果你在<code>TSTree</code>中放入一大堆东西，它会变得很大。</li>
+<li>它们也不适合处理非常长的键，然而“长”是主观的词，所以应当像通常一样先进行测试。如果你尝试储存一万个字符的键，那么应当使用<code>Hashmap</code>。</li>
+</ul>
+<h2 id="%E5%A6%82%E4%BD%95%E6%94%B9%E8%BF%9B" name="%E5%A6%82%E4%BD%95%E6%94%B9%E8%BF%9B">如何改进</h2>
+<p>像通常一样，浏览代码，使用防御性的先决条件、断言，并且检查每个函数来改进。下面是一些其他的改进方案，但是你并不需要全部实现它们：</p>
+<ul>
+<li>你可以使用<code>DArray</code>来允许重复的<code>value</code>值。</li>
+<li>因为我提到删除非常困难，但是你可以通过将值设为<code>NULL</code>来模拟，使值能够高效被删除。</li>
+<li>目前还不能获取到所有匹配指定前缀的值，我会让你在附加题中实现它。</li>
+<li>有一些其他得更复杂的算法会比它要好。查询前缀数组、前缀树和基数树的资料。</li>
+</ul>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>实现<code>TSTree_collect</code>返回<code>DArray</code>包含所有匹配指定前缀的键。</li>
+<li>实现<code>TSTree_search_suffix</code>和<code>TSTree_insert_suffix</code>，实现后缀搜索和插入。</li>
+<li>使用<code>valgrind</code>来查看与<code>BSTree</code> 和 <code>Hashmap</code>相比，这个结构使用了多少内存来储存数据。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/p/51762D35312252D6.html" title="三叉搜索树">https://naka507.github.io/p/51762D35312252D6.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/7E162640756A886B/index.html" rel="tag"># 搜索</a>
+                                                                <a href="https://naka507.github.io/tag/77E19250B853AB38/index.html" rel="tag"># 结构</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/p/EEC00C835A3D8361.html" rel="next" title="一个简单的TCP/IP客户端">
+                                        <i class="fa fa-chevron-left"></i>
+                                        一个简单的TCP/IP客户端                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/p/A0F3E9CEEB1897B5.html" rel="prev" title="一个快速的URL路由">
+                                        一个快速的URL路由                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#%E4%B8%89%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">三叉搜索树</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BC%98%E7%82%B9%E5%92%8C%E7%BC%BA%E7%82%B9">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">优点和缺点</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%94%B9%E8%BF%9B">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">如何改进</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = '51762D35312252D6';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: '三叉搜索树',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,930 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="在下面的三个练习中你会创建一个项目的目录框架，用于构建之后的C程序。这个目录框架会在这本书中剩余的章节中使用，并且这个练习中我会涉及到`Makefile`便于你理解它。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="Makefile 进阶" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="在下面的三个练习中你会创建一个项目的目录框架，用于构建之后的C程序。这个目录框架会在这本书中剩余的章节中使用，并且这个练习中我会涉及到`Makefile`便于你理解它。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="Makefile 进阶" /> 
+    <meta name="twitter:description" content="在下面的三个练习中你会创建一个项目的目录框架，用于构建之后的C程序。这个目录框架会在这本书中剩余的章节中使用，并且这个练习中我会涉及到`Makefile`便于你理解它。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>Makefile 进阶 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/p/5C8A5BE0B219BE30.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">Makefile 进阶</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:20:46">2019-02-27 16:20:46</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/44FBDC4D7D3B5CFE/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习5</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">在下面的三个练习中你会创建一个项目的目录框架，用于构建之后的C程序。这个目录框架会在这本书中剩余的章节中使用，并且这个练习中我会涉及到`Makefile`便于你理解它。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="Makefile+%E8%BF%9B%E9%98%B6" name="Makefile+%E8%BF%9B%E9%98%B6">Makefile 进阶</h1>
+<p>在下面的三个练习中你会创建一个项目的目录框架，用于构建之后的C程序。这个目录框架会在这本书中剩余的章节中使用，并且这个练习中我会涉及到<code>Makefile</code>便于你理解它。</p>
+<p>这个结构的目的是，在不凭借配置工具的情况下，使构建中等规模的程序变得容易。如果完成了它，你会学到很多GNU make和一些小型shell脚本方面的东西。</p>
+<h2 id="%E5%9F%BA%E6%9C%AC%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84" name="%E5%9F%BA%E6%9C%AC%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84">基本的项目结构</h2>
+<p>首先要做的事情是创建一个C的目录框架，并且放置一些多续项目都拥有的，基本的文件和目录。这是我的目录：</p>
+<pre><code class="sh">$ mkdir c-skeleton
+$ cd c-skeleton/
+$ touch LICENSE README.md Makefile
+$ mkdir bin src tests
+$ cp dbg.h src/   # this is from Ex20
+$ ls -l
+total 8
+-rw-r--r--  1 zedshaw  staff     0 Mar 31 16:38 LICENSE
+-rw-r--r--  1 zedshaw  staff  1168 Apr  1 17:00 Makefile
+-rw-r--r--  1 zedshaw  staff     0 Mar 31 16:38 README.md
+drwxr-xr-x  2 zedshaw  staff    68 Mar 31 16:38 bin
+drwxr-xr-x  2 zedshaw  staff    68 Apr  1 10:07 build
+drwxr-xr-x  3 zedshaw  staff   102 Apr  3 16:28 src
+drwxr-xr-x  2 zedshaw  staff    68 Mar 31 16:38 tests
+$ ls -l src
+total 8
+-rw-r--r--  1 zedshaw  staff  982 Apr  3 16:28 dbg.h
+$</code></pre>
+<p>之后你会看到我执行了<code>ls -l</code>，所以你会看到最终结果。</p>
+<p>下面是每个文件所做的事情：</p>
+<p><code>LICENSE</code></p>
+<p>如果你在项目中发布源码，你会希望包含一份协议。如果你不这么多，虽然你有代码的版权，但是通常没有人有权使用。</p>
+<p><code>README.md</code></p>
+<p>对你项目的简要说明。它以<code>.md</code>结尾，所以应该作为Markdown来解析。</p>
+<p><code>Makefile</code></p>
+<p>这个项目的主要构建文件。</p>
+<p><code>bin/</code></p>
+<p>放置可运行程序的地方。这里通常是空的，Makefile会在这里生成程序。</p>
+<p><code>build/</code></p>
+<p>当值库和其它构建组件的地方。通常也是空的，Makefile会在这里生成这些东西。</p>
+<p><code>src/</code></p>
+<p>放置源码的地方，通常是<code>.c</code>和<code>.h</code>文件。</p>
+<p><code>tests/</code></p>
+<p>放置自动化测试的地方。</p>
+<p><code>src/dbg.h</code></p>
+<p>我将练习20的<code>dbg.h</code>复制到了这里。</p>
+<p>我刚才分解了这个项目框架的每个组件，所以你应该明白它们怎么工作。</p>
+<h2 id="Makefile" name="Makefile">Makefile</h2>
+<p>我要讲到的第一件事情就是Makefile，因为你可以从中了解其它东西的情况。这个练习的Makeile比之前更加详细，所以我会在你输入它之后做详细的分解。</p>
+<pre><code class="make">CFLAGS=-g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG $(OPTFLAGS)
+LIBS=-ldl $(OPTLIBS)
+PREFIX?=/usr/local
+
+SOURCES=$(wildcard src/**/*.c src/*.c)
+OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
+
+TEST_SRC=$(wildcard tests/*_tests.c)
+TESTS=$(patsubst %.c,%,$(TEST_SRC))
+
+TARGET=build/libYOUR_LIBRARY.a
+SO_TARGET=$(patsubst %.a,%.so,$(TARGET))
+
+# The Target Build
+all: $(TARGET) $(SO_TARGET) tests
+
+dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS)
+dev: all
+
+$(TARGET): CFLAGS += -fPIC
+$(TARGET): build $(OBJECTS)
+       ar rcs $@ $(OBJECTS)
+       ranlib $@
+
+$(SO_TARGET): $(TARGET) $(OBJECTS)
+       $(CC) -shared -o $@ $(OBJECTS)
+
+build:
+       @mkdir -p build
+       @mkdir -p bin
+
+# The Unit Tests
+.PHONY: tests
+tests: CFLAGS += $(TARGET)
+tests: $(TESTS)
+       sh ./tests/runtests.sh
+
+valgrind:
+       VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)
+
+# The Cleaner
+clean:
+       rm -rf build $(OBJECTS) $(TESTS)
+       rm -f tests/tests.log
+       find . -name "*.gc*" -exec rm {} \;
+       rm -rf `find . -name "*.dSYM" -print`
+
+# The Install
+install: all
+       install -d $(DESTDIR)/$(PREFIX)/lib/
+       install $(TARGET) $(DESTDIR)/$(PREFIX)/lib/
+
+# The Checker
+BADFUNCS='[^_.&gt;a-zA-Z0-9](str(n?cpy|n?cat|xfrm|n?dup|str|pbrk|tok|_)|stpn?cpy|a?sn?printf|byte_)'
+check:
+       @echo Files with potentially dangerous functions.
+       @egrep $(BADFUNCS) $(SOURCES) || true
+</code></pre>
+<p>要记住你应该使用一致的Tab字符来缩进Makefile。你的编辑器应该知道怎么做，但是如果不是这样你可以换个编辑器。没有程序员会使用一个连如此简单的事情都做不好的编辑器。</p>
+<h2 id="%E5%A4%B4%E9%83%A8" name="%E5%A4%B4%E9%83%A8">头部</h2>
+<p>这个Makefile设计用于构建一个库，我们之后会用到它，并且通过使用<code>GNU make</code>的特殊特性使它在任何平台上都可用。我会在这一节拆分它的每一部分，先从头部开始。</p>
+<p>Makefile:1</p>
+<p>这是通常的<code>CFLAGS</code>，几乎每个项目都会设置，但是带有用于构建库的其它东西。你可能需要为不同平台调整它。要注意最后的<code>OPTFLAGS</code>变量可以让使用者按需扩展构建选项。</p>
+<p>Makefile:2</p>
+<p>用于链接库的选项，同样也允许其它人使用<code>OPTFLAGS</code>变量扩展链接选项。</p>
+<p>Makefile:3</p>
+<p>设置一个叫做<code>PREFIX</code>的可选变量，它只在没有<code>PREFIX</code>设置的平台上运行Makefile时有效。这就是<code>?=</code>的作用。</p>
+<p>Makefile:5</p>
+<p>这神奇的一行通过执行<code>wildcard</code>搜索在<code>src/</code>中所有<code>*.c</code>文件来动态创建<code>SOURCES</code>变量。你需要提供<code>src/**/*.c</code>和<code>src/*.c</code>以便GNU make能够包含<code>src</code>目录及其子目录的所有此类文件。</p>
+<p>Makefile:6</p>
+<p>一旦你创建了源文件列表，你可以使用<code>patsubst</code>命令获取<code>*.c</code>文件的<code>SOURCES</code>来创建目标文件的新列表。你可以告诉<code>patsubst</code>把所有<code>%.c</code>扩展为<code>%.o</code>，并将它们赋给<code>OBJECTS</code>。</p>
+<p>Makefile:8</p>
+<p>再次使用<code>wildcard</code>来寻找所有用于单元测试的测试源文件。它们存放在不同的目录中。</p>
+<p>Makefile:9</p>
+<p>之后使用相同的<code>patsubst</code>技巧来动态获得所有<code>TEST</code>目标。其中我去掉了<code>.c</code>后缀，使整个程序使用相同的名字创建。之前我将<code>.c</code>替换为<code>.o</code>来创建目标文件。</p>
+<p>Makefile:11</p>
+<p>最后，我将最终目标设置为<code>build/libYOUR_LIBRARY.a</code>，你可以为你实际构建的任何库来修改它。</p>
+<p>这就是Makefile的头部了，但是我应该对“让其他人扩展构建”做个解释。你在运行它的时候可以这样做：</p>
+<pre><code class="sh"># WARNING! Just a demonstration, won't really work right now.
+# this installs the library into /tmp
+$ make PREFIX=/tmp install
+# this tells it to add pthreads
+$ make OPTFLAGS=-pthread</code></pre>
+<p>如果你传入匹配<code>Makefile</code>中相同名称的变量，它们会在构建中生效。你可以利用它来修改<code>Makefile</code>的运行方式。第一条命令改变了<code>PREFIX</code>，使它安装到<code>/tmp</code>。第二条设置了<code>OPTFLAGS</code>，为之添加了<code>pthread</code>选项。</p>
+<h2 id="%E6%9E%84%E5%BB%BA%E7%9B%AE%E6%A0%87" name="%E6%9E%84%E5%BB%BA%E7%9B%AE%E6%A0%87">构建目标</h2>
+<p>我会继续<code>Makefile</code>的分解，这一部分用于构建目标文件（object file）和目标（target）：</p>
+<p>Makefile:14</p>
+<p>要记住在没有提供目标时<code>make</code>会默认运行第一个目标。这里它叫做<code>all:</code>，并且它提供了<code>$(TARGET) tests</code>作为构建目标。查看<code>TARGET</code>变量，你会发现这就是库文件，所以<code>all:</code>首先会构建出库文件。之后，<code>tests</code>目标会构建单元测试。</p>
+<p>Makefile:16</p>
+<p>另一个用于执行“开发者构建”的目标，它介绍了一种为单一目标修改选项的技巧，如果我执行“开发构建”，我希望<code>CFLAGS</code>包含类似<code>Wextra</code>这样用于发现bug的选项。如果你将它们放到目标的那行中，并再编写一行来指向原始目标（这里是<code>all</code>），那么它就会将改为你设置的选项。我通常将它用于在不同的平台上设置所需的不同选项。</p>
+<p>Makefile:19</p>
+<p>构建<code>TARGET</code>库，然而它同样使用了15行的技巧，向一个目标提供选项来为当前目标修改它们。这里我通过适用<code>+=</code>语法为库的构建添加了<code>-fPIC</code>。</p>
+<p>Makefile:20</p>
+<p>现在这一真实目标首先创建<code>build</code>目录，之后编译所有<code>OBJECTS</code>。</p>
+<p>Makefile:21</p>
+<p>运行实际创建<code>TARGET</code>的<code>ar</code>的命令。<code>$@ $(OBJECTS)</code>语法的意思是，将当前目标的名称放在这里，并把<code>OBJECTS</code>的内容放在后面。这里<code>$@</code>的值为19行的<code>$(TARGET)</code>，它实际上为<code>build/libYOUR_LIBRARY.a</code>。看起来在这一重定向中它做了很多跟踪工作，它也有这个功能，并且你可以通过修改顶部的<code>TARGET</code>，来构建一个全新的库。</p>
+<p>Makefile:22</p>
+<p>最后，在<code>TARGET</code>上运行<code>ranlib</code>来构建这个库。</p>
+<p>Makefile:24-24</p>
+<p>用于在<code>build/</code>和<code>bin/</code>目录不存在的条件下创建它们。之后它被19行引用，那里提供了<code>build</code>目标来确保<code>build/</code>目录已创建。</p>
+<p>你现在拥有了用于构建软件的所需的所有东西。之后我们会创建用于构建和运行单元测试的东西，来执行自动化测试。</p>
+<h2 id="%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95" name="%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</h2>
+<p>C不同于其他语言，因为它更易于为每个需要测试的东西创建小型程序。一些测试框架试图模拟其他语言中的模块概念，并且执行动态加载，但是它在C中并不适用。这也不是必要的，因为你可以仅仅编写一个程序用于每个测试。</p>
+<p>我接下来会涉及到Makefile的这一部分，并且你会看到<code>test/</code>目录中真正起作用的内容。</p>
+<p>Makefile:29</p>
+<p>如果你拥有一个不是“真实”的目标，只有有个目录或者文件叫这个名字，你需要使用g<code>.PHONY:</code>标签来标记它，以便<code>make</code>忽略该文件。</p>
+<p>Makefile:30</p>
+<p>我使用了与修改<code>CFLAGS</code>变量相同的技巧，并且将<code>TARGET</code>添加到构建中，于是每个测试程序都会链接<code>TARGET</code>库。这里它会添加<code>build/libYOUR_LIBRARY.a</code>用于链接。</p>
+<p>Makefile:31</p>
+<p>之后我创建了实际的<code>test:</code>目录，它依赖于所有在<code>TESTS</code>变量中列出的程序。这一行实际上说，“Make，请使用你已知的程序构建方法，以及当前<code>CFLAGS</code>设置的内容来构建<code>TESTS</code>中的每个程序。”</p>
+<p>Makefile:32</p>
+<p>最后，所有<code>TESTS</code>构建完之后，会运行一个我稍后创建的简单shell脚本，它知道如何全部运行他们并报告它们的输出、这一行实际上运行它来让你看到测试结果。</p>
+<p>Makefile:34-35</p>
+<p>为了能够动态使用<code>Valgrind</code>重复运行测试，我创建了<code>valgrind:</code>标签，它设置了正确的变量并且再次运行它。它会将<code>Valgrind</code>的日志放到<code>/tmp/valgrind-*.log</code>，你可以查看并了解发生了什么。之后<code>tests/runtests.sh</code>看到<code>VALGRIND</code>变量时，它会明白要在<code>Valgrind</code>下运行测试程序。</p>
+<p>你需要为单元测试创建一个小型的shell脚本，它知道如何运行程序。我们开始创建这个<code>tests/runtests.sh</code>脚本：</p>
+<pre><code class="sh">echo "Running unit tests:"
+
+for i in tests/*_tests
+do
+    if test -f $i
+    then
+        if $VALGRIND ./$i 2&gt;&gt; tests/tests.log
+        then
+            echo $i PASS
+        else
+            echo "ERROR in test $i: here's tests/tests.log"
+            echo "------"
+            tail tests/tests.log
+            exit 1
+        fi
+    fi
+done
+
+echo ""</code></pre>
+<p>当我提到单元测试如何工作时，我会在之后用到它。</p>
+<h2 id="%E6%B8%85%E7%90%86%E5%B7%A5%E5%85%B7" name="%E6%B8%85%E7%90%86%E5%B7%A5%E5%85%B7">清理工具</h2>
+<p>我已经有了用于单元测试的工具，所以下一步就是创建需要重置时的清理工具。</p>
+<p>Makefile:38</p>
+<p><code>clean:</code>目标在我需要清理这个项目的任何时候都会执行清理。</p>
+<p>Makefile:39-42</p>
+<p>这会清理不同编译器和工具留下的多数垃圾。它也会移除<code>build/</code>目录并且使用了一个技巧来清理XCode为调试目的而留下的<code>*.dSYM</code>。</p>
+<p>如果你碰到了想要执行清理的垃圾，你只需要简单地扩展需要删除的文件列表。</p>
+<h2 id="%E5%AE%89%E8%A3%85" name="%E5%AE%89%E8%A3%85">安装</h2>
+<p>然后，我会需要一种安装项目的方法，对<code>Makefile</code>来说就是把构建出来的库放到通常的<code>PREFIX</code>目录下，它通常是<code>/usr/local/lib</code>。</p>
+<p>Makefile:45</p>
+<p>它会使<code>install:</code>依赖于<code>all:</code>目录，所以当你运行<code>make install</code>之后也会先确保一切都已构建。</p>
+<p>Makefile:46</p>
+<p>接下来我使用<code>install</code>程序来创建<code>lib</code>目标的目录。其中我通过使用两个为安装者提供便利的变量，尝试让安装尽可能灵活。<code>DESTDIR</code>交给安装者，便于在安全或者特定的目录里执行自己的构建。<code>PREFIX</code>在别人想要将项目安装到其它目录而不是<code>/user/local</code>时会被使用。</p>
+<p>Makefile:47</p>
+<p>在此之后我使用<code>insyall</code>来实际安装这个库，到它需要安装的地方。</p>
+<p><code>install</code>程序的目的是确保这些事情都设置了正确的权限。当你运行<code>make install</code>时你通常使用root权限来执行，所以通常的构建过程应为<code>make &amp;&amp; sudo make install</code>。</p>
+<h2 id="%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7" name="%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7">检查工具</h2>
+<p><code>Makefile</code>的最后一部分是个额外的部分，我把它包含在我的C项目中用于发现任何使用C中“危险”函数的情况。这些函数是字符串函数和另一些“不保护栈”的函数。</p>
+<p>Makefile:50</p>
+<p>设置变量，它是个稍大的正则表达式，用于检索类似<code>strcpy</code>的危险函数。</p>
+<p>Makefile:51</p>
+<p>这是<code>check:</code>目标，使你能够随时执行检查。</p>
+<p>Makefile:52</p>
+<p>它只是一个打印信息的方式，使用了<code>@echo</code>来告诉<code>make</code>不要打印命令，只需打印输出。</p>
+<p>Makefile:53</p>
+<p>对源文件运行<code>egrep</code>命令来寻找任何危险的字符串。最后的<code>|| true</code>是一种方法，用于防止<code>make</code>认为<code>egrep</code>没有找到任何东西是执行失败。</p>
+<p>当你执行它之后，它会表现得十分奇怪，如果没有任何危险的函数，你会得到一个错误。</p>
+<h2 id="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88" name="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">你会看到什么</h2>
+<p>我在完成这个项目框架目录的构建之前，还设置了两个额外的练习。下面这是我对<code>Makefile</code>特性的测试结果：</p>
+<pre><code class="sh">$ make clean
+rm -rf build  
+rm -f tests/tests.log
+find . -name "*.gc*" -exec rm {} \;
+rm -rf `find . -name "*.dSYM" -print`
+$ make check
+Files with potentially dangerous functions.
+^Cmake: *** [check] Interrupt: 2
+
+$ make
+ar rcs build/libYOUR_LIBRARY.a
+ar: no archive members specified
+usage:  ar -d [-TLsv] archive file ...
+      ar -m [-TLsv] archive file ...
+      ar -m [-abiTLsv] position archive file ...
+      ar -p [-TLsv] archive [file ...]
+      ar -q [-cTLsv] archive file ...
+      ar -r [-cuTLsv] archive file ...
+      ar -r [-abciuTLsv] position archive file ...
+      ar -t [-TLsv] archive [file ...]
+      ar -x [-ouTLsv] archive [file ...]
+make: *** [build/libYOUR_LIBRARY.a] Error 1
+$ make valgrind
+VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" make
+ar rcs build/libYOUR_LIBRARY.a
+ar: no archive members specified
+usage:  ar -d [-TLsv] archive file ...
+      ar -m [-TLsv] archive file ...
+      ar -m [-abiTLsv] position archive file ...
+      ar -p [-TLsv] archive [file ...]
+      ar -q [-cTLsv] archive file ...
+      ar -r [-cuTLsv] archive file ...
+      ar -r [-abciuTLsv] position archive file ...
+      ar -t [-TLsv] archive [file ...]
+      ar -x [-ouTLsv] archive [file ...]
+make[1]: *** [build/libYOUR_LIBRARY.a] Error 1
+make: *** [valgrind] Error 2
+$</code></pre>
+<p>当我运行<code>clean:</code>目标时它会生效，但是由于我在<code>src/</code>目录中并没有任何源文件，其它命令并没有真正起作用。我会在下个练习中补完它。</p>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>尝试通过将源文件和头文件添加进<code>src/</code>，来使<code>Makefile</code>真正起作用，并且构建出库文件。在源文件中不应该需要<code>main</code>函数。</li>
+<li>研究<code>check:</code>目标会使用<code>BADFUNCS</code>的正则表达式来寻找什么函数。</li>
+<li>如果你没有做过自动化测试，查询有关资料为以后做准备。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/p/5C8A5BE0B219BE30.html" title="Makefile 进阶">https://naka507.github.io/p/5C8A5BE0B219BE30.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/092C041797CE79CA/index.html" rel="tag"># Makefile</a>
+                                                                <a href="https://naka507.github.io/tag/A51ED0DAFC3B714C/index.html" rel="tag"># 程序</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/p/FFD032B7FC697307.html" rel="next" title="创造性和防御性编程">
+                                        <i class="fa fa-chevron-left"></i>
+                                        创造性和防御性编程                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/p/09D69E06B935E885.html" rel="prev" title="库和链接">
+                                        库和链接                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#Makefile+%E8%BF%9B%E9%98%B6">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">Makefile 进阶</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">基本的项目结构</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#Makefile">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">Makefile</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%A4%B4%E9%83%A8">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">头部</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E7%9B%AE%E6%A0%87">
+                                <span class="nav-number">1.4.</span> 
+                                <span class="nav-text">构建目标</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">
+                                <span class="nav-number">1.5.</span> 
+                                <span class="nav-text">单元测试</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E6%B8%85%E7%90%86%E5%B7%A5%E5%85%B7">
+                                <span class="nav-number">1.6.</span> 
+                                <span class="nav-text">清理工具</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%AE%89%E8%A3%85">
+                                <span class="nav-number">1.7.</span> 
+                                <span class="nav-text">安装</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7">
+                                <span class="nav-number">1.8.</span> 
+                                <span class="nav-text">检查工具</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">
+                                <span class="nav-number">1.9.</span> 
+                                <span class="nav-text">你会看到什么</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.10.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = '5C8A5BE0B219BE30';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: 'Makefile 进阶',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>

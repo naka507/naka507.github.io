@@ -1,0 +1,910 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="我将想你介绍涉及到排序的两个算法，你可以用它们操作链表。我首先要警告你，如果你打算对数据排序，不要使用链表，它们对于排序十分麻烦，并且有更好的数据结构作为替代。我向你介绍这两种算法只是因为它们难以在链表上完成，并且让你思考如何高效操作它们。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="链表算法" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="我将想你介绍涉及到排序的两个算法，你可以用它们操作链表。我首先要警告你，如果你打算对数据排序，不要使用链表，它们对于排序十分麻烦，并且有更好的数据结构作为替代。我向你介绍这两种算法只是因为它们难以在链表上完成，并且让你思考如何高效操作它们。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="链表算法" /> 
+    <meta name="twitter:description" content="我将想你介绍涉及到排序的两个算法，你可以用它们操作链表。我首先要警告你，如果你打算对数据排序，不要使用链表，它们对于排序十分麻烦，并且有更好的数据结构作为替代。我向你介绍这两种算法只是因为它们难以在链表上完成，并且让你思考如何高效操作它们。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>链表算法 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/p/219AB7A902A81B94.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">链表算法</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:25:04">2019-02-27 16:25:04</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/E59B2DD2584AA65F/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习8</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">我将想你介绍涉及到排序的两个算法，你可以用它们操作链表。我首先要警告你，如果你打算对数据排序，不要使用链表，它们对于排序十分麻烦，并且有更好的数据结构作为替代。我向你介绍这两种算法只是因为它们难以在链表上完成，并且让你思考如何高效操作它们。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="%E9%93%BE%E8%A1%A8%E7%AE%97%E6%B3%95" name="%E9%93%BE%E8%A1%A8%E7%AE%97%E6%B3%95">链表算法</h1>
+<p>我将想你介绍涉及到排序的两个算法，你可以用它们操作链表。我首先要警告你，如果你打算对数据排序，不要使用链表，它们对于排序十分麻烦，并且有更好的数据结构作为替代。我向你介绍这两种算法只是因为它们难以在链表上完成，并且让你思考如何高效操作它们。</p>
+<p>为了编写这本书，我打算将算法放在两个不同的文件中，<code>list_algos.h</code>和<code>list_algos.c</code>，之后在<code>list_algos_test.c</code>中编写测试。现在你要按照我的结构，因为它足以把事情做好，但是如果你使用其它的库要记住这并不是通用的结构。</p>
+<p>这个练习中我打算给你一些额外的挑战，并且希望你不要作弊。我打算先给你单元测试，并且让你打下来。之后让你基于它们在维基百科中的描述，尝试实现这个两个算法，之后看看你的代码是否和我的类似。</p>
+<h2 id="%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E5%92%8C%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F" name="%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E5%92%8C%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F">冒泡排序和归并排序</h2>
+<p>互联网的强大之处，就是我可以仅仅给你<a href="http://en.wikipedia.org/wiki/Bubble_sort">冒泡排序</a>和<a href="http://en.wikipedia.org/wiki/Merge_sort">归并排序</a>的链接，来让你学习它们。是的，这省了我很多字。现在我要告诉你如何使用它们的伪代码来实现它们。你可以像这样来实现算法：</p>
+<ul>
+<li>阅读描述，并且观察任何可视化的图表。</li>
+<li>使用方框和线条在纸上画出算法，或者使用一些带有数字的卡片（比如扑克牌），尝试手动执行算法。这会向你形象地展示算法的执行过程。</li>
+<li>在<code>list_algos.c</code>文案总创建函数的主干，并且创建<code>list_algos.h</code>文件，之后创建测试代码。</li>
+<li>编写第一个测试并且编译所有东西。</li>
+<li>回到维基百科页面，复制粘贴伪代码到你创建的函数中（不是C代码）。</li>
+<li>将伪代码翻译成良好的C代码，就像我教你的那样，使用你的单元测试来保证它有效。</li>
+<li>为边界情况补充一些测试，例如空链表，排序号的链表，以及其它。</li>
+<li>对下一个算法重复这些过程并测试。</li>
+</ul>
+<p>我只是告诉你理解大多数算法的秘密，直到你碰到一些更加麻烦的算法。这里你只是按照维基百科来实现冒泡排序和归并排序，它们是一个好的起始。</p>
+<h2 id="%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95" name="%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</h2>
+<p>下面是你应该通过的单元测试：</p>
+<pre><code class="c">#include "minunit.h"
+#include &lt;lcthw/list_algos.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;string.h&gt;
+
+char *values[] = {"XXXX", "1234", "abcd", "xjvef", "NDSS"};
+#define NUM_VALUES 5
+
+List *create_words()
+{
+    int i = 0;
+    List *words = List_create();
+
+    for(i = 0; i &lt; NUM_VALUES; i++) {
+        List_push(words, values[i]);
+    }
+
+    return words;
+}
+
+int is_sorted(List *words)
+{
+    LIST_FOREACH(words, first, next, cur) {
+        if(cur-&gt;next &amp;&amp; strcmp(cur-&gt;value, cur-&gt;next-&gt;value) &gt; 0) {
+            debug("%s %s", (char *)cur-&gt;value, (char *)cur-&gt;next-&gt;value);
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+char *test_bubble_sort()
+{
+    List *words = create_words();
+
+    // should work on a list that needs sorting
+    int rc = List_bubble_sort(words, (List_compare)strcmp);
+    mu_assert(rc == 0, "Bubble sort failed.");
+    mu_assert(is_sorted(words), "Words are not sorted after bubble sort.");
+
+    // should work on an already sorted list
+    rc = List_bubble_sort(words, (List_compare)strcmp);
+    mu_assert(rc == 0, "Bubble sort of already sorted failed.");
+    mu_assert(is_sorted(words), "Words should be sort if already bubble sorted.");
+
+    List_destroy(words);
+
+    // should work on an empty list
+    words = List_create(words);
+    rc = List_bubble_sort(words, (List_compare)strcmp);
+    mu_assert(rc == 0, "Bubble sort failed on empty list.");
+    mu_assert(is_sorted(words), "Words should be sorted if empty.");
+
+    List_destroy(words);
+
+    return NULL;
+}
+
+char *test_merge_sort()
+{
+    List *words = create_words();
+
+    // should work on a list that needs sorting
+    List *res = List_merge_sort(words, (List_compare)strcmp);
+    mu_assert(is_sorted(res), "Words are not sorted after merge sort.");
+
+    List *res2 = List_merge_sort(res, (List_compare)strcmp);
+    mu_assert(is_sorted(res), "Should still be sorted after merge sort.");
+    List_destroy(res2);
+    List_destroy(res);
+
+    List_destroy(words);
+    return NULL;
+}
+
+
+char *all_tests()
+{
+    mu_suite_start();
+
+    mu_run_test(test_bubble_sort);
+    mu_run_test(test_merge_sort);
+
+    return NULL;
+}
+
+RUN_TESTS(all_tests);</code></pre>
+<p>建议你从冒泡排序开始，使它正确，之后再测试归并。我所做的就是编写函数原型和主干，让这三个文件能够编译，但不能通过测试。之后你将实现填充进入之后才能够工作。</p>
+<h2 id="%E5%AE%9E%E7%8E%B0" name="%E5%AE%9E%E7%8E%B0">实现</h2>
+<p>你作弊了吗？之后的练习中，我只会给你单元测试，并且让自己实现它。对于你来说，不看这段代码知道你自己实现它是一种很好的练习。下面是<code>list_algos.c</code>和<code>list_algos.h</code>的代码：</p>
+<pre><code class="c">#ifndef lcthw_List_algos_h
+#define lcthw_List_algos_h
+
+#include &lt;lcthw/list.h&gt;
+
+typedef int (*List_compare)(const void *a, const void *b);
+
+int List_bubble_sort(List *list, List_compare cmp);
+
+List *List_merge_sort(List *list, List_compare cmp);
+
+#endif</code></pre>
+<pre><code class="c">#include &lt;lcthw/list_algos.h&gt;
+#include &lt;lcthw/dbg.h&gt;
+
+inline void ListNode_swap(ListNode *a, ListNode *b)
+{
+    void *temp = a-&gt;value;
+    a-&gt;value = b-&gt;value;
+    b-&gt;value = temp;
+}
+
+int List_bubble_sort(List *list, List_compare cmp)
+{
+    int sorted = 1;
+
+    if(List_count(list) &lt;= 1) {
+        return 0;  // already sorted
+    }
+
+    do {
+        sorted = 1;
+        LIST_FOREACH(list, first, next, cur) {
+            if(cur-&gt;next) {
+                if(cmp(cur-&gt;value, cur-&gt;next-&gt;value) &gt; 0) {
+                    ListNode_swap(cur, cur-&gt;next);
+                    sorted = 0;
+                }
+            }
+        }
+    } while(!sorted);
+
+    return 0;
+}
+
+inline List *List_merge(List *left, List *right, List_compare cmp)
+{
+    List *result = List_create();
+    void *val = NULL;
+
+    while(List_count(left) &gt; 0 || List_count(right) &gt; 0) {
+        if(List_count(left) &gt; 0 &amp;&amp; List_count(right) &gt; 0) {
+            if(cmp(List_first(left), List_first(right)) &lt;= 0) {
+                val = List_shift(left);
+            } else {
+                val = List_shift(right);
+            }
+
+            List_push(result, val);
+        } else if(List_count(left) &gt; 0) {
+            val = List_shift(left);
+            List_push(result, val);
+        } else if(List_count(right) &gt; 0) {
+            val = List_shift(right);
+            List_push(result, val);
+        }
+    }
+
+    return result;
+}
+
+List *List_merge_sort(List *list, List_compare cmp)
+{
+    if(List_count(list) &lt;= 1) {
+        return list;
+    }
+
+    List *left = List_create();
+    List *right = List_create();
+    int middle = List_count(list) / 2;
+
+    LIST_FOREACH(list, first, next, cur) {
+        if(middle &gt; 0) {
+            List_push(left, cur-&gt;value);
+        } else {
+            List_push(right, cur-&gt;value);
+        }
+
+        middle--;
+    }
+
+    List *sort_left = List_merge_sort(left, cmp);
+    List *sort_right = List_merge_sort(right, cmp);
+
+    if(sort_left != left) List_destroy(left);
+    if(sort_right != right) List_destroy(right);
+
+    return List_merge(sort_left, sort_right, cmp);
+}</code></pre>
+<p>冒泡排序并不难以理解，虽然它非常慢。归并排序更为复杂，实话讲如果我想要牺牲可读性的话，我会花一点时间来优化代码。</p>
+<p>归并排序有另一种“自底向上”的实现方式，但是它太难了，我就没有选择它。就像我刚才说的那样，在链表上编写排序算法没有什么意思。你可以把时间都花在使它更快，它比起其他可排序的数据结构会相当版。链表的本质决定了如果你需要对数据进行排序，你就不要使用它们（尤其是单向的）。</p>
+<h2 id="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88" name="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">你会看到什么</h2>
+<p>如果一切都正常工作，你会看到这些：</p>
+<pre><code class="sh">$ make clean all
+rm -rf build src/lcthw/list.o src/lcthw/list_algos.o tests/list_algos_tests tests/list_tests
+rm -f tests/tests.log
+find . -name "*.gc*" -exec rm {} \;
+rm -rf `find . -name "*.dSYM" -print`
+cc -g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG  -fPIC   -c -o src/lcthw/list.o src/lcthw/list.c
+cc -g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG  -fPIC   -c -o src/lcthw/list_algos.o src/lcthw/list_algos.c
+ar rcs build/liblcthw.a src/lcthw/list.o src/lcthw/list_algos.o
+ranlib build/liblcthw.a
+cc -shared -o build/liblcthw.so src/lcthw/list.o src/lcthw/list_algos.o
+cc -g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG  build/liblcthw.a    tests/list_algos_tests.c   -o tests/list_algos_tests
+cc -g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG  build/liblcthw.a    tests/list_tests.c   -o tests/list_tests
+sh ./tests/runtests.sh
+Running unit tests:
+----
+RUNNING: ./tests/list_algos_tests
+ALL TESTS PASSED
+Tests run: 2
+tests/list_algos_tests PASS
+----
+RUNNING: ./tests/list_tests
+ALL TESTS PASSED
+Tests run: 6
+tests/list_tests PASS
+$</code></pre>
+<p>这个练习之后我就不会向你展示这样的输出了，除非有必要向你展示它的工作原理。你应该能知道我运行了测试，并且通过了所有测试。</p>
+<h2 id="%E5%A6%82%E4%BD%95%E6%94%B9%E8%BF%9B" name="%E5%A6%82%E4%BD%95%E6%94%B9%E8%BF%9B">如何改进</h2>
+<p>退回去查看算法描述，有一些方法可用于改进这些实现，其中一些是很显然的：</p>
+<ul>
+<li>归并排序做了大量的链表复制和创建操作，寻找减少它们的办法。</li>
+<li>归并排序的维基百科描述提到了一些优化，实现它们。</li>
+<li>你能使用<code>List_split</code>和<code>List_join</code>（如果你实现了的话）来改进归并排序嘛？</li>
+<li>浏览所有防御性编程原则，检查并提升这一实现的健壮性，避免<code>NULL</code>指针，并且创建一个可选的调试级别的不变量，在排序后实现<code>is_sorted</code>的功能。</li>
+</ul>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>创建单元测试来比较这两个算法的性能。你需要<code>man 3 time</code>来查询基本的时间函数，并且需要运行足够的迭代次数，至少以几秒钟作为样本。</li>
+<li>改变需要排序的链表中的数据总量，看看耗时如何变化。</li>
+<li>寻找方法来创建不同长度的随机链表，并且测量需要多少时间，之后将它可视化并与算法的描述对比。</li>
+<li>尝试解释为什么对链表排序十分麻烦。</li>
+<li>实现<code>List_insert_sorted</code>（有序链表），它使用<code>List_compare</code>，接收一个值，将其插入到正确的位置，使链表有序。它与创建链表后再进行排序相比怎么样？</li>
+<li>尝试实现维基百科上“自底向上”的归并排序。上面的代码已经是C写的了，所以很容易重新创建，但是要试着理解它的工作原理，并与这里的低效版本对比。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/p/219AB7A902A81B94.html" title="链表算法">https://naka507.github.io/p/219AB7A902A81B94.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/A89772FB860BD0E2/index.html" rel="tag"># 算法</a>
+                                                                <a href="https://naka507.github.io/tag/B4503D109E78E053/index.html" rel="tag"># 链表</a>
+                                                                <a href="https://naka507.github.io/tag/139E97753765C73B/index.html" rel="tag"># 排序</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/p/364477FB0CED1A03.html" rel="next" title="双向链表">
+                                        <i class="fa fa-chevron-left"></i>
+                                        双向链表                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/p/4375976486E9101E.html" rel="prev" title="动态数组">
+                                        动态数组                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#%E9%93%BE%E8%A1%A8%E7%AE%97%E6%B3%95">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">链表算法</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E5%92%8C%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">冒泡排序和归并排序</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">单元测试</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%AE%9E%E7%8E%B0">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">实现</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">
+                                <span class="nav-number">1.4.</span> 
+                                <span class="nav-text">你会看到什么</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%94%B9%E8%BF%9B">
+                                <span class="nav-number">1.5.</span> 
+                                <span class="nav-text">如何改进</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.6.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = '219AB7A902A81B94';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: '链表算法',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>
