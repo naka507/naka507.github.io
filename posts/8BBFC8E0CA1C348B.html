@@ -1,0 +1,905 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="在C中有一个永恒的问题，它伴随了你很长时间，然而在这个练习我打算使用一系列我开发的宏来解决它。到现在为止你都不知道它们的强大之处，所以你必须使用它们，总有一天你会来找我说，“Zed，这些调试宏真是太伟大了，我应该把我的第一个孩子的出生归功于你，因为你治好了我十年的心脏病，并且打消了我数次想要自杀的念头。真是要谢谢你这样一个好人，这里有一百万美元，和LeoFender设计的SnakeheadTelecaster电吉他的原型。”" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="Zed的强大的调试宏" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="在C中有一个永恒的问题，它伴随了你很长时间，然而在这个练习我打算使用一系列我开发的宏来解决它。到现在为止你都不知道它们的强大之处，所以你必须使用它们，总有一天你会来找我说，“Zed，这些调试宏真是太伟大了，我应该把我的第一个孩子的出生归功于你，因为你治好了我十年的心脏病，并且打消了我数次想要自杀的念头。真是要谢谢你这样一个好人，这里有一百万美元，和LeoFender设计的SnakeheadTelecaster电吉他的原型。”" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="Zed的强大的调试宏" /> 
+    <meta name="twitter:description" content="在C中有一个永恒的问题，它伴随了你很长时间，然而在这个练习我打算使用一系列我开发的宏来解决它。到现在为止你都不知道它们的强大之处，所以你必须使用它们，总有一天你会来找我说，“Zed，这些调试宏真是太伟大了，我应该把我的第一个孩子的出生归功于你，因为你治好了我十年的心脏病，并且打消了我数次想要自杀的念头。真是要谢谢你这样一个好人，这里有一百万美元，和LeoFender设计的SnakeheadTelecaster电吉他的原型。”" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>Zed的强大的调试宏 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/posts/8BBFC8E0CA1C348B.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">Zed的强大的调试宏</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:10:21">2019-02-27 16:10:21</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/ADF874C3AA2694B2/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习2</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">在C中有一个永恒的问题，它伴随了你很长时间，然而在这个练习我打算使用一系列我开发的宏来解决它。到现在为止你都不知道它们的强大之处，所以你必须使用它们，总有一天你会来找我说，&ldquo;Zed，这些调试宏真是太伟大了，我应该把我的第一个孩子的出生归功于你，因为你治好了我十年的心脏病，并且打消了我数次想要自杀的念头。真是要谢谢你这样一个好人，这里有一百万美元，和LeoFender设计的SnakeheadTelecaster电吉他的原型。&rdquo;</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="Zed%E7%9A%84%E5%BC%BA%E5%A4%A7%E7%9A%84%E8%B0%83%E8%AF%95%E5%AE%8F" name="Zed%E7%9A%84%E5%BC%BA%E5%A4%A7%E7%9A%84%E8%B0%83%E8%AF%95%E5%AE%8F">Zed的强大的调试宏</h1>
+<p>在C中有一个永恒的问题，它伴随了你很长时间，然而在这个练习我打算使用一系列我开发的宏来解决它。到现在为止你都不知道它们的强大之处，所以你必须使用它们，总有一天你会来找我说，“Zed，这些调试宏真是太伟大了，我应该把我的第一个孩子的出生归功于你，因为你治好了我十年的心脏病，并且打消了我数次想要自杀的念头。真是要谢谢你这样一个好人，这里有一百万美元，和Leo Fender设计的Snakehead Telecaster电吉他的原型。”</p>
+<p>是的，它们的确很强大。</p>
+<h2 id="C%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E9%97%AE%E9%A2%98" name="C%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E9%97%AE%E9%A2%98">C的错误处理问题</h2>
+<p>几乎每个编程语言中，错误处理都非常难。有些语言尽可能试图避免错误这个概念，而另一些语言发明了复杂了控制结构，比如异常来传递错误状态。当然的错误大多是因为程序员假定错误不会发生，并且这一乐观的思想影响了他们所用和所创造的语言。</p>
+<p>C通过返回错误码或设置全局的<code>errno</code>值来解决这些问题，并且你需要检查这些值。这种机制可以检查现存的复杂代码中，你执行的东西是否发生错误。当你编写更多的C代码时，你应该按照下列模式：</p>
+<ul>
+<li>调用函数。</li>
+<li>如果返回值出现错误（每次都必须检查）。</li>
+<li>清理创建的所有资源。</li>
+<li>打印出所有可能有帮助的错误信息。</li>
+</ul>
+<p>这意味着对于每一个函数调用（是的，每个函数）你都可能需要多编写3~4行代码来确保它正常功能。这些还不包括清理你到目前创建的所有垃圾。如果你有10个不同的结构体，3个方式。和一个数据库链接，当你发现错误时你应该写额外的14行。</p>
+<p>之前这并不是个问题，因为发生错误时，C程序会像你以前做的那样直接退出。你不需要清理任何东西，因为OS会为你自动去做。然而现在很多C程序需要持续运行数周、数月或者数年，并且需要优雅地处理来自于多种资源的错误。你并不能仅仅让你的服务器在首次运行就退出，你也不能让你写的库使使用它的程序退出。这非常糟糕。</p>
+<p>其它语言通过异常来解决这个问题，但是这些问题也会在C中出现（其它语言也一样）。在C中你只能够返回一个值，但是异常是基于栈的返回系统，可以返回任意值。C语言中，尝试在栈上模拟异常非常困难，并且其它库也不会兼容。</p>
+<h2 id="%E8%B0%83%E8%AF%95%E5%AE%8F" name="%E8%B0%83%E8%AF%95%E5%AE%8F">调试宏</h2>
+<p>我使用的解决方案是，使用一系列“调试宏”，它们在C中实现了基本的调试和错误处理系统。这个系统非常易于理解，兼容于每个库，并且使C代码更加健壮和简洁。</p>
+<p>它通过实现一系列转换来处理错误，任何时候发生了错误，你的函数都会跳到执行清理和返回错误代码的“error:”区域。你可以使用<code>check</code>宏来检查错误代码，打印错误信息，然后跳到清理区域。你也可以使用一系列日志函数来打印出有用的调试信息。</p>
+<p>我现在会向你展示你目前所见过的，最强大且卓越的代码的全部内容。</p>
+<pre><code class="c">#ifndef __dbg_h__
+#define __dbg_h__
+
+#include &lt;stdio.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;string.h&gt;
+
+#ifdef NDEBUG
+#define debug(M, ...)
+#else
+#define debug(M, ...) fprintf(stderr, "DEBUG %s:%d: " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#endif
+
+#define clean_errno() (errno == 0 ? "None" : strerror(errno))
+
+#define log_err(M, ...) fprintf(stderr, "[ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
+
+#define log_warn(M, ...) fprintf(stderr, "[WARN] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
+
+#define log_info(M, ...) fprintf(stderr, "[INFO] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+
+#define check(A, M, ...) if(!(A)) { log_err(M, ##__VA_ARGS__); errno=0; goto error; }
+
+#define sentinel(M, ...)  { log_err(M, ##__VA_ARGS__); errno=0; goto error; }
+
+#define check_mem(A) check((A), "Out of memory.")
+
+#define check_debug(A, M, ...) if(!(A)) { debug(M, ##__VA_ARGS__); errno=0; goto error; }
+
+#endif</code></pre>
+<p>是的，这就是全部代码了，下面是它每一行所做的事情。</p>
+<p>dbg.h:1-2</p>
+<p>防止意外包含多次的保护措施，你已经在上一个练习中见过了。</p>
+<p>dbg.h:4-6</p>
+<p>包含这些宏所需的函数。</p>
+<p>dbg.h:8</p>
+<p><code>#ifdef</code>的起始，它可以让你重新编译程序来移除所有调试日志信息。</p>
+<p>dbg.h:9</p>
+<p>如果你定义了<code>NDEBUG</code>之后编译，没有任何调试信息会输出。你可以看到<code>#define debug()</code>被替换为空（右边没有任何东西）。</p>
+<p>dbg.h:10</p>
+<p>上面的<code>#ifdef</code>所匹配的<code>#else</code>。</p>
+<p>dbg.h:11</p>
+<p>用于替代的<code>#define debug</code>，它将任何使用<code>debug("format", arg1, arg2)</code>的地方替换成<code>fprintf</code>对<code>stderr</code>的调用。许多程序员并不知道，但是你的确可以创建与<code>printf</code>类似的可变参数宏。许多C编译器（实际上是C预处理器）并不支持它，但是gcc可以做到。这里的魔法是使用<code>##__VA_ARGS__</code>，意思是将剩余的所有额外参数放到这里。同时也要注意，使用了<code>__FILE__</code>和<code>__LINE__</code>来获取当前<code>fine:line</code>用于调试信息。这会非常有帮助。</p>
+<p>dbg.h:12</p>
+<p><code>#ifdef</code>的结尾。</p>
+<p>dbg.h:14</p>
+<p><code>clean_errno</code>宏用于获取<code>errno</code>的安全可读的版本。中间奇怪的语法是“三元运算符”，你会在后面学到它。</p>
+<p>dbg.h:16-20</p>
+<p><code>log_err</code>，<code>log_warn</code>和<code>log_info</code>宏用于为最终用户记录信息。它们类似于<code>debug</code>但不能被编译。</p>
+<p>dbg.h:22</p>
+<p>到目前为止最棒的宏。<code>check</code>会保证条件<code>A</code>为真，否则会记录错误<code>M</code>（带着<code>log_err</code>的可变参数），之后跳到函数的<code>error:</code>区域来执行清理。</p>
+<p>dbg.h:24</p>
+<p>第二个最棒的宏，<code>sentinel</code>可以放在函数的任何不应该执行的地方，它会打印错误信息并且跳到<code>error:</code>标签。你可以将它放到<code>if-statements</code>或者<code>switch-statements</code>的不该被执行的分支中，比如<code>default</code>。</p>
+<p>dbg.h:26</p>
+<p>简写的<code>check_mem</code>宏，用于确保指针有效，否则会报告“内存耗尽”的错误。</p>
+<p>dbg.h:28</p>
+<p>用于替代的<code>check_debug</code>宏，它仍然会检查并处理错误，尤其是你并不想报告的普遍错误。它里面使用了<code>debug</code>代替<code>log_err</code>来报告错误，所以当你定义了<code>NDEBUG</code>，它仍然会检查并且发生错误时跳出，但是不会打印消息了。</p>
+<h2 id="%E4%BD%BF%E7%94%A8dbg.h" name="%E4%BD%BF%E7%94%A8dbg.h">使用dbg.h</h2>
+<p>下面是一个例子，在一个小的程序中使用了<code>dbg.h</code>的所有函数。这实际上并没有做什么事情，只是向你演示了如何使用每个宏。我们将在接下来的所有程序中使用这些宏，所有要确保理解了如何使用它们。</p>
+<pre><code class="c">#include "dbg.h"
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+
+void test_debug()
+{
+    // notice you don't need the \n
+    debug("I have Brown Hair.");
+
+    // passing in arguments like printf
+    debug("I am %d years old.", 37);
+}
+
+void test_log_err()
+{
+    log_err("I believe everything is broken.");
+    log_err("There are %d problems in %s.", 0, "space");
+}
+
+void test_log_warn()
+{
+    log_warn("You can safely ignore this.");
+    log_warn("Maybe consider looking at: %s.", "/etc/passwd");
+}
+
+void test_log_info()
+{
+    log_info("Well I did something mundane.");
+    log_info("It happened %f times today.", 1.3f);
+}
+
+int test_check(char *file_name)
+{
+    FILE *input = NULL;
+    char *block = NULL;
+
+    block = malloc(100);
+    check_mem(block); // should work
+
+    input = fopen(file_name,"r");
+    check(input, "Failed to open %s.", file_name);
+
+    free(block);
+    fclose(input);
+    return 0;
+
+error:
+    if(block) free(block);
+    if(input) fclose(input);
+    return -1;
+}
+
+int test_sentinel(int code)
+{
+    char *temp = malloc(100);
+    check_mem(temp);
+
+    switch(code) {
+        case 1:
+            log_info("It worked.");
+            break;
+        default:
+            sentinel("I shouldn't run.");
+    }
+
+    free(temp);
+    return 0;
+
+error:
+    if(temp) free(temp);
+    return -1;
+}
+
+int test_check_mem()
+{
+    char *test = NULL;
+    check_mem(test);
+
+    free(test);
+    return 1;
+
+error:
+    return -1;
+}
+
+int test_check_debug()
+{
+    int i = 0;
+    check_debug(i != 0, "Oops, I was 0.");
+
+    return 0;
+error:
+    return -1;
+}
+
+int main(int argc, char *argv[])
+{
+    check(argc == 2, "Need an argument.");
+
+    test_debug();
+    test_log_err();
+    test_log_warn();
+    test_log_info();
+
+    check(test_check("ex20.c") == 0, "failed with ex20.c");
+    check(test_check(argv[1]) == -1, "failed with argv");
+    check(test_sentinel(1) == 0, "test_sentinel failed.");
+    check(test_sentinel(100) == -1, "test_sentinel failed.");
+    check(test_check_mem() == -1, "test_check_mem failed.");
+    check(test_check_debug() == -1, "test_check_debug failed.");
+
+    return 0;
+
+error:
+    return 1;
+}</code></pre>
+<p>要注意<code>check</code>是如何使用的，并且当它为<code>false</code>时会跳到<code>error:</code>标签来执行清理。这一行读作“检查A是否为真，不为真就打印M并跳出”。</p>
+<h2 id="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88" name="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">你会看到什么</h2>
+<p>当你执行这段代码并且向第一个参数提供一些东西，你会看到：</p>
+<pre><code class="sh">$ make ex20
+cc -Wall -g -DNDEBUG    ex20.c   -o ex20
+$ ./ex20 test
+[ERROR] (ex20.c:16: errno: None) I believe everything is broken.
+[ERROR] (ex20.c:17: errno: None) There are 0 problems in space.
+[WARN] (ex20.c:22: errno: None) You can safely ignore this.
+[WARN] (ex20.c:23: errno: None) Maybe consider looking at: /etc/passwd.
+[INFO] (ex20.c:28) Well I did something mundane.
+[INFO] (ex20.c:29) It happened 1.300000 times today.
+[ERROR] (ex20.c:38: errno: No such file or directory) Failed to open test.
+[INFO] (ex20.c:57) It worked.
+[ERROR] (ex20.c:60: errno: None) I shouldn't run.
+[ERROR] (ex20.c:74: errno: None) Out of memory.</code></pre>
+<p>看到<code>check</code>失败之后，它是如何打印具体的行号了吗？这会为接下来的调试工作节省时间。同时也观察<code>errno</code>被设置时它如何打印错误信息。同样，这也可以节省你调试的时间。</p>
+<h2 id="C%E9%A2%84%E5%A4%84%E7%90%86%E5%99%A8%E5%A6%82%E4%BD%95%E6%89%A9%E5%B1%95%E5%AE%8F" name="C%E9%A2%84%E5%A4%84%E7%90%86%E5%99%A8%E5%A6%82%E4%BD%95%E6%89%A9%E5%B1%95%E5%AE%8F">C预处理器如何扩展宏</h2>
+<p>现在我会向你简单介绍一些预处理器的工作原理，让你知道这些宏是如何工作的。我会拆分<code>dbg.h</code>中阿最复杂的宏并且让你运行<code>cpp</code>来让你观察它实际上是如何工作的。</p>
+<p>假设我有一个函数叫做<code>dosomething()</code>，执行成功是返回0，发生错误时返回-1。每次我调用<code>dosomething</code>的时候，我都要检查错误码，所以我将代码写成这样：</p>
+<pre><code class="c">int rc = dosomething();
+
+if(rc != 0) {
+    fprintf(stderr, "There was an error: %s\n", strerror());
+    goto error;
+}</code></pre>
+<p>我想使用预处理器做的是，将这个<code>if</code>语句封装为更可读并且便于记忆的一行代码。于是可以使用这个<code>check</code>来执行<code>dbg.h</code>中的宏所做的事情：</p>
+<pre><code class="c">int rc = dosomething();
+check(rc == 0, "There was an error.");</code></pre>
+<p>这样更加简洁，并且恰好解释了所做的事情：检查函数是否正常工作，如果没有就报告错误。我们需要一些特别的预处理器“技巧”来完成它，这些技巧使预处理器作为代码生成工具更加易用。再次看看<code>check</code>和<code>log_err</code>宏：</p>
+<pre><code class="c">#define log_err(M, ...) fprintf(stderr, "[ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
+#define check(A, M, ...) if(!(A)) { log_err(M, ##__VA_ARGS__); errno=0; goto error; }</code></pre>
+<p>第一个宏，<code>log_err</code>更简单一些，只是将它自己替换为<code>fprintf</code>对<code>stderr</code>的调用。这个宏唯一的技巧性部分就是在<code>log_err(M, ...)</code>的定义中使用<code>...</code>。它所做的是让你向宏传入可变参数，从而传入<code>fprintf</code>需要接收的参数。它们是如何注入<code>fprintf</code>的呢？观察末尾的<code>##__VA_ARGS__</code>，它告诉预处理器将<code>...</code>所在位置的参数注入到<code>fprintf</code>调用的相应位置。于是你可以像这样调用了：</p>
+<pre><code class="c">log_err("Age: %d, name: %s", age, name);</code></pre>
+<p><code>age, name</code>参数就是<code>...</code>所定义的部分，这些参数会被注入到<code>fprintf</code>中，输出会变成：</p>
+<pre><code class="c">fprintf(stderr, "[ERROR] (%s:%d: errno: %s) Age %d: name %d\n",
+    __FILE__, __LINE__, clean_errno(), age, name);</code></pre>
+<p>看到末尾的<code>age, name</code>了吗？这就是<code>...</code>和<code>##__VA_ARGS__</code>的工作机制，在调用其它变参宏（或者函数）的时候它会起作用。观察<code>check</code>宏调用<code>log_err</code>的方式，它也是用了<code>...</code>和<code>##__VA_ARGS__</code>。这就是传递整个<code>printf</code>风格的格式字符串给<code>check</code>的途径，它之后会传给<code>log_err</code>，二者的机制都像<code>printf</code>一样。</p>
+<p>下一步是学习<code>check</code>如何为错误检查构造<code>if</code>语句，如果我们剖析<code>log_err</code>的用法，我们会得到：</p>
+<pre><code class="c">if(!(A)) { errno=0; goto error; }</code></pre>
+<p>它的意思是，如果<code>A</code>为假，则重置<code>errno</code>并且调用<code>error</code>标签。<code>check</code>宏会被上述<code>if</code>语句·替换，所以如果我们手动扩展<code>check(rc == 0, "There was an error.")</code>，我们会得到：</p>
+<pre><code class="c">if(!(rc == 0)) {
+    log_err("There was an error.");
+    errno=0;
+    goto error;
+}</code></pre>
+<p>在这两个宏的展开过程中，你应该了解了预处理器会将宏替换为它的定义的扩展版本，并且递归地来执行这个步骤，扩展宏定义中的宏。预处理器是个递归的模板系统，就像我之前提到的那样。它的强大来源于使用参数化的代码来生成整个代码块，这使它成为便利的代码生成工具。</p>
+<p>下面只剩一个问题了：为什么不像<code>die</code>一样使用函数呢？原因是需要在错误处理时使用<code>file:line</code>的数值和<code>goto</code>操作。如果你在函数在内部执行这些，你不会得到错误真正出现位置的行号，并且<code>goto</code>的实现也相当麻烦。</p>
+<p>另一个原因是，如果你编写原始的<code>if</code>语句，它看起来就像是你代码中的其它的<code>if</code>语句，所以它看起来并不像一个错误检查。通过将<code>if</code>语句包装成<code>check</code>宏，就会使这一错误检查的逻辑更清晰，而不是主控制流的一部分。</p>
+<p>最后，C预处理器提供了条件编译部分代码的功能，所以你可以编写只在构建程序的开发或调试版本时需要的代码。你可以看到这在<code>dbg.h</code>中已经用到了，<code>debug</code>宏的主体部分只被编译器用到。如果没有这个功能，你需要多出一个<code>if</code>语句来检查是否为“调试模式”，也浪费了CPU资源来进行没有必要的检查。</p>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>将<code>#define NDEBUG</code>放在文件顶端来消除所有调试信息。</li>
+<li>撤销上面添加的一行，并在<code>MakeFile</code>顶端将<code>-D NDEBUG</code>添加到<code>CFLAGS</code>，之后重新编译来达到同样效果。</li>
+<li>修改日志宏，使之包含函数名称和<code>file:line</code>。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/posts/8BBFC8E0CA1C348B.html" title="Zed的强大的调试宏">https://naka507.github.io/posts/8BBFC8E0CA1C348B.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/DB25C8B9D9F5D9AF/index.html" rel="tag"># 宏</a>
+                                                                <a href="https://naka507.github.io/tag/5937A91C89C704FA/index.html" rel="tag"># 函数</a>
+                                                                <a href="https://naka507.github.io/tag/348EC139C6ED1411/index.html" rel="tag"># 调试</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/posts/746ADCFC76734882.html" rel="next" title="一个简单的对象系统">
+                                        <i class="fa fa-chevron-left"></i>
+                                        一个简单的对象系统                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/posts/B67D461964D39489.html" rel="prev" title="高级数据类型和控制结构">
+                                        高级数据类型和控制结构                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#Zed%E7%9A%84%E5%BC%BA%E5%A4%A7%E7%9A%84%E8%B0%83%E8%AF%95%E5%AE%8F">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">Zed的强大的调试宏</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#C%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E9%97%AE%E9%A2%98">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">C的错误处理问题</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E8%B0%83%E8%AF%95%E5%AE%8F">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">调试宏</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BD%BF%E7%94%A8dbg.h">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">使用dbg.h</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">
+                                <span class="nav-number">1.4.</span> 
+                                <span class="nav-text">你会看到什么</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#C%E9%A2%84%E5%A4%84%E7%90%86%E5%99%A8%E5%A6%82%E4%BD%95%E6%89%A9%E5%B1%95%E5%AE%8F">
+                                <span class="nav-number">1.5.</span> 
+                                <span class="nav-text">C预处理器如何扩展宏</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.6.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = '8BBFC8E0CA1C348B';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: 'Zed的强大的调试宏',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>

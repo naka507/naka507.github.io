@@ -1,0 +1,704 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="在Python中，你仅仅需要输入`python`，就可以运行你想要运行的代码。Python的解释器会运行它们，并且在运行中导入它所需的库和其它东西。C是完全不同的东西，你需要事先编译你的源文件，并且手动将它们整合为一个可以自己运行的二进制文件。手动来做这些事情很痛苦，在上一个练习中只需要运行`make`就能完成。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="用Make来代替Python" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="在Python中，你仅仅需要输入`python`，就可以运行你想要运行的代码。Python的解释器会运行它们，并且在运行中导入它所需的库和其它东西。C是完全不同的东西，你需要事先编译你的源文件，并且手动将它们整合为一个可以自己运行的二进制文件。手动来做这些事情很痛苦，在上一个练习中只需要运行`make`就能完成。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="用Make来代替Python" /> 
+    <meta name="twitter:description" content="在Python中，你仅仅需要输入`python`，就可以运行你想要运行的代码。Python的解释器会运行它们，并且在运行中导入它所需的库和其它东西。C是完全不同的东西，你需要事先编译你的源文件，并且手动将它们整合为一个可以自己运行的二进制文件。手动来做这些事情很痛苦，在上一个练习中只需要运行`make`就能完成。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>用Make来代替Python | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/posts/44DB81B8DEDE247B.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">用Make来代替Python</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 15:50:07">2019-02-27 15:50:07</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/7F6544F3E3C9E4C5/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习1</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">在Python中，你仅仅需要输入`python`，就可以运行你想要运行的代码。Python的解释器会运行它们，并且在运行中导入它所需的库和其它东西。C是完全不同的东西，你需要事先编译你的源文件，并且手动将它们整合为一个可以自己运行的二进制文件。手动来做这些事情很痛苦，在上一个练习中只需要运行`make`就能完成。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="%E7%94%A8Make%E6%9D%A5%E4%BB%A3%E6%9B%BFPython" name="%E7%94%A8Make%E6%9D%A5%E4%BB%A3%E6%9B%BFPython">用Make来代替Python</h1>
+<p>在Python中，你仅仅需要输入<code>python</code>，就可以运行你想要运行的代码。Python的解释器会运行它们，并且在运行中导入它所需的库和其它东西。C是完全不同的东西，你需要事先编译你的源文件，并且手动将它们整合为一个可以自己运行的二进制文件。手动来做这些事情很痛苦，在上一个练习中只需要运行<code>make</code>就能完成。</p>
+<p>这个练习是GNU make 的速成课，由于你在学C语言，所以你就必须掌握它。Make 将贯穿剩下的课程，等效于Python（命令）。它会构建源码，执行测试，设置一些选项以及为你做所有Python通常会做的事情。</p>
+<p>有所不同的是，我会向你展示一些更智能化的Makefile魔法，你不需要指出你的C程序的每一个愚蠢的细节来构建它。我不会在练习中那样做，但是你需要先用一段时间的“低级 make”，我才能向你演示“大师级的make”。</p>
+<h2 id="%E4%BD%BF%E7%94%A8+Make" name="%E4%BD%BF%E7%94%A8+Make">使用 Make</h2>
+<p>使用make的第一阶段就是用它已知的方式来构建程序。Make预置了一些知识，来从其它文件构建多种文件。上一个练习中，你已经使用像下面的命令来这样做了：</p>
+<pre><code class="sh">$ make ex1
+# or this one too
+$ CFLAGS="-Wall" make ex1</code></pre>
+<p>第一个命令中你告诉make，“我想创建名为ex1的文件”。于是Make执行下面的动作：</p>
+<ul>
+<li>文件<code>ex1</code>存在吗？</li>
+<li>没有。好的，有没有其他文件以<code>ex1</code>开头？</li>
+<li>有，叫做<code>ex1.c</code>。我知道如何构建<code>.c</code>文件吗？</li>
+<li>是的，我会运行命令<code>cc ex1.c -o ex1</code>来构建它。</li>
+<li>我将使用<code>cc</code>从<code>ex1.c</code>文件来为你构建<code>ex1</code>。</li>
+</ul>
+<p>上面列出的第二条命令是一种向make命令传递“修改器”的途径。如果你不熟悉Unix shell如何工作，你可以创建这些“环境变量”，它们会在程序运行时生效。有时你会用一条类似于<code>export CFLAGS="-Wall"</code>的命令来执行相同的事情，取决于你所用的shell。然而你可以仅仅把它们放到你想执行的命令前面，于是环境变量只会在程序运行时有效。</p>
+<p>在这个例子中我执行了<code>CFLAGS="-Wall" make ex1</code>，所以它会给make通常使用的<code>cc</code>命令添加<code>-Wall</code>选项。这行命令告诉<code>cc</code>编译器要报告所有的警告（然而实际上不可能报告所有警告）。</p>
+<p>实际上你可以深入探索使用make的上述方法，但是先让我们来看看<code>Makefile</code>，以便让你对make了解得更多一点。首先，创建文件并写入以下内容：</p>
+<pre><code class="make">CFLAGS=-Wall -g
+
+clean:
+    rm -f ex1</code></pre>
+<p>将文件在你的当前文件夹上保存为<code>Makefile</code>。Make会自动假设当前文件夹中有一个叫做<code>Makefile</code>的文件，并且会执行它。此外，一定要注意：确保你只输入了 TAB 字符，而不是空格和 TAB 的混合。</p>
+<blockquote>
+<p>译者注：上述代码中第四行<code>rm</code>前面是一个 TAB ，而不是多个等量的空格。</p>
+</blockquote>
+<p><code>Makefile</code>向你展示了make的一些新功能。首先我们在文件中设置<code>CFLAGS</code>，所以之后就不用再设置了。并且，我们添加了<code>-g</code>标识来获取调试信息。接着我们写了一个叫做<code>clean</code>的部分，它告诉make如何清理我们的小项目。</p>
+<p>确保它和你的<code>ex1.c</code>文件在相同的目录中，之后运行以下命令：</p>
+<pre><code class="sh">$ make clean
+$ make ex1</code></pre>
+<h2 id="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88" name="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">你会看到什么</h2>
+<p>如果代码能正常工作，你应该看到这些：</p>
+<pre><code class="sh">$ make clean
+rm -f ex1
+$ make ex1
+cc -Wall -g    ex1.c   -o ex1
+ex1.c: In function 'main':
+ex1.c:3: warning: implicit declaration of function 'puts'
+$</code></pre>
+<p>你可以看出来我执行了<code>make clean</code>，它告诉make执行我们的<code>clean</code>目标。再去看一眼Makefile，之后你会看到在它的下面，我缩进并且输入了一些想要make为我运行的shell命令。你可以在此处输入任意多的命令，所以它是一个非常棒的自动化工具。</p>
+<blockquote>
+<p>注</p>
+</blockquote>
+<blockquote>
+<p>如果你修改了<code>ex1.c</code>，添加了<code>#include&lt;stdio&gt;</code>，输出中的关于<code>puts</code>的警告就会消失（这其实应该算作一个错误）。我这里有警告是因为我并没有去掉它。</p>
+</blockquote>
+<p>同时也要注意，即使我们在<code>Makefile</code>中并没有提到<code>ex1</code>，<code>make</code>仍然会知道如何构建它，以及使用我们指定的设置。</p>
+<h2 id="%E5%A6%82%E4%BD%95%E4%BD%BF%E5%AE%83%E5%B4%A9%E6%BA%83" name="%E5%A6%82%E4%BD%95%E4%BD%BF%E5%AE%83%E5%B4%A9%E6%BA%83">如何使它崩溃</h2>
+<p>上面那些已经足够让你起步了，但是让我们以一种特定的方式来破坏make文件，以便你可以看到发生了什么。找到<code>rm -f ex1</code>的那一行并去掉缩进（让它左移），之后你可以看到发生了什么。再次运行<code>make clean</code>，你就会得到下面的信息：</p>
+<pre><code class="sh">$ make clean
+Makefile:4: *** missing separator.  Stop.</code></pre>
+<p>永远记住要缩进，以及如果你得到了像这种奇奇怪怪的错误，应该复查你是否都使用了 TAB 字符，由于一些make的变种十分挑剔。</p>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>创建目标<code>all:ex1</code>，可以以单个命令<code>make</code>构建<code>ex1</code>。</li>
+<li>阅读<code>man make</code>来了解关于如何执行它的更多信息。</li>
+<li>阅读<code>man cc</code>来了解关于<code>-Wall</code>和<code>-g</code>行为的更多信息。</li>
+<li>在互联网上搜索Makefile文件，看看你是否能改进你的文件。</li>
+<li>在另一个C语言项目中找到<code>Makefile</code>文件，并且尝试理解它做了什么。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/posts/44DB81B8DEDE247B.html" title="用Make来代替Python">https://naka507.github.io/posts/44DB81B8DEDE247B.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/F3242A069F9D1FCC/index.html" rel="tag"># Python</a>
+                                                                <a href="https://naka507.github.io/tag/D3087A523E4B208B/index.html" rel="tag"># 解释器</a>
+                                                                <a href="https://naka507.github.io/tag/3F0143988DDBF6CC/index.html" rel="tag"># make</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/posts/6C82D57E03DDE1F0.html" rel="next" title="启用编译器">
+                                        <i class="fa fa-chevron-left"></i>
+                                        启用编译器                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/posts/D3BE6C8A075EF92E.html" rel="prev" title="格式化输出">
+                                        格式化输出                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#%E7%94%A8Make%E6%9D%A5%E4%BB%A3%E6%9B%BFPython">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">用Make来代替Python</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BD%BF%E7%94%A8+Make">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">使用 Make</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">你会看到什么</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E5%AE%83%E5%B4%A9%E6%BA%83">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">如何使它崩溃</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.4.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = '44DB81B8DEDE247B';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: '用Make来代替Python',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>

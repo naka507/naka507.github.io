@@ -1,0 +1,809 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="这个练习中，我打算上一节速成课，内容是使用`Valgrind`的两个工具`callgrind`和`cachegrind`。这两个工具会分析你程序的执行，并且告诉你哪一部分运行缓慢。这些结果非常精确，因为`Valgrind`的工作方式有助于你解决一些问题，比如执行过多的代码行，热点，内容访问问题，甚至是CPU的缓存未命中。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="将 Cachegrind 和 Callgrind 用于性能调优" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="这个练习中，我打算上一节速成课，内容是使用`Valgrind`的两个工具`callgrind`和`cachegrind`。这两个工具会分析你程序的执行，并且告诉你哪一部分运行缓慢。这些结果非常精确，因为`Valgrind`的工作方式有助于你解决一些问题，比如执行过多的代码行，热点，内容访问问题，甚至是CPU的缓存未命中。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="将 Cachegrind 和 Callgrind 用于性能调优" /> 
+    <meta name="twitter:description" content="这个练习中，我打算上一节速成课，内容是使用`Valgrind`的两个工具`callgrind`和`cachegrind`。这两个工具会分析你程序的执行，并且告诉你哪一部分运行缓慢。这些结果非常精确，因为`Valgrind`的工作方式有助于你解决一些问题，比如执行过多的代码行，热点，内容访问问题，甚至是CPU的缓存未命中。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>将 Cachegrind 和 Callgrind 用于性能调优 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/posts/35162CDAACDA8825.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">将 Cachegrind 和 Callgrind 用于性能调优</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:32:35">2019-02-27 16:32:35</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/8C4ADAE8CB28117F/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习16</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">这个练习中，我打算上一节速成课，内容是使用`Valgrind`的两个工具`callgrind`和`cachegrind`。这两个工具会分析你程序的执行，并且告诉你哪一部分运行缓慢。这些结果非常精确，因为`Valgrind`的工作方式有助于你解决一些问题，比如执行过多的代码行，热点，内容访问问题，甚至是CPU的缓存未命中。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="%E5%B0%86+Cachegrind+%E5%92%8C+Callgrind+%E7%94%A8%E4%BA%8E%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98" name="%E5%B0%86+Cachegrind+%E5%92%8C+Callgrind+%E7%94%A8%E4%BA%8E%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98">将 Cachegrind 和 Callgrind 用于性能调优</h1>
+<p>这个练习中，我打算上一节速成课，内容是使用<code>Valgrind</code>的两个工具<code>callgrind</code>和<code>cachegrind</code>。这两个工具会分析你程序的执行，并且告诉你哪一部分运行缓慢。这些结果非常精确，因为<code>Valgrind</code>的工作方式有助于你解决一些问题，比如执行过多的代码行，热点，内容访问问题，甚至是CPU的缓存未命中。</p>
+<p>为了做这个练习，我打算使用<code>bstree_tests</code>单元测试，你之前用于寻找能提升算法的地方。你需要确保你这些程序的版本没有任何<code>valgrind</code>错误，并且和我的代码非常相似，因为我会使用我的代码的转储来谈论<code>cachegrind</code>和<code>callgrind</code>如何工作。</p>
+<h2 id="%E8%BF%90%E8%A1%8C+Callgrind" name="%E8%BF%90%E8%A1%8C+Callgrind">运行 Callgrind</h2>
+<p>为了运行Callgrind，你需要向<code>valgrind</code>传入<code>--tool=callgrind</code>选项，之后它会产生<code>callgrind.out.PID</code>文件（其中PID为所运行程序的进程PID）。一旦你这样运行了，你就可以使用一个叫做<code>callgrind_annotate</code>的工具分析<code>callgrind.out</code>文件，它会告诉你哪个函数运行中使用了最多的指令。下面是个例子，我在<code>bstree_tests</code>上运行了<code>callgrind</code>，之后得到了这个信息：</p>
+<pre><code class="sh">$ valgrind --dsymutil=yes --tool=callgrind tests/bstree_tests
+...
+$ callgrind_annotate callgrind.out.1232
+--------------------------------------------------------------------------------
+Profile data file 'callgrind.out.1232' (creator: callgrind-3.7.0.SVN)
+--------------------------------------------------------------------------------
+I1 cache:
+D1 cache:
+LL cache:
+Timerange: Basic block 0 - 1098689
+Trigger: Program termination
+Profiled target:  tests/bstree_tests (PID 1232, part 1)
+Events recorded:  Ir
+Events shown:     Ir
+Event sort order: Ir
+Thresholds:       99
+Include dirs:     
+User annotated:   
+Auto-annotation:  off
+
+--------------------------------------------------------------------------------
+       Ir
+--------------------------------------------------------------------------------
+4,605,808  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+       Ir  file:function
+--------------------------------------------------------------------------------
+  670,486  src/lcthw/bstrlib.c:bstrcmp [tests/bstree_tests]
+  194,377  src/lcthw/bstree.c:BSTree_get [tests/bstree_tests]
+   65,580  src/lcthw/bstree.c:default_compare [tests/bstree_tests]
+   16,338  src/lcthw/bstree.c:BSTree_delete [tests/bstree_tests]
+   13,000  src/lcthw/bstrlib.c:bformat [tests/bstree_tests]
+   11,000  src/lcthw/bstrlib.c:bfromcstralloc [tests/bstree_tests]
+    7,774  src/lcthw/bstree.c:BSTree_set [tests/bstree_tests]
+    5,800  src/lcthw/bstrlib.c:bdestroy [tests/bstree_tests]
+    2,323  src/lcthw/bstree.c:BSTreeNode_create [tests/bstree_tests]
+    1,183  /private/tmp/pkg-build/coregrind//vg_preloaded.c:vg_cleanup_env [/usr/local/lib/valgrind/vgpreload_core-amd64-darwin.so]
+
+$</code></pre>
+<p>我已经移除了单元测试和<code>valgrind</code>输出，因为它们对这个练习没有用。你应该看到了<code>callgrind_anotate</code>输出，它向你展示了每个函数所运行的指令数量（<code>valgrind</code>中叫做<code>Ir</code>），由高到低排序。你通常可以忽略头文件的数据，直接跳到函数列表。</p>
+<blockquote>
+<p>注</p>
+</blockquote>
+<blockquote>
+<p>如果你获取到一堆“???:Image”的行，并且它们不是你程序中的东西，那么你读到的是OS的垃圾。只需要在末尾添加<code>| grep -v "???"</code>来过滤掉它们。</p>
+</blockquote>
+<p>我现在可以对这个输出做个简短的分解，来找出下一步观察什么：</p>
+<ul>
+<li>每一行都列出了<code>Ir</code>序号和执行它们的<code>file:function</code>。<code>Ir</code>是指令数量，并且如果它越少就越快。这里有些复杂，但是首先要着眼于<code>Ir</code>。</li>
+<li>解决这个程序的方式是观察最上面的函数，之后看看你首先可以改进哪一个。这里，我可以改进<code>bstrcmp</code>或者<code>BStree_get</code>。可能以<code>BStree_get</code>开始更容易些。</li>
+<li>这些函数的一部分由单元测试调用，所以我可以忽略它们。类似<code>bformat</code>，<code>bfromcstralloc</code>和 <code>bdestroy</code>就是这样的函数。</li>
+<li>我也可以找到我可以简单地避免调用的函数。例如，或许我可以假设<code>BSTree</code>仅仅处理<code>bstring</code>键，之后我可以不使用回调系统，并且完全移除<code>default_compare</code>。</li>
+</ul>
+<p>到目前为止，我只知道我打算改进<code>BSTree_get</code>，并且不是因为<code>BSTree_get</code>执行慢。这是分析的第二阶段。</p>
+<h2 id="Callgrind+%E6%B3%A8%E8%A7%A3%E6%BA%90%E6%96%87%E4%BB%B6" name="Callgrind+%E6%B3%A8%E8%A7%A3%E6%BA%90%E6%96%87%E4%BB%B6">Callgrind 注解源文件</h2>
+<p>下一步我使用<code>callgrind_annotate</code>输出<code>bstree.c</code>文件，并且使用所带有的<code>Ir</code>对每一行做注解。你可以通过运行下面的命令来得到注解后的源文件：</p>
+<pre><code class="sh">$ callgrind_annotate callgrind.out.1232 src/lcthw/bstree.c
+...</code></pre>
+<p>你的输出会是这个源文件的一个较大的转储，但是我会将它们剪切成包含<code>BSTree_get</code>和<code>BSTree_getnode</code>的部分：</p>
+<pre><code class="c">--------------------------------------------------------------------------------
+-- User-annotated source: src/lcthw/bstree.c
+--------------------------------------------------------------------------------
+    Ir
+
+
+ 2,453  static inline BSTreeNode *BSTree_getnode(BSTree *map, BSTreeNode *node, void *key)
+     .  {
+61,853      int cmp = map-&gt;compare(node-&gt;key, key);
+663,908  =&gt; src/lcthw/bstree.c:default_compare (14850x)
+     .
+14,850      if(cmp == 0) {
+     .          return node;
+24,794      } else if(cmp &lt; 0) {
+30,623          if(node-&gt;left) {
+     .              return BSTree_getnode(map, node-&gt;left, key);
+     .          } else {
+     .              return NULL;
+     .          }
+     .      } else {
+13,146          if(node-&gt;right) {
+     .              return BSTree_getnode(map, node-&gt;right, key);
+     .          } else {
+     .              return NULL;
+     .          }
+     .      }
+     .  }
+     .
+     .  void *BSTree_get(BSTree *map, void *key)
+ 4,912  {
+24,557      if(map-&gt;root == NULL) {
+14,736          return NULL;
+     .      } else {
+     .          BSTreeNode *node = BSTree_getnode(map, map-&gt;root, key);
+ 2,453          return node == NULL ? NULL : node-&gt;data;
+     .      }
+     .  }</code></pre>
+<p>每一行都显示它的<code>Ir</code>（指令）数量，或者一个点（<code>.</code>）来表示它并不重要。我所要找的就是一些热点，或者带有巨大数值的<code>Ir</code>的行，它能够被优化掉。这里，第十行的输出表明，<code>BSTree_getnode</code>开销非常大的原因是它调用了<code>default_comapre</code>，它又调用了<code>bstrcmp</code>。我已经知道了<code>bstrcmp</code>是性能最差的函数，所以如果我想要改进<code>BSTree_getnode</code>的速度，我应该首先解决掉它。</p>
+<p>之后我以相同方式查看<code>bstrcmp</code>：</p>
+<pre><code class="c"> 98,370  int bstrcmp (const_bstring b0, const_bstring b1) {
+      .  int i, v, n;
+      .
+196,740     if (b0 == NULL || b1 == NULL || b0-&gt;data == NULL || b1-&gt;data == NULL ||
+ 32,790             b0-&gt;slen &lt; 0 || b1-&gt;slen &lt; 0) return SHRT_MIN;
+ 65,580     n = b0-&gt;slen; if (n &gt; b1-&gt;slen) n = b1-&gt;slen;
+ 89,449     if (b0-&gt;slen == b1-&gt;slen &amp;&amp; (b0-&gt;data == b1-&gt;data || b0-&gt;slen == 0))
+      .             return BSTR_OK;
+      .
+ 23,915     for (i = 0; i &lt; n; i ++) {
+163,642             v = ((char) b0-&gt;data[i]) - ((char) b1-&gt;data[i]);
+      .             if (v != 0) return v;
+      .             if (b0-&gt;data[i] == (unsigned char) '\0') return BSTR_OK;
+      .     }
+      .
+      .     if (b0-&gt;slen &gt; n) return 1;
+      .     if (b1-&gt;slen &gt; n) return -1;
+      .     return BSTR_OK;
+      .  }</code></pre>
+<p>输出中让我预料之外的事情就是<code>bstrcmp</code>最糟糕的一行并不是我想象中的字符比较。对于内存访问，顶部的防御性<code>if</code>语句将所有可能的无效变量都检查了一遍。与第十七行比较字符的语句相比，这个<code>if</code>语句进行了多于两倍的内存访问。如果我要优化<code>bstcmp</code>，我会完全把它去掉，或者在其它一些地方来执行它。</p>
+<p>另一种选择是将这个检查改为<code>assert</code>，它只在开发时的运行中存在，之后在发布时把它去掉。我没有足够的证明来表明这行代码不适于这个数据结构，所以我可以证明移除它是可行的。</p>
+<p>然而，我并不想弱化这个函数的防御性，来得到一些性能。在真实的性能优化环境，我会简单地把它放到列表中，之后挖掘程序中能得到的其它收益。</p>
+<h2 id="%E8%B0%83%E4%BC%98%E4%B9%8B%E9%81%93" name="%E8%B0%83%E4%BC%98%E4%B9%8B%E9%81%93">调优之道</h2>
+<blockquote>
+<p>我们应该忽略微小的效率，对于97%的情况：过早优化是万恶之源。</p>
+</blockquote>
+<blockquote>
+<p>-- 高德纳</p>
+</blockquote>
+<p>在我看来，这个引述似乎忽略了一个关于性能调优的重点。在高德纳的话中，当你做性能调优时，如果你过早去做它，可能会导致各种问题。根据他的话，优化应该执行于“稍晚的某个时间”，或者这只是我的猜测。谁知道呢。</p>
+<p>我打算澄清这个引述并不是完全错误，而是忽略了某些东西，并且我打算给出我的引述。你可以引用我的这段话：</p>
+<blockquote>
+<p>使用证据来寻找最大的优化并花费最少的精力。</p>
+</blockquote>
+<blockquote>
+<p>-- 泽德 A. 肖</p>
+</blockquote>
+<p>你什么时候优化并不重要，但是你需要弄清楚你的优化是否真正能改进软件，以及需要投入多少精力来实现它。通过证据你就可以找到代码中的位置，用一点点精力就能取得最大的提升。通常这些地方都是一些愚蠢的决定，就像<code>bstrcmp</code>试图检查任何东西不为<code>NULL</code>一样。</p>
+<p>在某个特定时间点上，代码中需要调优的地方只剩下极其微小的优化，比如重新组织<code>if</code>语句，或者类似达夫设备这样的特殊循环。这时候，你应该停止优化，因为这是一个好机会，你可以通过重新设计软件并且避免这些事情来获得更多收益。</p>
+<p>这是一些只想做优化的程序员没有看到的事情。许多时候，把一件事情做快的最好方法就是寻找避免它们的办法。在上面的分析中，我不打算优化<code>bstrcmp</code>，我会寻找一个不使用它的方法。也许我可以使用一种哈希算法来执行可排序的哈希计算而不是始终使用<code>bstrcmp</code>。也许我可以通过首先尝试第一个字符，如果它们不匹配就没必要调用<code>bstrcmp</code>。</p>
+<p>如果在此之后你根本不能重新设计，那么就开始寻找微小的优化，但是要始终确保它们能够提升速度。要记住目标是使用最少的精力尽可能得到最大的效果。</p>
+<h2 id="%E4%BD%BF%E7%94%A8+KCachegrind" name="%E4%BD%BF%E7%94%A8+KCachegrind">使用 KCachegrind</h2>
+<p>这个练习最后一部分就是向你介绍一个叫做<a href="http://kcachegrind.sourceforge.net/html/Home.html">KCachegrind</a>的神奇的GUI工具，用于分析<code>callgrind</code> 和 <code>cachegrind</code>的输出。我使用Linux或BSD电脑上工作时几乎都会使用它，并且我实际上为了使用<code>KCachegrind</code>而切换到Linux来编写代码。</p>
+<p>教会你如何使用是这个练习之外的内容，你需要在这个练习之后自己学习如何用它。输出几乎是相同的，除了<code>KCachegrind</code>可以让你做这些：</p>
+<ul>
+<li>图形化地浏览源码和执行次数，并使用各种排序来搜索可优化的东西。</li>
+<li>分析不同的图表，来可视化地观察什么占据了大多数时间，以及它调用了什么。</li>
+<li>查看真实的汇编机器码输出，使你能够看到实际的指令，给你更多的线索。</li>
+<li>可视化地显示源码中的循环和分支的跳跃方式，便于你更容易地找到优化代码的方法。</li>
+</ul>
+<p>你应该在获取、安装和玩转<code>KCachegrind</code>上花一些时间。</p>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>阅读<a href="http://valgrind.org/docs/manual/cl-manual.html"> callgrind 手册页</a>并且尝试一些高级选项。</li>
+<li>阅读<a href="http://valgrind.org/docs/manual/cg-manual.html"> cachegrind 手册页</a>并且也尝试一些高级选项。</li>
+<li>在所有单元测试上使用<code>callgrind</code> 和 <code>cachegrind</code>，看看你能否找到可优化的地方。你找到一些预料之外的事情了吗？如果没有，你可能观察地不够仔细。</li>
+<li>使用 KCachegrind 并且观察它和我这里的输出有什么不同。</li>
+<li>现在使用这些工具来完成练习40的附加题和改进部分。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/posts/35162CDAACDA8825.html" title="将 Cachegrind 和 Callgrind 用于性能调优">https://naka507.github.io/posts/35162CDAACDA8825.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/8ECF484B09AECB2C/index.html" rel="tag"># Valgrind</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/posts/64206F3FDC812F26.html" rel="next" title="二叉搜索树">
+                                        <i class="fa fa-chevron-left"></i>
+                                        二叉搜索树                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/posts/288E5C87D0D80787.html" rel="prev" title="栈和队列">
+                                        栈和队列                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#%E5%B0%86+Cachegrind+%E5%92%8C+Callgrind+%E7%94%A8%E4%BA%8E%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">将 Cachegrind 和 Callgrind 用于性能调优</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E8%BF%90%E8%A1%8C+Callgrind">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">运行 Callgrind</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#Callgrind+%E6%B3%A8%E8%A7%A3%E6%BA%90%E6%96%87%E4%BB%B6">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">Callgrind 注解源文件</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E8%B0%83%E4%BC%98%E4%B9%8B%E9%81%93">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">调优之道</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BD%BF%E7%94%A8+KCachegrind">
+                                <span class="nav-number">1.4.</span> 
+                                <span class="nav-text">使用 KCachegrind</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.5.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = '35162CDAACDA8825';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: '将 Cachegrind 和 Callgrind 用于性能调优',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>

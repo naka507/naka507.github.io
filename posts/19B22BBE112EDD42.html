@@ -1,0 +1,1074 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="哈希表（`HashMap`、`HashTable`以及`Dictionary`）广泛用于许多动态编程语言来储存键值对的数据。哈希表通过在键上执行“哈希”运算产生整数，之后使用它来寻找相应的桶来获取或储存值。它是非常快速的使用数据结构，因为它适用于任何数据并且易于实现。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="哈希表" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="哈希表（`HashMap`、`HashTable`以及`Dictionary`）广泛用于许多动态编程语言来储存键值对的数据。哈希表通过在键上执行“哈希”运算产生整数，之后使用它来寻找相应的桶来获取或储存值。它是非常快速的使用数据结构，因为它适用于任何数据并且易于实现。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="哈希表" /> 
+    <meta name="twitter:description" content="哈希表（`HashMap`、`HashTable`以及`Dictionary`）广泛用于许多动态编程语言来储存键值对的数据。哈希表通过在键上执行“哈希”运算产生整数，之后使用它来寻找相应的桶来获取或储存值。它是非常快速的使用数据结构，因为它适用于任何数据并且易于实现。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>哈希表 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/posts/19B22BBE112EDD42.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">哈希表</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:30:45">2019-02-27 16:30:45</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/8D375AEE85E913AF/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习12</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">哈希表（`HashMap`、`HashTable`以及`Dictionary`）广泛用于许多动态编程语言来储存键值对的数据。哈希表通过在键上执行&ldquo;哈希&rdquo;运算产生整数，之后使用它来寻找相应的桶来获取或储存值。它是非常快速的使用数据结构，因为它适用于任何数据并且易于实现。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="%E5%93%88%E5%B8%8C%E8%A1%A8" name="%E5%93%88%E5%B8%8C%E8%A1%A8">哈希表</h1>
+<p>哈希表（<code>HashMap</code>、<code>HashTable</code>以及<code>Dictionary</code>）广泛用于许多动态编程语言来储存键值对的数据。哈希表通过在键上执行“哈希”运算产生整数，之后使用它来寻找相应的桶来获取或储存值。它是非常快速的使用数据结构，因为它适用于任何数据并且易于实现。</p>
+<p>下面是哈希表（也叫作字典）的一个使用示例：</p>
+<pre><code class="py">fruit_weights = {'Apples': 10, 'Oranges': 100, 'Grapes': 1.0}
+
+for key, value in fruit_weights.items():
+    print key, "=", value</code></pre>
+<p>几乎所有现代语言都具备这种特性，所以许多人写完代码都不知道它实际上如何工作。通过在C中创建<code>Hashmap</code>数据结构，我会向你展示它的工作原理。我会从头文件开始，来谈论整个数据结构。</p>
+<pre><code class="c">#ifndef _lcthw_Hashmap_h
+#define _lcthw_Hashmap_h
+
+#include &lt;stdint.h&gt;
+#include &lt;lcthw/darray.h&gt;
+
+#define DEFAULT_NUMBER_OF_BUCKETS 100
+
+typedef int (*Hashmap_compare)(void *a, void *b);
+typedef uint32_t (*Hashmap_hash)(void *key);
+
+typedef struct Hashmap {
+    DArray *buckets;
+    Hashmap_compare compare;
+    Hashmap_hash hash;
+} Hashmap;
+
+typedef struct HashmapNode {
+    void *key;
+    void *data;
+    uint32_t hash;
+} HashmapNode;
+
+typedef int (*Hashmap_traverse_cb)(HashmapNode *node);
+
+Hashmap *Hashmap_create(Hashmap_compare compare, Hashmap_hash);
+void Hashmap_destroy(Hashmap *map);
+
+int Hashmap_set(Hashmap *map, void *key, void *data);
+void *Hashmap_get(Hashmap *map, void *key);
+
+int Hashmap_traverse(Hashmap *map, Hashmap_traverse_cb traverse_cb);
+
+void *Hashmap_delete(Hashmap *map, void *key);
+
+#endif</code></pre>
+<p>这个结构就是<code>Hashmap</code>，含有许多<code>HashmapNode</code>节点。观察<code>Hashmap</code>你会看到它类似这样：</p>
+<p><code>DArray *buckets</code></p>
+<p>一个动态数组，设置为100个桶的固定大小。每个桶会含有一个<code>DArray</code>，来实际存档<code>HashmapNode</code>对。</p>
+<p><code>Hashmap_compare compare</code></p>
+<p>这是一个比较函数，被<code>Hashmap</code>用于实际用过键寻找元素。它应该和其它的比较函数类似，并且默认设置为<code>bstrcmp</code>来比较字符串。</p>
+<p><code>Hashmap_hash</code></p>
+<p>这是哈希函数，它用于接收键，处理它的内容，之后产生一个<code>uint32_t</code>索引数值。之后你会看到默认的实现。</p>
+<p>这些告诉了你数据如何存储，但是用作<code>buckets</code>的<code>DArray</code>还没有创建。要记住它具有二层结构；</p>
+<ul>
+<li>第一层有100个桶，数据基于它们的哈希值储存在桶中。</li>
+<li>每个桶都是一个<code>DArray</code>，其中含有<code>HashmapNode</code>，添加时只是简单地附加到末尾。</li>
+</ul>
+<p><code>HashMapNode</code>由下面三个元素组成：</p>
+<p><code>void *key</code></p>
+<p>键值对的键。</p>
+<p><code>void *value</code></p>
+<p>键值对的值。</p>
+<p><code>uint32_t hash</code></p>
+<p>计算出的哈希值，它用于使查找该节点更加迅速，只要判断键是否相等。</p>
+<p>有文件的剩余部分没有新的东西，所以我现在可以向你展示<code>hashmap.c</code>的实现了：</p>
+<pre><code class="c">#undef NDEBUG
+#include &lt;stdint.h&gt;
+#include &lt;lcthw/hashmap.h&gt;
+#include &lt;lcthw/dbg.h&gt;
+#include &lt;lcthw/bstrlib.h&gt;
+
+static int default_compare(void *a, void *b)
+{
+    return bstrcmp((bstring)a, (bstring)b);
+}
+
+/**
+ * Simple Bob Jenkins's hash algorithm taken from the
+ * wikipedia description.
+ */
+static uint32_t default_hash(void *a)
+{
+    size_t len = blength((bstring)a);
+    char *key = bdata((bstring)a);
+    uint32_t hash = 0;
+    uint32_t i = 0;
+
+    for(hash = i = 0; i &lt; len; ++i)
+    {
+        hash += key[i];
+        hash += (hash &lt;&lt; 10);
+        hash ^= (hash &gt;&gt; 6);
+    }
+
+    hash += (hash &lt;&lt; 3);
+    hash ^= (hash &gt;&gt; 11);
+    hash += (hash &lt;&lt; 15);
+
+    return hash;
+}
+
+
+Hashmap *Hashmap_create(Hashmap_compare compare, Hashmap_hash hash)
+{
+    Hashmap *map = calloc(1, sizeof(Hashmap));
+    check_mem(map);
+
+    map-&gt;compare = compare == NULL ? default_compare : compare;
+    map-&gt;hash = hash == NULL ? default_hash : hash;
+    map-&gt;buckets = DArray_create(sizeof(DArray *), DEFAULT_NUMBER_OF_BUCKETS);
+    map-&gt;buckets-&gt;end = map-&gt;buckets-&gt;max; // fake out expanding it
+    check_mem(map-&gt;buckets);
+
+    return map;
+
+error:
+    if(map) {
+        Hashmap_destroy(map);
+    }
+
+    return NULL;
+}
+
+
+void Hashmap_destroy(Hashmap *map)
+{
+    int i = 0;
+    int j = 0;
+
+    if(map) {
+        if(map-&gt;buckets) {
+            for(i = 0; i &lt; DArray_count(map-&gt;buckets); i++) {
+                DArray *bucket = DArray_get(map-&gt;buckets, i);
+                if(bucket) {
+                    for(j = 0; j &lt; DArray_count(bucket); j++) {
+                        free(DArray_get(bucket, j));
+                    }
+                    DArray_destroy(bucket);
+                }
+            }
+            DArray_destroy(map-&gt;buckets);
+        }
+
+        free(map);
+    }
+}
+
+static inline HashmapNode *Hashmap_node_create(int hash, void *key, void *data)
+{
+    HashmapNode *node = calloc(1, sizeof(HashmapNode));
+    check_mem(node);
+
+    node-&gt;key = key;
+    node-&gt;data = data;
+    node-&gt;hash = hash;
+
+    return node;
+
+error:
+    return NULL;
+}
+
+
+static inline DArray *Hashmap_find_bucket(Hashmap *map, void *key,
+        int create, uint32_t *hash_out)
+{
+    uint32_t hash = map-&gt;hash(key);
+    int bucket_n = hash % DEFAULT_NUMBER_OF_BUCKETS;
+    check(bucket_n &gt;= 0, "Invalid bucket found: %d", bucket_n);
+    *hash_out = hash; // store it for the return so the caller can use it
+
+
+    DArray *bucket = DArray_get(map-&gt;buckets, bucket_n);
+
+    if(!bucket &amp;&amp; create) {
+        // new bucket, set it up
+        bucket = DArray_create(sizeof(void *), DEFAULT_NUMBER_OF_BUCKETS);
+        check_mem(bucket);
+        DArray_set(map-&gt;buckets, bucket_n, bucket);
+    }
+
+    return bucket;
+
+error:
+    return NULL;
+}
+
+
+int Hashmap_set(Hashmap *map, void *key, void *data)
+{
+    uint32_t hash = 0;
+    DArray *bucket = Hashmap_find_bucket(map, key, 1, &amp;hash);
+    check(bucket, "Error can't create bucket.");
+
+    HashmapNode *node = Hashmap_node_create(hash, key, data);
+    check_mem(node);
+
+    DArray_push(bucket, node);
+
+    return 0;
+
+error:
+    return -1;
+}
+
+static inline int Hashmap_get_node(Hashmap *map, uint32_t hash, DArray *bucket, void *key)
+{
+    int i = 0;
+
+    for(i = 0; i &lt; DArray_end(bucket); i++) {
+        debug("TRY: %d", i);
+        HashmapNode *node = DArray_get(bucket, i);
+        if(node-&gt;hash == hash &amp;&amp; map-&gt;compare(node-&gt;key, key) == 0) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+void *Hashmap_get(Hashmap *map, void *key)
+{
+    uint32_t hash = 0;
+    DArray *bucket = Hashmap_find_bucket(map, key, 0, &amp;hash);
+    if(!bucket) return NULL;
+
+    int i = Hashmap_get_node(map, hash, bucket, key);
+    if(i == -1) return NULL;
+
+    HashmapNode *node = DArray_get(bucket, i);
+    check(node != NULL, "Failed to get node from bucket when it should exist.");
+
+    return node-&gt;data;
+
+error: // fallthrough
+    return NULL;
+}
+
+
+int Hashmap_traverse(Hashmap *map, Hashmap_traverse_cb traverse_cb)
+{
+    int i = 0;
+    int j = 0;
+    int rc = 0;
+
+    for(i = 0; i &lt; DArray_count(map-&gt;buckets); i++) {
+        DArray *bucket = DArray_get(map-&gt;buckets, i);
+        if(bucket) {
+            for(j = 0; j &lt; DArray_count(bucket); j++) {
+                HashmapNode *node = DArray_get(bucket, j);
+                rc = traverse_cb(node);
+                if(rc != 0) return rc;
+            }
+        }
+    }
+
+    return 0;
+}
+
+void *Hashmap_delete(Hashmap *map, void *key)
+{
+    uint32_t hash = 0;
+    DArray *bucket = Hashmap_find_bucket(map, key, 0, &amp;hash);
+    if(!bucket) return NULL;
+
+    int i = Hashmap_get_node(map, hash, bucket, key);
+    if(i == -1) return NULL;
+
+    HashmapNode *node = DArray_get(bucket, i);
+    void *data = node-&gt;data;
+    free(node);
+
+    HashmapNode *ending = DArray_pop(bucket);
+
+    if(ending != node) {
+        // alright looks like it's not the last one, swap it
+        DArray_set(bucket, i, ending);
+    }
+
+    return data;
+}</code></pre>
+<p>这个实现中并没有什么复杂的东西，但是<code>default_hash</code>和<code>Hashmap_find_bucket</code>需要一些解释。当你使用<code>Hashmap_create</code>时，你可以传入任何定制的比较和哈希函数。但是如果你没有则会使用<code>default_compare</code>和<code>default_hash</code>函数。</p>
+<p>需要观察的第一件事，是<code>default_hash</code>的行为。这是一个简单的哈希函数，叫做“Jenkins hash”，以Bob Jenkins的名字命名。我从<a href="http://en.wikipedia.org/wiki/Jenkins_hash_function">维基百科</a>上获得了这个算法。它仅仅遍历键（<code>bstring</code>）的每个字节来计算哈希，以便得出<code>uint32_t</code>的结果。它使用一些加法和异或运算来实现。</p>
+<p>哈希函数有很多中，它们具有不同的特性，然而一旦你选择了一种，就需要一种方法来使用它找到正确的桶。<code>Hashmap_find_bucket</code>像这样实现它：</p>
+<ul>
+<li>首先调用<code>map-&gt;hash(key)</code>来获得键的哈希值。</li>
+<li>之后使用<code>hash % DEFAULT_NUMBER_OF_BUCKETS</code>，这样无论哈希值有多大，都能找到匹配的桶。</li>
+<li>找到桶之后，它是个<code>DArray</code>，可能还没有创建，这取决与<code>create</code>变量的内容。</li>
+<li>一旦找到了正确的<code>DArray</code>桶，就会将它返回，并且<code>hash_out</code>变量用于向调用者提供所找到的哈希值。</li>
+</ul>
+<p>其它函数都使用<code>Hashmap_find_bucket</code>来完成工作：</p>
+<ul>
+<li>设置键值对涉及到找到正确的桶，之后创建<code>HashmapNode</code>，将它添加到桶中。</li>
+<li>获取键值涉及到找到正确的桶，之后找到匹配<code>hash</code>和<code>key</code>的<code>HashmapNode</code>。</li>
+<li>删除元素也需要找到正确的桶，找到所需的节点，之后通过与末尾的节点交换位置来删除。</li>
+</ul>
+<p>你需要学习的唯一一个其他函数是<code>Hashmap_travers</code>，它仅仅遍历每个桶，对于任何含有值的桶，在每个值上调用<code>traverse_cb</code>。这就是扫描整个<code>Hashmap</code>的办法。</p>
+<h2 id="%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95" name="%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</h2>
+<p>最后你需要编写单元测试，对于所有这些操作：</p>
+<pre><code class="c">#include "minunit.h"
+#include &lt;lcthw/hashmap.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;lcthw/bstrlib.h&gt;
+
+Hashmap *map = NULL;
+static int traverse_called = 0;
+struct tagbstring test1 = bsStatic("test data 1");
+struct tagbstring test2 = bsStatic("test data 2");
+struct tagbstring test3 = bsStatic("xest data 3");
+struct tagbstring expect1 = bsStatic("THE VALUE 1");
+struct tagbstring expect2 = bsStatic("THE VALUE 2");
+struct tagbstring expect3 = bsStatic("THE VALUE 3");
+
+static int traverse_good_cb(HashmapNode *node)
+{
+    debug("KEY: %s", bdata((bstring)node-&gt;key));
+    traverse_called++;
+    return 0;
+}
+
+
+static int traverse_fail_cb(HashmapNode *node)
+{
+    debug("KEY: %s", bdata((bstring)node-&gt;key));
+    traverse_called++;
+
+    if(traverse_called == 2) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+
+char *test_create()
+{
+    map = Hashmap_create(NULL, NULL);
+    mu_assert(map != NULL, "Failed to create map.");
+
+    return NULL;
+}
+
+char *test_destroy()
+{
+    Hashmap_destroy(map);
+
+    return NULL;
+}
+
+
+char *test_get_set()
+{
+    int rc = Hashmap_set(map, &amp;test1, &amp;expect1);
+    mu_assert(rc == 0, "Failed to set &amp;test1");
+    bstring result = Hashmap_get(map, &amp;test1);
+    mu_assert(result == &amp;expect1, "Wrong value for test1.");
+
+    rc = Hashmap_set(map, &amp;test2, &amp;expect2);
+    mu_assert(rc == 0, "Failed to set test2");
+    result = Hashmap_get(map, &amp;test2);
+    mu_assert(result == &amp;expect2, "Wrong value for test2.");
+
+    rc = Hashmap_set(map, &amp;test3, &amp;expect3);
+    mu_assert(rc == 0, "Failed to set test3");
+    result = Hashmap_get(map, &amp;test3);
+    mu_assert(result == &amp;expect3, "Wrong value for test3.");
+
+    return NULL;
+}
+
+char *test_traverse()
+{
+    int rc = Hashmap_traverse(map, traverse_good_cb);
+    mu_assert(rc == 0, "Failed to traverse.");
+    mu_assert(traverse_called == 3, "Wrong count traverse.");
+
+    traverse_called = 0;
+    rc = Hashmap_traverse(map, traverse_fail_cb);
+    mu_assert(rc == 1, "Failed to traverse.");
+    mu_assert(traverse_called == 2, "Wrong count traverse for fail.");
+
+    return NULL;
+}
+
+char *test_delete()
+{
+    bstring deleted = (bstring)Hashmap_delete(map, &amp;test1);
+    mu_assert(deleted != NULL, "Got NULL on delete.");
+    mu_assert(deleted == &amp;expect1, "Should get test1");
+    bstring result = Hashmap_get(map, &amp;test1);
+    mu_assert(result == NULL, "Should delete.");
+
+    deleted = (bstring)Hashmap_delete(map, &amp;test2);
+    mu_assert(deleted != NULL, "Got NULL on delete.");
+    mu_assert(deleted == &amp;expect2, "Should get test2");
+    result = Hashmap_get(map, &amp;test2);
+    mu_assert(result == NULL, "Should delete.");
+
+    deleted = (bstring)Hashmap_delete(map, &amp;test3);
+    mu_assert(deleted != NULL, "Got NULL on delete.");
+    mu_assert(deleted == &amp;expect3, "Should get test3");
+    result = Hashmap_get(map, &amp;test3);
+    mu_assert(result == NULL, "Should delete.");
+
+    return NULL;
+}
+
+char *all_tests()
+{
+    mu_suite_start();
+
+    mu_run_test(test_create);
+    mu_run_test(test_get_set);
+    mu_run_test(test_traverse);
+    mu_run_test(test_delete);
+    mu_run_test(test_destroy);
+
+    return NULL;
+}
+
+RUN_TESTS(all_tests);</code></pre>
+<p>需要学习的唯一一件事情就是我在单元测试的顶端使用了<code>bstring</code>的特性来创建静态字符串用于测试。我使用<code>tagbstring</code>和<code>bsStatic</code>在7~13行创建他们。</p>
+<h2 id="%E5%A6%82%E4%BD%95%E6%94%B9%E8%BF%9B" name="%E5%A6%82%E4%BD%95%E6%94%B9%E8%BF%9B">如何改进</h2>
+<p>这是一个非常简单的<code>Hashmap</code>实现，就像书中的大多数其他数据结构那样。我的目标不是让你以非常快的速度来掌握数据结构。通常这些讨论起来非常复杂，并且会让你偏离真正的基础和实用的数据结构。我的目标是提供一个易于理解的起始点，然后再改进或理解它们如何实现。</p>
+<p>对于这和练习，下面是你能够用于改进这个实现的方法：</p>
+<ul>
+<li>你可以对每个桶进行排序，使它们有序。这会增加你的插入时间，但是减少寻找时间，因为你可以使用二分搜索来寻找每个节点。到现在为止它遍历桶中的所有节点来寻找元素。</li>
+<li>你可以动态设定桶的数量，或者让调用者指定每个<code>Hashmap</code>中的该值。</li>
+<li>你可以使用更好的<code>default_hash</code>函数，有许多这样的函数。</li>
+<li>这个实现以及几乎所有实现都有将一些特定的键存到一个桶中的风险。这会使你的程序运行速度变慢，因为它使<code>Hashmap</code>的处理过程变成了处理单个的<code>DArray</code>。如果你对桶中的数组排序会有帮助，但是你可以仅仅使用更好的哈希函数来避免，并且对于真正的偏执狂，你可以添加一个随机的盐，让键不可预测。</li>
+<li>你可以删掉不歪有任何节点的桶来节约空间，或者将空的桶当如缓存中，便于节约创建和销毁它们的开销。</li>
+<li>现在为止它可以添加已存在的元素，编写一个替代的实现，使它只能够添加不存在的元素。</li>
+</ul>
+<p>像往常一样，你需要浏览每个函数，并且使之健壮。<code>Hashmap</code>也可以使用一些调试设置，来执行不变量检查。</p>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>研究你最喜欢的编程语言的<code>Hashmap</code>实现，了解它们具有什么特性。</li>
+<li>找到<code>Hashmap</code>的主要缺点，以及如何避免它们。例如，它们不做特定的修改就不能保存顺序，并且当你基于键的一部分来查找元素时，它们就不能生效。</li>
+<li>编写单元测试来展示将键都填充到<code>Hashmap</code>的一个桶中所带来的缺陷，之后测试这样如何影响性能。一个实现它的好方法，就是把桶的数量减少到一个愚蠢的数值，比如1。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/posts/19B22BBE112EDD42.html" title="哈希表">https://naka507.github.io/posts/19B22BBE112EDD42.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/5AF9065D1BC78D5E/index.html" rel="tag"># 哈希</a>
+                                                                <a href="https://naka507.github.io/tag/77E19250B853AB38/index.html" rel="tag"># 结构</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/posts/95C8D9CEC85F55BD.html" rel="next" title="更安全的字符串">
+                                        <i class="fa fa-chevron-left"></i>
+                                        更安全的字符串                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/posts/8ACDB75ECC6C4448.html" rel="prev" title="哈希算法">
+                                        哈希算法                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">哈希表</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">单元测试</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%94%B9%E8%BF%9B">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">如何改进</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = '19B22BBE112EDD42';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: '哈希表',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>

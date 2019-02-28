@@ -1,0 +1,806 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="在C语言中，你可以通过创建“变参函数”来创建你自己的`printf`或者`scanf`版本。这些函数使用`stdarg.h`头，它们可以让你为你的库创建更加便利的接口。它们对于创建特定类型的“构建”函数、格式化函数和任何用到可变参数的函数都非常实用。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="变参函数" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="在C语言中，你可以通过创建“变参函数”来创建你自己的`printf`或者`scanf`版本。这些函数使用`stdarg.h`头，它们可以让你为你的库创建更加便利的接口。它们对于创建特定类型的“构建”函数、格式化函数和任何用到可变参数的函数都非常实用。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="变参函数" /> 
+    <meta name="twitter:description" content="在C语言中，你可以通过创建“变参函数”来创建你自己的`printf`或者`scanf`版本。这些函数使用`stdarg.h`头，它们可以让你为你的库创建更加便利的接口。它们对于创建特定类型的“构建”函数、格式化函数和任何用到可变参数的函数都非常实用。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>变参函数 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/posts/2852FA26A8BCFAD2.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">变参函数</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:15:02">2019-02-27 16:15:02</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/74E8C34FA9AF373A/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习4</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">在C语言中，你可以通过创建&ldquo;变参函数&rdquo;来创建你自己的`printf`或者`scanf`版本。这些函数使用`stdarg.h`头，它们可以让你为你的库创建更加便利的接口。它们对于创建特定类型的&ldquo;构建&rdquo;函数、格式化函数和任何用到可变参数的函数都非常实用。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="%E5%8F%98%E5%8F%82%E5%87%BD%E6%95%B0" name="%E5%8F%98%E5%8F%82%E5%87%BD%E6%95%B0">变参函数</h1>
+<p>在C语言中，你可以通过创建“变参函数”来创建你自己的<code>printf</code>或者<code>scanf</code>版本。这些函数使用<code>stdarg.h</code>头，它们可以让你为你的库创建更加便利的接口。它们对于创建特定类型的“构建”函数、格式化函数和任何用到可变参数的函数都非常实用。</p>
+<p>理解“变参函数”对于C语言编程并不必要，我在编程生涯中也只有大约20次用到它。但是，理解变参函数如何工作有助于你对它的调试，并且让你更加了解计算机。</p>
+<pre><code class="c">/** WARNING: This code is fresh and potentially isn't correct yet. */
+
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdarg.h&gt;
+#include "dbg.h"
+
+#define MAX_DATA 100
+
+int read_string(char **out_string, int max_buffer)
+{
+    *out_string = calloc(1, max_buffer + 1);
+    check_mem(*out_string);
+
+    char *result = fgets(*out_string, max_buffer, stdin);
+    check(result != NULL, "Input error.");
+
+    return 0;
+
+error:
+    if(*out_string) free(*out_string);
+    *out_string = NULL;
+    return -1;
+}
+
+int read_int(int *out_int)
+{
+    char *input = NULL;
+    int rc = read_string(&amp;input, MAX_DATA);
+    check(rc == 0, "Failed to read number.");
+
+    *out_int = atoi(input);
+
+    free(input);
+    return 0;
+
+error:
+    if(input) free(input);
+    return -1;
+}
+
+int read_scan(const char *fmt, ...)
+{
+    int i = 0;
+    int rc = 0;
+    int *out_int = NULL;
+    char *out_char = NULL;
+    char **out_string = NULL;
+    int max_buffer = 0;
+
+    va_list argp;
+    va_start(argp, fmt);
+
+    for(i = 0; fmt[i] != '\0'; i++) {
+        if(fmt[i] == '%') {
+            i++;
+            switch(fmt[i]) {
+                case '\0':
+                    sentinel("Invalid format, you ended with %%.");
+                    break;
+
+                case 'd':
+                    out_int = va_arg(argp, int *);
+                    rc = read_int(out_int);
+                    check(rc == 0, "Failed to read int.");
+                    break;
+
+                case 'c':
+                    out_char = va_arg(argp, char *);
+                    *out_char = fgetc(stdin);
+                    break;
+
+                case 's':
+                    max_buffer = va_arg(argp, int);
+                    out_string = va_arg(argp, char **);
+                    rc = read_string(out_string, max_buffer);
+                    check(rc == 0, "Failed to read string.");
+                    break;
+
+                default:
+                    sentinel("Invalid format.");
+            }
+        } else {
+            fgetc(stdin);
+        }
+
+        check(!feof(stdin) &amp;&amp; !ferror(stdin), "Input error.");
+    }
+
+    va_end(argp);
+    return 0;
+
+error:
+    va_end(argp);
+    return -1;
+}
+
+
+
+int main(int argc, char *argv[])
+{
+    char *first_name = NULL;
+    char initial = ' ';
+    char *last_name = NULL;
+    int age = 0;
+
+    printf("What's your first name? ");
+    int rc = read_scan("%s", MAX_DATA, &amp;first_name);
+    check(rc == 0, "Failed first name.");
+
+    printf("What's your initial? ");
+    rc = read_scan("%c\n", &amp;initial);
+    check(rc == 0, "Failed initial.");
+
+    printf("What's your last name? ");
+    rc = read_scan("%s", MAX_DATA, &amp;last_name);
+    check(rc == 0, "Failed last name.");
+
+    printf("How old are you? ");
+    rc = read_scan("%d", &amp;age);
+
+    printf("---- RESULTS ----\n");
+    printf("First Name: %s", first_name);
+    printf("Initial: '%c'\n", initial);
+    printf("Last Name: %s", last_name);
+    printf("Age: %d\n", age);
+
+    free(first_name);
+    free(last_name);
+    return 0;
+error:
+    return -1;
+}</code></pre>
+<p>这个程序和上一个练习很像，除了我编写了自己的<code>scanf</code>风格函数，它以我自己的方式处理字符串。你应该对<code>main</code>函数很清楚了，以及<code>read_string</code>和<code>read_int</code>两个函数，因为它们并没有做什么新的东西。</p>
+<p>这里的变参函数叫做<code>read_scan</code>，它使用了<code>va_list</code>数据结构执行和<code>scanf</code>相同的工作，并支持宏和函数。下面是它的工作原理：</p>
+<ul>
+<li>我将函数的最后一个参数设置为<code>...</code>，它向C表示这个函数在<code>fmt</code>参数之后接受任何数量的参数。我可以在它前面设置许多其它的参数，但是在它后面不能放置任何参数。</li>
+<li>在设置完一些参数时，我创建了<code>va_list</code>类型的变量，并且使用<code>va_list</code>来为其初始化。这配置了<code>stdarg.h</code>中的这一可以处理可变参数的组件。</li>
+<li>接着我使用了<code>for</code>循环，遍历<code>fmt</code>格式化字符串，并且处理了类似<code>scanf</code>的格式，但比它略简单。它里面只带有整数、字符和字符串。</li>
+<li>当我碰到占位符时，我使用了<code>switch</code>语句来确定需要做什么。</li>
+<li>现在，为了从<code>va_list argp</code>中获得遍历，我需要使用<code>va_arg(argp, TYPE)</code>宏，其中<code>TYPE</code>是我将要向参数传递的准确类型。这一设计的后果是你会非常盲目，所以如果你没有足够的变量传入，程序就会崩溃。</li>
+<li>和<code>scanf</code>的有趣的不同点是，当它碰到<code>'s'</code>占位符时，我使用<code>read_string</code>来创建字符串。<code>va_list argp</code>栈需要接受两个函数：需要读取的最大尺寸，以及用于输出的字符串指针。<code>read_string</code>使用这些信息来执行实际工作。</li>
+<li>这使<code>read_scan</code>比<code>scan</code>更加一致，因为你总是使用<code>&amp;</code>提供变量的地址，并且合理地设置它们。</li>
+<li>最后，如果它碰到了不在格式中的字符，它仅仅会读取并跳过，而并不关心字符是什么，因为它只需要跳过。</li>
+</ul>
+<h2 id="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88" name="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">你会看到什么</h2>
+<p>当你运行程序时，会得到与下面详细的结果：</p>
+<pre><code class="sh">$ make ex25
+cc -Wall -g -DNDEBUG    ex25.c   -o ex25
+$ ./ex25
+What's your first name? Zed
+What's your initial? A
+What's your last name? Shaw
+How old are you? 37
+---- RESULTS ----
+First Name: Zed
+Initial: 'A'
+Last Name: Shaw
+Age: 37</code></pre>
+<h2 id="%E5%A6%82%E4%BD%95%E4%BD%BF%E5%AE%83%E5%B4%A9%E6%BA%83" name="%E5%A6%82%E4%BD%95%E4%BD%BF%E5%AE%83%E5%B4%A9%E6%BA%83">如何使它崩溃</h2>
+<p>这个程序对缓冲区溢出更加健壮，但是和<code>scanf</code>一样，它不能够处理输入的格式错误。为了使它崩溃，试着修改代码，把首先传入用于<code>'%s'</code>格式的尺寸去掉。同时试着传入多于<code>MAX_DATA</code>的数据，之后找到在<code>read_string</code>中不使用<code>calloc</code>的方法，并且修改它的工作方式。最后还有个问题是<code>fgets</code>会吃掉换行符，所以试着使用<code>fgetc</code>修复它，要注意字符串结尾应为<code>'\0'</code>。</p>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>再三检查确保你明白了每个<code>out_</code>变量的作用。最重要的是<code>out_string</code>，并且它是指针的指针。所以，理清当你设置时获取到的是指针还是内容尤为重要。</li>
+<li>使用变参系统编写一个和<code>printf</code>相似的函数，重新编写<code>main</code>来使用它。</li>
+<li>像往常一样，阅读这些函数/宏的手册页，确保知道了它在你的平台做了什么，一些平台会使用宏而其它平台会使用函数，还有一些平台会让它们不起作用。这完全取决于你所用的编译器和平台。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/posts/2852FA26A8BCFAD2.html" title="变参函数">https://naka507.github.io/posts/2852FA26A8BCFAD2.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/7A9F7BED813D8FC1/index.html" rel="tag"># stdarg</a>
+                                                                <a href="https://naka507.github.io/tag/5937A91C89C704FA/index.html" rel="tag"># 函数</a>
+                                                                <a href="https://naka507.github.io/tag/52599C39AE778BCE/index.html" rel="tag"># 格式化</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/posts/2F13B44DB3CFDC2E.html" rel="next" title="输入输出和文件">
+                                        <i class="fa fa-chevron-left"></i>
+                                        输入输出和文件                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/posts/41ABE0D9F5D3164C.html" rel="prev" title="编写第一个真正的程序">
+                                        编写第一个真正的程序                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#%E5%8F%98%E5%8F%82%E5%87%BD%E6%95%B0">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">变参函数</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">你会看到什么</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E5%AE%83%E5%B4%A9%E6%BA%83">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">如何使它崩溃</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = '2852FA26A8BCFAD2';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: '变参函数',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>

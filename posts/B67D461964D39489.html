@@ -1,0 +1,963 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="这个练习是C语言中所有可用的数据类型和控制结构的摘要。它也可以作为一份参考在补完你的知识，并且不含有任何代码。我会通过创建教学卡片的方式，让你记住一些信息，所以你会在脑子里记住所有重要的概念。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="高级数据类型和控制结构" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="这个练习是C语言中所有可用的数据类型和控制结构的摘要。它也可以作为一份参考在补完你的知识，并且不含有任何代码。我会通过创建教学卡片的方式，让你记住一些信息，所以你会在脑子里记住所有重要的概念。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="高级数据类型和控制结构" /> 
+    <meta name="twitter:description" content="这个练习是C语言中所有可用的数据类型和控制结构的摘要。它也可以作为一份参考在补完你的知识，并且不含有任何代码。我会通过创建教学卡片的方式，让你记住一些信息，所以你会在脑子里记住所有重要的概念。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>高级数据类型和控制结构 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/posts/B67D461964D39489.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">高级数据类型和控制结构</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:15:11">2019-02-27 16:15:11</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/D0D9F518B5F4E00E/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习3</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">这个练习是C语言中所有可用的数据类型和控制结构的摘要。它也可以作为一份参考在补完你的知识，并且不含有任何代码。我会通过创建教学卡片的方式，让你记住一些信息，所以你会在脑子里记住所有重要的概念。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="%E9%AB%98%E7%BA%A7%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%84" name="%E9%AB%98%E7%BA%A7%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%84">高级数据类型和控制结构</h1>
+<p>这个练习是C语言中所有可用的数据类型和控制结构的摘要。它也可以作为一份参考在补完你的知识，并且不含有任何代码。我会通过创建教学卡片的方式，让你记住一些信息，所以你会在脑子里记住所有重要的概念。</p>
+<p>这个练习非常有用，你应该花至少一周的时间来巩固内容并且补全这里所没有的元素。你应学出每个元素是什么意思，以及编写程序来验证你得出的结论。</p>
+<h2 id="%E5%8F%AF%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B" name="%E5%8F%AF%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">可用的数据类型</h2>
+<p><code>int</code></p>
+<p>储存普通的整数，默认为32位大小。</p>
+<blockquote>
+<p>译者注：<code>int</code>在32或64位环境下为32位，但它不应该被看作平台无关的。如果需要用到平台无关的定长整数，请使用<code>int(n)_t</code>。</p>
+</blockquote>
+<p><code>double</code></p>
+<p>储存稍大的浮点数。</p>
+<p><code>float</code></p>
+<p>储存稍小的浮点数。</p>
+<p><code>char</code></p>
+<p>储存单字节字符。</p>
+<p><code>void</code></p>
+<p>表示“无类型”，用于声明不返回任何东西的函数，或者所指类型不明的指针，例如<code>void *thing</code>。</p>
+<p><code>enum</code></p>
+<p>枚举类型，类似于整数，也可转换为整数，但是通过符号化的名称访问或设置。当<code>switch</code>语句中没有覆盖到所有枚举的元素时，一些编译器会发出警告。</p>
+<h2 id="%E7%B1%BB%E5%9E%8B%E4%BF%AE%E9%A5%B0%E7%AC%A6" name="%E7%B1%BB%E5%9E%8B%E4%BF%AE%E9%A5%B0%E7%AC%A6">类型修饰符</h2>
+<p><code>unsigned</code></p>
+<p>修改类型，使它不包含任何负数，同时上界变高。</p>
+<p><code>signed</code></p>
+<p>可以储存正数和负数，但是上界会变为（大约）一半，下界变为和上界（大约）等长。</p>
+<blockquote>
+<p>译者注：符号修饰符只对<code>char</code>和<code>*** int</code>有效。<code>*** int</code>默认为<code>signed</code>，而<code>char</code>根据具体实现，可以默认为<code>signed</code>，也可以为<code>unsigned</code>。</p>
+</blockquote>
+<p><code>long</code></p>
+<p>对该类型使用较大的空间，使它能存下更大的数，通常使当前大小加倍。</p>
+<p><code>short</code></p>
+<p>对该类型使用较小的空间，使它储存能力变小，但是占据空间也变成一半。</p>
+<h2 id="%E7%B1%BB%E5%9E%8B%E9%99%90%E5%AE%9A%E7%AC%A6" name="%E7%B1%BB%E5%9E%8B%E9%99%90%E5%AE%9A%E7%AC%A6">类型限定符</h2>
+<p><code>const</code></p>
+<p>表示变量在初始化后不能改变。</p>
+<p><code>volatile</code></p>
+<p>表示会做最坏的打算，编译器不会对它做任何优化。通常仅在对变量做一些奇怪的事情时，才会用到它。</p>
+<p><code>register</code></p>
+<p>强制让编译器将这个变量保存在寄存器中，并且也可以无视它。目前的编译器更善于处理在哪里存放变量，所以应该只在确定这样会提升性能时使用它。</p>
+<h2 id="%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2" name="%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">类型转换</h2>
+<p>C使用了一种“阶梯形类型提升”的机制，它会观察运算符两边的变量，并且在运算之前将较小边的变量转换为较大边。这个过程按照如下顺序：</p>
+<ul>
+<li>long double</li>
+<li>double</li>
+<li>float</li>
+<li>long long</li>
+<li>long</li>
+<li>int (short, char)</li>
+</ul>
+<blockquote>
+<p>译者注：<code>short</code>和<code>char</code>会在运算之前转换成<code>int</code>。同种类型的<code>unsigned</code>和<code>signed</code>运算，<code>signed</code>保持字节不变转换成<code>unsigned</code>。</p>
+</blockquote>
+<h2 id="%E7%B1%BB%E5%9E%8B%E5%A4%A7%E5%B0%8F" name="%E7%B1%BB%E5%9E%8B%E5%A4%A7%E5%B0%8F">类型大小</h2>
+<p><code>stdint.h</code>为定长的整数类型定义了一些<code>typedef</code>，同时也有一些用于这些类型的宏。这比老的<code>limits.h</code>更加易于使用，因为它是不变的。这些类型如下：</p>
+<p><code>int8_t</code></p>
+<p>8位符号整数。</p>
+<p><code>uint8_t</code></p>
+<p>8位无符号整数。</p>
+<p><code>int16_t</code></p>
+<p>16位符号整数。</p>
+<p><code>uint16_t</code></p>
+<p>16位无符号整数。</p>
+<p><code>int32_t</code></p>
+<p>32位符号整数。</p>
+<p><code>uint32_t</code></p>
+<p>32位无符号整数。</p>
+<p><code>int64_t</code></p>
+<p>64位符号整数。</p>
+<p><code>uint64_t</code></p>
+<p>64位无符号整数。</p>
+<blockquote>
+<p>译者注：当用于对类型大小有要求的特定平台时，可以使用这些类型。如果你怕麻烦，不想处理平台相关类型的今后潜在的扩展的话，也可以使用这些类型。</p>
+</blockquote>
+<p>下面的模式串为<code>(u)int(BITS)_t</code>，其中前面的<code>u</code>代表<code>unsigned</code>，<code>BITS</code>是所占位数的大小。这些模式串返回了这些类型的最大（或最小）值。</p>
+<p><code>INT(N)_MAX</code></p>
+<p><code>N</code>位符号整数的最大正值，例如<code>INT16_MAX</code>。</p>
+<p><code>INT(N)_MIN</code></p>
+<p><code>N</code>位符号整数的最小负值。</p>
+<p><code>UINT(N)_MAX</code></p>
+<p><code>N</code>位无符号整数的最大正值。为什么不定义其最小值，是因为最小值是0，不可能出现负值。</p>
+<blockquote>
+<p>警告</p>
+</blockquote>
+<blockquote>
+<p>要注意，不要从字面上在任何头文件中去找<code>INT(N)_MAX</code>的定义。这里的<code>N</code>应该为特定整数，比如8、16、32、64，甚至可能是128。我在这个练习中使用了这个记法，就不需要显式写出每一个不同的组合了。</p>
+</blockquote>
+<p>在<code>stdint.h</code>中，对于<code>size_t</code>类型和足够存放指针的整数也有一些宏定义，以及其它便捷类型的宏定义。编译器至少要保证它们为某一大小，并允许它们为更大的大小。</p>
+<p><code>int_least(N)_t</code></p>
+<p>至少<code>N</code>位的整数。</p>
+<p><code>uint_least(N)_t</code></p>
+<p>至少<code>N</code>位的无符号整数。</p>
+<p><code>INT_LEAST(N)_MAX</code></p>
+<p><code>int_least(N)_t</code>类型的最大值。</p>
+<p><code>INT_LEAST(N)_MIN</code></p>
+<p><code>int_least(N)_t</code>类型的最小值。</p>
+<p><code>UINT_LEAST(N)_MAX</code></p>
+<p><code>uint_least(N)_t</code>的最大值。</p>
+<p><code>int_fast(N)_t</code></p>
+<p>与<code>int_least(N)_t</code>相似，但是是至少<code>N</code>位的“最快”整数。</p>
+<p><code>uint_fast(N)_t</code></p>
+<p>至少<code>N</code>位的“最快”无符号整数。</p>
+<p><code>INT_FAST(N)_MAX</code></p>
+<p><code>int_fast(N)_t</code>的最大值。</p>
+<p><code>INT_FAST(N)_MIN</code></p>
+<p><code>int_fast(N)_t</code>的最小值。</p>
+<p><code>UINT_FAST(N)_MAX</code></p>
+<p><code>uint_fast(N)_t</code>的最大值。</p>
+<p><code>intptr_t</code></p>
+<p>足够存放指针的符号整数。</p>
+<p><code>uintptr_t</code></p>
+<p>足够存放指针的无符号整数。</p>
+<p><code>INTPTR_MAX</code></p>
+<p><code>intptr_t</code>的最大值。</p>
+<p><code>INTPTR_MIN</code></p>
+<p><code>intptr_t</code>的最小值。</p>
+<p><code>UINTPTR_MAX</code></p>
+<p><code>uintptr_t</code>的最大值。</p>
+<p><code>intmax_t</code></p>
+<p>系统中可能的最大尺寸的整数类型。</p>
+<p><code>uintmax_t</code></p>
+<p>系统中可能的最大尺寸的无符号整数类型。</p>
+<p><code>INTMAX_MAX</code></p>
+<p><code>intmax_t</code>的最大值。</p>
+<p><code>INTMAX_MIN</code></p>
+<p><code>intmax_t</code>的最小值。</p>
+<p><code>UINTMAX_MAX</code></p>
+<p><code>uintmax_t</code>的最大值。</p>
+<p><code>PTRDIFF_MIN</code></p>
+<p><code>ptrdiff_t</code>的最小值。</p>
+<p><code>PTRDIFF_MAX</code></p>
+<p><code>ptrdiff_t</code>的最大值。</p>
+<p><code>SIZE_MAX</code></p>
+<p><code>size_t</code>的最大值。</p>
+<h2 id="%E5%8F%AF%E7%94%A8%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6" name="%E5%8F%AF%E7%94%A8%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6">可用的运算符</h2>
+<p>这是一个全面的列表，关于你可以在C中使用的全部运算符。这个列表中我会标明一些东西：</p>
+<p>二元</p>
+<p>该运算符有左右两个操作数：<code>X + Y</code>。</p>
+<p>一元</p>
+<p>该运算符作用于操作数本身<code>-X</code>。</p>
+<p>前缀</p>
+<p>该运算符出现在操作数之前：<code>++X</code>。</p>
+<p>后缀</p>
+<p>通常和前缀版本相似，但是出现在操作数之后，并且意义不同：<code>X++</code>。</p>
+<p>三元</p>
+<p>只有一个三元运算符，意思是“三个操作数”：<code>X ? Y : Z</code>。</p>
+<h2 id="%E7%AE%97%E6%95%B0%E8%BF%90%E7%AE%97%E7%AC%A6" name="%E7%AE%97%E6%95%B0%E8%BF%90%E7%AE%97%E7%AC%A6">算数运算符</h2>
+<p>下面是基本的算数运算符，我将函数调用<code>()</code>放入其中因为它更接近“算数”运算。</p>
+<p><code>()</code></p>
+<p>函数调用。</p>
+<p>二元 <code>*</code></p>
+<p>乘法。</p>
+<p><code>/</code></p>
+<p>除法。</p>
+<p>二元 <code>+</code></p>
+<p>加法。</p>
+<p>一元 <code>+</code></p>
+<p>无变化。</p>
+<p>后缀 <code>++</code></p>
+<p>读取变量然后自增。</p>
+<p>前缀 <code>++</code></p>
+<p>自增变量然后读取。</p>
+<p>后缀 <code>--</code></p>
+<p>读取变量然后自减。</p>
+<p>前缀 <code>--</code></p>
+<p>自减变量然后读取。</p>
+<p>二元 <code>-</code></p>
+<p>减法。</p>
+<p>一元 <code>-</code></p>
+<p>取反，可用于表示负数。</p>
+<h2 id="%E6%95%B0%E6%8D%AE%E8%BF%90%E7%AE%97" name="%E6%95%B0%E6%8D%AE%E8%BF%90%E7%AE%97">数据运算</h2>
+<p>它们用于以不同方式和形式访问数据。</p>
+<p><code>-&gt;</code></p>
+<p>结构体指针的成员访问。一元<code>*</code>和<code>.</code>运算符的复合。</p>
+<p><code>.</code></p>
+<p>结构体值的成员访问。</p>
+<p><code>[]</code></p>
+<p>取数组下标。二元<code>+</code>和一元<code>*</code>运算符的复合。</p>
+<p><code>sizeof</code></p>
+<p>取类型或变量大小。</p>
+<p>一元 <code>&amp;</code></p>
+<p>取地址。</p>
+<p>一元 <code>*</code></p>
+<p>取值（提领地址）。</p>
+<h2 id="%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6" name="%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6">逻辑运算符</h2>
+<p>它们用于测试变量的等性和不等性。</p>
+<p><code>!=</code></p>
+<p>不等于。</p>
+<p><code>&lt;</code></p>
+<p>小于。</p>
+<p><code>&lt;=</code></p>
+<p>小于等于。</p>
+<p><code>==</code></p>
+<p>等于（并不是赋值）。</p>
+<p><code>&gt;</code></p>
+<p>大于。</p>
+<p><code>&gt;=</code></p>
+<p>大于等于。</p>
+<h2 id="%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6" name="%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6">位运算符</h2>
+<p>它们更加高级，用于修改整数的原始位。</p>
+<p>二元 <code>&amp;</code></p>
+<p>位与。</p>
+<p><code>&lt;&lt;</code></p>
+<p>左移。</p>
+<p><code>&gt;&gt;</code></p>
+<p>右移。</p>
+<p><code>^</code></p>
+<p>位异或。</p>
+<p><code>|</code></p>
+<p>位或。</p>
+<p><code>~</code></p>
+<p>取补（翻转所有位）。</p>
+<h2 id="%E5%B8%83%E5%B0%94%E8%BF%90%E7%AE%97%E7%AC%A6%E3%80%82" name="%E5%B8%83%E5%B0%94%E8%BF%90%E7%AE%97%E7%AC%A6%E3%80%82">布尔运算符。</h2>
+<p>用于真值测试，仔细学习三元运算符，它非常有用。</p>
+<p><code>!</code></p>
+<p>取非。</p>
+<p><code>&amp;&amp;</code></p>
+<p>与。</p>
+<p><code>||</code></p>
+<p>或。</p>
+<p><code>?:</code></p>
+<p>三元真值测试，<code>X ? Y : Z</code>读作“若X则Y否则Z”。</p>
+<h2 id="%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97%E7%AC%A6" name="%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97%E7%AC%A6">赋值运算符</h2>
+<p>复合赋值运算符在赋值同时执行运算。大多数上面的运算符都可以组成复合赋值运算符。</p>
+<p><code>=</code></p>
+<p>赋值。</p>
+<p><code>%=</code></p>
+<p>取余赋值。</p>
+<p><code>&amp;=</code></p>
+<p>位与赋值。</p>
+<p><code>*=</code></p>
+<p>乘法赋值。</p>
+<p><code>+=</code></p>
+<p>加法赋值。</p>
+<p><code>-=</code></p>
+<p>减法赋值。</p>
+<p><code>/=</code></p>
+<p>除法赋值。</p>
+<p><code>&lt;&lt;=</code></p>
+<p>左移赋值。</p>
+<p><code>&gt;&gt;=</code></p>
+<p>右移赋值。</p>
+<p><code>^=</code></p>
+<p>位异或赋值。</p>
+<p><code>|=</code></p>
+<p>位或赋值。</p>
+<h2 id="%E5%8F%AF%E7%94%A8%E7%9A%84%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%84" name="%E5%8F%AF%E7%94%A8%E7%9A%84%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%84">可用的控制结构</h2>
+<p>下面是一些你没有接触过的控制结构：</p>
+<p><code>do-while</code></p>
+<p><code>do { ... } while(X);</code>首先执行花括号中的代码，之后再跳出前测试<code>X</code>表达式。</p>
+<p><code>break</code></p>
+<p>放在循环中用于跳出循环。</p>
+<p><code>continue</code></p>
+<p>跳到循环尾。</p>
+<p><code>goto</code></p>
+<p>跳到你已经放置<code>label</code>的位置，你已经在<code>dbg.h</code>中看到它了，用于跳到<code>error</code>标签。</p>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>阅读<code>stdint.h</code>或它的描述，写出所有可能出现的大小定义。</li>
+<li>查询本练习的每一项，写出它在代码中的作用。上网浏览资料来研究它如何正确使用。</li>
+<li>将这些信息做成教学卡片，每天看上15分钟来记住它们。</li>
+<li>创建一个程序，打印出每个类型的示例，并验证你的研究结果是否正确。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/posts/B67D461964D39489.html" title="高级数据类型和控制结构">https://naka507.github.io/posts/B67D461964D39489.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/77E19250B853AB38/index.html" rel="tag"># 结构</a>
+                                                                <a href="https://naka507.github.io/tag/057F656AAC02C097/index.html" rel="tag"># 语言</a>
+                                                                <a href="https://naka507.github.io/tag/E7B115088B77763C/index.html" rel="tag"># 修饰符</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/posts/8BBFC8E0CA1C348B.html" rel="next" title="Zed的强大的调试宏">
+                                        <i class="fa fa-chevron-left"></i>
+                                        Zed的强大的调试宏                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/posts/6822F5C25F64C05F.html" rel="prev" title="栈、作用域和全局">
+                                        栈、作用域和全局                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%84">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">高级数据类型和控制结构</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%8F%AF%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">可用的数据类型</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E4%BF%AE%E9%A5%B0%E7%AC%A6">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">类型修饰符</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E9%99%90%E5%AE%9A%E7%AC%A6">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">类型限定符</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">
+                                <span class="nav-number">1.4.</span> 
+                                <span class="nav-text">类型转换</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E5%A4%A7%E5%B0%8F">
+                                <span class="nav-number">1.5.</span> 
+                                <span class="nav-text">类型大小</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%8F%AF%E7%94%A8%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6">
+                                <span class="nav-number">1.6.</span> 
+                                <span class="nav-text">可用的运算符</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E7%AE%97%E6%95%B0%E8%BF%90%E7%AE%97%E7%AC%A6">
+                                <span class="nav-number">1.7.</span> 
+                                <span class="nav-text">算数运算符</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%BF%90%E7%AE%97">
+                                <span class="nav-number">1.8.</span> 
+                                <span class="nav-text">数据运算</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6">
+                                <span class="nav-number">1.9.</span> 
+                                <span class="nav-text">逻辑运算符</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6">
+                                <span class="nav-number">1.10.</span> 
+                                <span class="nav-text">位运算符</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%B8%83%E5%B0%94%E8%BF%90%E7%AE%97%E7%AC%A6%E3%80%82">
+                                <span class="nav-number">1.11.</span> 
+                                <span class="nav-text">布尔运算符。</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97%E7%AC%A6">
+                                <span class="nav-number">1.12.</span> 
+                                <span class="nav-text">赋值运算符</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%8F%AF%E7%94%A8%E7%9A%84%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%84">
+                                <span class="nav-number">1.13.</span> 
+                                <span class="nav-text">可用的控制结构</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.14.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = 'B67D461964D39489';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: '高级数据类型和控制结构',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1544 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="这本书你已经完成一半了，所以你需要做一个期中检测。期中检测中你需要重新构建一个我特地为本书编写的软件，叫做`devpkg`。随后你需要以一些方式扩展它，并且通过编写一些单元测试来改进代码。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="编写第一个真正的程序" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="这本书你已经完成一半了，所以你需要做一个期中检测。期中检测中你需要重新构建一个我特地为本书编写的软件，叫做`devpkg`。随后你需要以一些方式扩展它，并且通过编写一些单元测试来改进代码。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="编写第一个真正的程序" /> 
+    <meta name="twitter:description" content="这本书你已经完成一半了，所以你需要做一个期中检测。期中检测中你需要重新构建一个我特地为本书编写的软件，叫做`devpkg`。随后你需要以一些方式扩展它，并且通过编写一些单元测试来改进代码。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>编写第一个真正的程序 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/posts/41ABE0D9F5D3164C.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">编写第一个真正的程序</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:15:43">2019-02-27 16:15:43</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/74E8C34FA9AF373A/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习4</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">这本书你已经完成一半了，所以你需要做一个期中检测。期中检测中你需要重新构建一个我特地为本书编写的软件，叫做`devpkg`。随后你需要以一些方式扩展它，并且通过编写一些单元测试来改进代码。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="%E7%BC%96%E5%86%99%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%9C%9F%E6%AD%A3%E7%9A%84%E7%A8%8B%E5%BA%8F" name="%E7%BC%96%E5%86%99%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%9C%9F%E6%AD%A3%E7%9A%84%E7%A8%8B%E5%BA%8F">编写第一个真正的程序</h1>
+<p>这本书你已经完成一半了，所以你需要做一个期中检测。期中检测中你需要重新构建一个我特地为本书编写的软件，叫做<code>devpkg</code>。随后你需要以一些方式扩展它，并且通过编写一些单元测试来改进代码。</p>
+<blockquote>
+<p>注</p>
+</blockquote>
+<blockquote>
+<p>我在一些你需要完成的练习之前编写了这个练习。如果你现在尝试这个练习，记住软件可能会含有一些bug，你可能由于我的错误会产生一些问题，也可能不知道需要什么来完成它。如果这样的话，通过<a href="mailto:help@learncodethehardway.org">help@learncodethehardway.org</a>来告诉我，之后等待我写完其它练习。</p>
+</blockquote>
+<h2 id="%E4%BB%80%E4%B9%88%E6%98%AFdevpkg%EF%BC%9F" name="%E4%BB%80%E4%B9%88%E6%98%AFdevpkg%EF%BC%9F">什么是<code>devpkg</code>？</h2>
+<p><code>devpkg</code>是一个简单的C程序，可以用于安装其它软件。我特地为本书编写了它，作为一种方式来教你真正的软件是如何构建的，以及如何复用他人的库。它使用了一个叫做<a href="http://apr.apache.org/">Apache可移植运行时（APR）</a>的库，其中含有许多工作跨平台的便利的C函数，包括Windows。此外，它只是从互联网（或本地文件）抓取代码，并且执行通常的<code>./configure ; make ; make install</code>命令，每个程序员都用到过。</p>
+<p>这个练习中，你的目标是从源码构建<code>devpkg</code>，完成我提供的每个挑战，并且使用源码来理解<code>devpkg</code>做了什么和为什么这样做。</p>
+<h2 id="%E6%88%91%E4%BB%AC%E6%89%93%E7%AE%97%E5%88%9B%E5%BB%BA%E4%BB%80%E4%B9%88" name="%E6%88%91%E4%BB%AC%E6%89%93%E7%AE%97%E5%88%9B%E5%BB%BA%E4%BB%80%E4%B9%88">我们打算创建什么</h2>
+<p>我们打算创建一个具有三个命令的工具：</p>
+<p>devpkg -S</p>
+<p>在电脑上安装新的软件。</p>
+<p>devpkg -I</p>
+<p>从URL安装软件。</p>
+<p>devpkg -L</p>
+<p>列出安装的所有软件。</p>
+<p>devpkg -F</p>
+<p>为手动构建抓取源代码。</p>
+<p>devpkg -B</p>
+<p>构建所抓取的源码代码并且安装它，即使它已经安装了。</p>
+<p>我们想让<code>devpkg</code>能够接受几乎任何URL，判断项目的类型，下载，安装，以及注册已经安装的软件。我们也希望它能够处理一个简单的依赖列表，以便它能够安装项目所需的所有软件。</p>
+<h2 id="%E8%AE%BE%E8%AE%A1" name="%E8%AE%BE%E8%AE%A1">设计</h2>
+<p>为了完成这一目标，<code>devpkg</code>具有非常简单的设计：</p>
+<p>使用外部命令</p>
+<p>大多数工作都是通过类似于<code>curl</code>、<code>git</code>和<code>tar</code>的外部命令完成的。这样减少了<code>devpkg</code>所需的代码量。</p>
+<p>简单的文件数据库</p>
+<p>你可以轻易使它变得很复杂，但是一开始你需要完成一个简单的文件数据库，位于<code>/usr/local/.devpkg/db</code>，来跟踪已安装的软件。</p>
+<p><code>/usr/local</code></p>
+<p>同样你可以使它更高级，但是对于初学者来说，假设项目始终位于<code>/usr/local</code>中，它是大多数Unix软件的标准安装目录。</p>
+<p><code>configure; make; make install</code></p>
+<p>假设大多数软件可以通过<code>configure; make; make install</code>来安装，也许<code>configure</code>是可选的。如果软件不能通过这种方式安装，要么提供某种方式来修改命令，要么<code>devpkg</code>就可以无视它。</p>
+<p>用户可以root</p>
+<p>我们假设用于可以使用<code>sudo</code>来提升至root权限，除非他们直到最后才想root。</p>
+<p>这会使我们的程序像当初设想的一样简单，并且对于它的功能来说已经足够了。之后你可以进一步修改它。</p>
+<h2 id="Apache+%E5%8F%AF%E7%A7%BB%E6%A4%8D%E8%BF%90%E8%A1%8C%E6%97%B6" name="Apache+%E5%8F%AF%E7%A7%BB%E6%A4%8D%E8%BF%90%E8%A1%8C%E6%97%B6">Apache 可移植运行时</h2>
+<p>你需要做的另外一件事情就是使用<a href="http://apr.apache.org/">Apache可移植运行时（APR）</a>来未完成这个练习获得一个可移植的工具集。APR并不是必要的，你也可以不用它，但是你需要写的代码就会非常多。我现在强制你使用APR，使你能够熟悉链接和使用其他的库。最后，APR也能在Windows上工作，所以你可以把它迁移到许多其它平台上。</p>
+<p>你应该获取<code>apr-1.4.5</code>和<code>apr-util-1.3</code>的库，以及浏览在<a href="http://apr.apache.org/">apr.apache.org主站</a>上的文档。</p>
+<p>下面是一个ShellScript，用于安装所需的所有库。你应该手动将它写到一个文件中，之后运行它直到APR安装好并且没有任何错误。</p>
+<pre><code class="sh">set -e
+
+# go somewhere safe
+cd /tmp
+
+# get the source to base APR 1.4.6
+curl -L -O http://archive.apache.org/dist/apr/apr-1.4.6.tar.gz
+
+# extract it and go into the source
+tar -xzvf apr-1.4.6.tar.gz
+cd apr-1.4.6
+
+# configure, make, make install
+./configure
+make
+sudo make install
+
+# reset and cleanup
+cd /tmp
+rm -rf apr-1.4.6 apr-1.4.6.tar.gz
+
+# do the same with apr-util
+curl -L -O http://archive.apache.org/dist/apr/apr-util-1.4.1.tar.gz
+
+# extract
+tar -xzvf apr-util-1.4.1.tar.gz
+cd apr-util-1.4.1
+
+# configure, make, make install
+./configure --with-apr=/usr/local/apr
+# you need that extra parameter to configure because
+# apr-util can't really find it because...who knows.
+
+make
+sudo make install
+
+#cleanup
+cd /tmp
+rm -rf apr-util-1.4.1* apr-1.4.6*</code></pre>
+<p>我希望你输入这个脚本，因为这就是<code>devpkg</code>基本上所做的事情，只是带有了一些选项和检查项。实际上，你可以使用Shell以更少的代码来完成它，但是这对于一本C语言的书不是一个很好的程序。</p>
+<p>简单运行这个脚本，修复它直到正常工作，就完成的所有库的安装，之后你需要完成项目的剩下部分。</p>
+<h2 id="%E9%A1%B9%E7%9B%AE%E5%B8%83%E5%B1%80" name="%E9%A1%B9%E7%9B%AE%E5%B8%83%E5%B1%80">项目布局</h2>
+<p>你需要创建一些简单的项目文件来起步。下面是我通常创建一个新项目的方法：</p>
+<pre><code class="sh">mkdir devpkg
+cd devpkg
+touch README Makefile</code></pre>
+<h2 id="%E5%85%B6%E5%AE%83%E4%BE%9D%E8%B5%96" name="%E5%85%B6%E5%AE%83%E4%BE%9D%E8%B5%96">其它依赖</h2>
+<p>你应该已经安装了APR和APR-util，所以你需要一些更多的文件作为基本的依赖：</p>
+<ul>
+<li>练习20中的<code>dbg.h</code>。</li>
+<li>从<a href="http://bstring.sourceforge.net/">http://bstring.sourceforge.net/</a>下载的<code>bstrlib.h</code>和<code>bstrlib.c</code>。下载<code>.zip</code>文件，解压并且将这个两个文件拷贝到项目中。</li>
+<li>运行<code>make bstrlib.o</code>，如果这不能正常工作，阅读下面的“修复<code>bstring</code>”指南。</li>
+</ul>
+<blockquote>
+<p>注</p>
+</blockquote>
+<blockquote>
+<p>在一些平台上<code>bstring.c</code>文件会出现下列错误：</p>
+</blockquote>
+<blockquote>
+<pre><code class="sh">bstrlib.c:2762: error: expected declaration specifiers or '...' before numeric constant</code></pre>
+</blockquote>
+<blockquote>
+<p>这是由于作者使用了一个不好的定义，它在一些平台上不能工作。你需要修改第2759行的<code>#ifdef __GNUC__</code>，并把它改成：</p>
+</blockquote>
+<blockquote>
+<pre><code class="c">#if defined(__GNUC__) &amp;&amp; !defined(__APPLE__)</code></pre>
+</blockquote>
+<p>之后在Mac OSX平台上就应该能够正常工作了。</p>
+<p>做完上面这些后，你应该有了<code>Makefile</code>，<code>README</code>，<code>dbg.h</code>，<code>bstrlib.h</code>和<code>bstrlib.c</code>，并做好了准备。</p>
+<h2 id="Makefile" name="Makefile">Makefile</h2>
+<p>我们最好从<code>Makefile</code>开始，因为它列出了项目如何构建，以及你会创建哪些源文件。</p>
+<pre><code class="make">PREFIX?=/usr/local
+CFLAGS=-g -Wall -I${PREFIX}/apr/include/apr-1  -I${PREFIX}/apr/include/apr-util-1
+LDFLAGS=-L${PREFIX}/apr/lib -lapr-1 -pthread -laprutil-1
+
+all: devpkg
+
+devpkg: bstrlib.o db.o shell.o commands.o
+
+install: all
+     install -d $(DESTDIR)/$(PREFIX)/bin/
+     install devpkg $(DESTDIR)/$(PREFIX)/bin/
+
+clean:
+     rm -f *.o
+     rm -f devpkg
+     rm -rf *.dSYM</code></pre>
+<p>比起之前看到过的，这并没有什么新东西，除了可能有些奇怪的<code>?=</code>语法，它表示“如果之前没有定义，就将<code>PREFIX</code>设置为该值”。</p>
+<blockquote>
+<p>注</p>
+</blockquote>
+<blockquote>
+<p>如果你使用了最近版本的Ubuntu，你会得到<code>apr_off_t</code> 或 <code>off64_t</code>的错误，之后需要向<code>CFLAGS</code>添加<code>-D_LARGEFILE64_SOURCE=1</code>。</p>
+</blockquote>
+<blockquote>
+<p>所需的另一件事是，你需要向<code>/etc/ld.conf.so.d/</code>添加<code>/usr/local/apr/lib</code>，之后运行<code>ldconfig</code>使它能够选择正常的库。</p>
+</blockquote>
+<h2 id="%E6%BA%90%E6%96%87%E4%BB%B6" name="%E6%BA%90%E6%96%87%E4%BB%B6">源文件</h2>
+<p>我们可以从<code>makefile</code>中看到，<code>devpkg</code>有四个依赖项，它们是：</p>
+<p><code>bstrlib.o</code></p>
+<p>由<code>bstrlib.c</code>和<code>bstrlib.o</code>产生，你已经将它们引入了。</p>
+<p><code>db.o</code></p>
+<p>由<code>db.c</code>和<code>db.h</code>产生，它包含了一个小型“数据库”程序集的代码。</p>
+<p><code>shell.o</code></p>
+<p>由<code>shell.c</code>和<code>shell.h</code>产生，包含一些函数，是类似<code>curl</code>的一些命令运行起来更容易。</p>
+<p><code>commands.o</code></p>
+<p>由<code>commands.c</code>和<code>commands.h</code>产生，包含了<code>devpkg</code>所需的所有命令并使它更易用。</p>
+<p><code>devpkg</code></p>
+<p>它不会显式提到，但是它是<code>Makefile</code>在这一部分的目标。它由<code>devpkg.c</code>产生，包含用于整个程序的<code>main</code>函数。</p>
+<p>你的任务就是创建这些文件，并且输入代码并保证正确。</p>
+<blockquote>
+<p>注</p>
+</blockquote>
+<blockquote>
+<p>你读完这个描述可能会想，“Zed为什么那么聪明，坐着就能设计出来这些文件？！”我并不是用我强大的代码功力魔术般地把<code>devpkg</code>设计成这样。而是我做了这些：</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>我编写了简单的<code>README</code>来获得如何构建项目的灵感。</li>
+<li>我创建了一个简单的bash脚本（就像你编写的那样）来理清所需的所有组件。</li>
+<li>我创建了一个<code>.c</code>文件，并且在它上面花了几天，酝酿并想出点子。</li>
+<li>接着我编写并调试程序，之后我将这一个大文件分成四个文件。</li>
+<li>做完这些之后，我重命名和优化了函数和数据结构，使它们在逻辑上更“美观”。</li>
+<li>最后，使新程序成功并以相同方式工作之后，我添加了一些新的特性，比如<code>-F</code>和<code>-B</code>选项。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>你读到的这份列表是我打算教给你的，但不要认为这是我构建软件的通用方法。有时候我会事先知道主题，并且会做更多的规划。也有时我会编写一份规划并将它扔掉，之后再规划更好的版本。它完全取决于我的经验告诉我哪个比较好，或者我的灵感将我带到何处。</p>
+</blockquote>
+<blockquote>
+<p>如果你碰到一个“专家”，它告诉你只有一个方法可以解决编程问题，那么它在骗你。要么它们实际使用了很多策略，要么他们并不足够好。</p>
+</blockquote>
+<h2 id="DB%E5%87%BD%E6%95%B0" name="DB%E5%87%BD%E6%95%B0">DB函数</h2>
+<p>程序中必须有个方法来记录已经安装的URL，列出这些URL，并且检查一些程序是否已安装以便跳过。我会使用一个简单、扁平化的文件数据库，以及<code>bstrlib.h</code>。</p>
+<p>首先，创建<code>db.h</code>头文件，以便让你知道需要实现什么。</p>
+<pre><code class="c">#ifndef _db_h
+#define _db_h
+
+#define DB_FILE "/usr/local/.devpkg/db"
+#define DB_DIR "/usr/local/.devpkg"
+
+
+int DB_init();
+int DB_list();
+int DB_update(const char *url);
+int DB_find(const char *url);
+
+#endif</code></pre>
+<p>之后实现<code>db.c</code>中的这些函数，在你编写它的时候，像之前一样使用<code>make</code>。</p>
+<pre><code class="c">#include &lt;unistd.h&gt;
+#include &lt;apr_errno.h&gt;
+#include &lt;apr_file_io.h&gt;
+
+#include "db.h"
+#include "bstrlib.h"
+#include "dbg.h"
+
+static FILE *DB_open(const char *path, const char *mode)
+{
+    return fopen(path, mode);
+}
+
+
+static void DB_close(FILE *db)
+{
+    fclose(db);
+}
+
+
+static bstring DB_load()
+{
+    FILE *db = NULL;
+    bstring data = NULL;
+
+    db = DB_open(DB_FILE, "r");
+    check(db, "Failed to open database: %s", DB_FILE);
+
+    data = bread((bNread)fread, db);
+    check(data, "Failed to read from db file: %s", DB_FILE);
+
+    DB_close(db);
+    return data;
+
+error:
+    if(db) DB_close(db);
+    if(data) bdestroy(data);
+    return NULL;
+}
+
+
+int DB_update(const char *url)
+{
+    if(DB_find(url)) {
+        log_info("Already recorded as installed: %s", url);
+    }
+
+    FILE *db = DB_open(DB_FILE, "a+");
+    check(db, "Failed to open DB file: %s", DB_FILE);
+
+    bstring line = bfromcstr(url);
+    bconchar(line, '\n');
+    int rc = fwrite(line-&gt;data, blength(line), 1, db);
+    check(rc == 1, "Failed to append to the db.");
+
+    return 0;
+error:
+    if(db) DB_close(db);
+    return -1;
+}
+
+
+int DB_find(const char *url)
+{
+    bstring data = NULL;
+    bstring line = bfromcstr(url);
+    int res = -1;
+
+    data = DB_load();
+    check(data, "Failed to load: %s", DB_FILE);
+
+    if(binstr(data, 0, line) == BSTR_ERR) {
+        res = 0;
+    } else {
+        res = 1;
+    }
+
+error: // fallthrough
+    if(data) bdestroy(data);
+    if(line) bdestroy(line);
+
+    return res;
+}
+
+
+int DB_init()
+{
+    apr_pool_t *p = NULL;
+    apr_pool_initialize();
+    apr_pool_create(&amp;p, NULL);
+
+    if(access(DB_DIR, W_OK | X_OK) == -1) {
+        apr_status_t rc = apr_dir_make_recursive(DB_DIR,
+                APR_UREAD | APR_UWRITE | APR_UEXECUTE |
+                APR_GREAD | APR_GWRITE | APR_GEXECUTE, p);
+        check(rc == APR_SUCCESS, "Failed to make database dir: %s", DB_DIR);
+    }
+
+    if(access(DB_FILE, W_OK) == -1) {
+        FILE *db = DB_open(DB_FILE, "w");
+        check(db, "Cannot open database: %s", DB_FILE);
+        DB_close(db);
+    }
+
+    apr_pool_destroy(p);
+    return 0;
+
+error:
+    apr_pool_destroy(p);
+    return -1;
+}
+
+
+int DB_list()
+{
+    bstring data = DB_load();
+    check(data, "Failed to read load: %s", DB_FILE);
+
+    printf("%s", bdata(data));
+    bdestroy(data);
+    return 0;
+
+error:
+    return -1;
+}</code></pre>
+<h3 id="%E6%8C%91%E6%88%981%EF%BC%9A%E4%BB%A3%E7%A0%81%E5%A4%8D%E6%9F%A5" name="%E6%8C%91%E6%88%981%EF%BC%9A%E4%BB%A3%E7%A0%81%E5%A4%8D%E6%9F%A5">挑战1：代码复查</h3>
+<p>在继续之前，仔细阅读这些文件的每一行，并且确保你以准确地输入了它们。通过逐行阅读代码来实践它。同时，跟踪每个函数调用，并且确保你使用了<code>check</code>来校验返回值。最后，在APR网站上的文档，或者bstrlib.h 或 bstrlib.c的源码中，查阅每个你不认识的函数。</p>
+<h2 id="Shell+%E5%87%BD%E6%95%B0" name="Shell+%E5%87%BD%E6%95%B0">Shell 函数</h2>
+<p><code>devkpg</code>的一个关键设计是，使用类似于<code>curl</code>、<code>tar</code>和<code>git</code>的外部工具来完成大部分的工作。我们可以找到在程序内部完成这些工作的库，但是如果我们只是需要这些程序的基本功能，这样就毫无意义。在Unix运行其它命令并不丢人。</p>
+<p>为了完成这些，我打算使用<code>apr_thread_proc.h</code>函数来运行程序，但是我也希望创建一个简单的类“模板”系统。我会使用<code>struct Shell</code>，它持有所有运行程序所需的信息，但是在参数中有一些“空位”，我可以将它们替换成实际值。</p>
+<p>观察<code>shell.h</code>文件来了解我会用到的结构和命令。你可以看到我使用<code>extern</code>来表明其他的<code>.c</code>文件也能访问到<code>shell.c</code>中定义的变量。</p>
+<pre><code class="c">#ifndef _shell_h
+#define _shell_h
+
+#define MAX_COMMAND_ARGS 100
+
+#include &lt;apr_thread_proc.h&gt;
+
+typedef struct Shell {
+    const char *dir;
+    const char *exe;
+
+    apr_procattr_t *attr;
+    apr_proc_t proc;
+    apr_exit_why_e exit_why;
+    int exit_code;
+
+    const char *args[MAX_COMMAND_ARGS];
+} Shell;
+
+int Shell_run(apr_pool_t *p, Shell *cmd);
+int Shell_exec(Shell cmd, ...);
+
+extern Shell CLEANUP_SH;
+extern Shell GIT_SH;
+extern Shell TAR_SH;
+extern Shell CURL_SH;
+extern Shell CONFIGURE_SH;
+extern Shell MAKE_SH;
+extern Shell INSTALL_SH;
+
+#endif</code></pre>
+<p>确保你已经创建了<code>shell.h</code>，并且<code>extern Shell</code>变量的名字和数量相同。它们被<code>Shell_run</code>和<code>Shell_exec</code>函数用于运行命令。我定义了这两个函数，并且在<code>shell.c</code>中创建实际变量。</p>
+<pre><code class="c">#include "shell.h"
+#include "dbg.h"
+#include &lt;stdarg.h&gt;
+
+int Shell_exec(Shell template, ...)
+{
+    apr_pool_t *p = NULL;
+    int rc = -1;
+    apr_status_t rv = APR_SUCCESS;
+    va_list argp;
+    const char *key = NULL;
+    const char *arg = NULL;
+    int i = 0;
+
+    rv = apr_pool_create(&amp;p, NULL);
+    check(rv == APR_SUCCESS, "Failed to create pool.");
+
+    va_start(argp, template);
+
+    for(key = va_arg(argp, const char *);
+        key != NULL;
+        key = va_arg(argp, const char *))
+    {
+        arg = va_arg(argp, const char *);
+
+        for(i = 0; template.args[i] != NULL; i++) {
+            if(strcmp(template.args[i], key) == 0) {
+                template.args[i] = arg;
+                break; // found it
+            }
+        }
+    }
+
+    rc = Shell_run(p, &amp;template);
+    apr_pool_destroy(p);
+    va_end(argp);
+    return rc;
+
+error:
+    if(p) {
+        apr_pool_destroy(p);
+    }
+    return rc;
+}
+
+int Shell_run(apr_pool_t *p, Shell *cmd)
+{
+    apr_procattr_t *attr;
+    apr_status_t rv;
+    apr_proc_t newproc;
+
+    rv = apr_procattr_create(&amp;attr, p);
+    check(rv == APR_SUCCESS, "Failed to create proc attr.");
+
+    rv = apr_procattr_io_set(attr, APR_NO_PIPE, APR_NO_PIPE,
+            APR_NO_PIPE);
+    check(rv == APR_SUCCESS, "Failed to set IO of command.");
+
+    rv = apr_procattr_dir_set(attr, cmd-&gt;dir);
+    check(rv == APR_SUCCESS, "Failed to set root to %s", cmd-&gt;dir);
+
+    rv = apr_procattr_cmdtype_set(attr, APR_PROGRAM_PATH);
+    check(rv == APR_SUCCESS, "Failed to set cmd type.");
+
+    rv = apr_proc_create(&amp;newproc, cmd-&gt;exe, cmd-&gt;args, NULL, attr, p);
+    check(rv == APR_SUCCESS, "Failed to run command.");
+
+    rv = apr_proc_wait(&amp;newproc, &amp;cmd-&gt;exit_code, &amp;cmd-&gt;exit_why, APR_WAIT);
+    check(rv == APR_CHILD_DONE, "Failed to wait.");
+
+    check(cmd-&gt;exit_code == 0, "%s exited badly.", cmd-&gt;exe);
+    check(cmd-&gt;exit_why == APR_PROC_EXIT, "%s was killed or crashed", cmd-&gt;exe);
+
+    return 0;
+
+error:
+    return -1;
+}
+
+Shell CLEANUP_SH = {
+    .exe = "rm",
+    .dir = "/tmp",
+    .args = {"rm", "-rf", "/tmp/pkg-build", "/tmp/pkg-src.tar.gz",
+        "/tmp/pkg-src.tar.bz2", "/tmp/DEPENDS", NULL}
+};
+
+Shell GIT_SH = {
+    .dir = "/tmp",
+    .exe = "git",
+    .args = {"git", "clone", "URL", "pkg-build", NULL}
+};
+
+Shell TAR_SH = {
+    .dir = "/tmp/pkg-build",
+    .exe = "tar",
+    .args = {"tar", "-xzf", "FILE", "--strip-components", "1", NULL}
+};
+
+Shell CURL_SH = {
+    .dir = "/tmp",
+    .exe = "curl",
+    .args = {"curl", "-L", "-o", "TARGET", "URL", NULL}
+};
+
+Shell CONFIGURE_SH = {
+    .exe = "./configure",
+    .dir = "/tmp/pkg-build",
+    .args = {"configure", "OPTS", NULL},
+};
+
+Shell MAKE_SH = {
+    .exe = "make",
+    .dir = "/tmp/pkg-build",
+    .args = {"make", "OPTS", NULL}
+};
+
+Shell INSTALL_SH = {
+    .exe = "sudo",
+    .dir = "/tmp/pkg-build",
+    .args = {"sudo", "make", "TARGET", NULL}
+};</code></pre>
+<p>自底向上阅读<code>shell.c</code>的代码（这也是常见的C源码布局），你会看到我创建了实际的<code>Shell</code>变量，它在<code>shell.h</code>中以<code>extern</code>修饰。它们虽然在这里，但是也被程序的其它部分使用。这就是创建全局变量的方式，它们可以存在于一个<code>.c</code>文件中，但是可在任何地方使用。你不应该创建很多这类变量，但是它们的确很方便。</p>
+<p>继续阅读代码，我们读到了<code>Shell_run</code>，它是一个“基”函数，只是基于<code>Shell</code>中的东西执行命令。它使用了许多在<code>apr_thread_proc.h</code>中定义的函数，你需要查阅它们的每一个来了解工作原理。这就像是一些使用<code>system</code>函数调用的代码一样，但是它可以让你控制其他程序的执行。例如，在我们的<code>Shell</code>结构中，存在<code>.dir</code>属性在运行之前强制程序必须在指定目录中。</p>
+<p>最后，我创建了<code>Shell_exec</code>函数，它是个变参函数。你在之前已经看到过了，但是确保你理解了<code>stdarg.h</code>函数以及如何编写它们。在下个挑战中你需要分析这一函数。</p>
+<h3 id="%E6%8C%91%E6%88%982%EF%BC%9A%E5%88%86%E6%9E%90Shell_exec" name="%E6%8C%91%E6%88%982%EF%BC%9A%E5%88%86%E6%9E%90Shell_exec">挑战2：分析<code>Shell_exec</code></h3>
+<p>为这些文件（以及向挑战1那样的完整的代码复查）设置的挑战是完整分析<code>Shell_exec</code>，并且拆分代码来了解工作原理。你应该能够理解每一行代码，<code>for</code>循环如何工作，以及参数如何被替换。</p>
+<p>一旦你分析完成，向<code>struct Shell</code>添加一个字段，提供需要替代的<code>args</code>变量的数量。更新所有命令来接受参数的正确数量，随后增加一个错误检查，来确认参数被正确替换，以及在错误时退出。</p>
+<h2 id="%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%87%BD%E6%95%B0" name="%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%87%BD%E6%95%B0">命令行函数</h2>
+<p>现在你需要构造正确的命令来完成功能。这些命令会用到APR的函数、<code>db.h</code>和<code>shell.h</code>来执行下载和构建软件的真正工作。这些文件最为复杂，所以要小心编写它们。你需要首先编写<code>commands.h</code>文件，接着在<code>commands.c</code>文件中实现它的函数。</p>
+<pre><code class="c">#ifndef _commands_h
+#define _commands_h
+
+#include &lt;apr_pools.h&gt;
+
+#define DEPENDS_PATH "/tmp/DEPENDS"
+#define TAR_GZ_SRC "/tmp/pkg-src.tar.gz"
+#define TAR_BZ2_SRC "/tmp/pkg-src.tar.bz2"
+#define BUILD_DIR "/tmp/pkg-build"
+#define GIT_PAT "*.git"
+#define DEPEND_PAT "*DEPENDS"
+#define TAR_GZ_PAT "*.tar.gz"
+#define TAR_BZ2_PAT "*.tar.bz2"
+#define CONFIG_SCRIPT "/tmp/pkg-build/configure"
+
+enum CommandType {
+    COMMAND_NONE, COMMAND_INSTALL, COMMAND_LIST, COMMAND_FETCH,
+    COMMAND_INIT, COMMAND_BUILD
+};
+
+
+int Command_fetch(apr_pool_t *p, const char *url, int fetch_only);
+
+int Command_install(apr_pool_t *p, const char *url, const char *configure_opts,
+        const char *make_opts, const char *install_opts);
+
+int Command_depends(apr_pool_t *p, const char *path);
+
+int Command_build(apr_pool_t *p, const char *url, const char *configure_opts,
+        const char *make_opts, const char *install_opts);
+
+#endif</code></pre>
+<p><code>commands.h</code>中并没有很多之前没见过的东西。你应该看到了一些字符串的定义，它们在任何地方都会用到。真正的代码在<code>commands.c</code>中。</p>
+<pre><code class="c">#include &lt;apr_uri.h&gt;
+#include &lt;apr_fnmatch.h&gt;
+#include &lt;unistd.h&gt;
+
+#include "commands.h"
+#include "dbg.h"
+#include "bstrlib.h"
+#include "db.h"
+#include "shell.h"
+
+
+int Command_depends(apr_pool_t *p, const char *path)
+{
+    FILE *in = NULL;
+    bstring line = NULL;
+
+    in = fopen(path, "r");
+    check(in != NULL, "Failed to open downloaded depends: %s", path);
+
+    for(line = bgets((bNgetc)fgetc, in, '\n'); line != NULL;
+            line = bgets((bNgetc)fgetc, in, '\n'))
+    {
+        btrimws(line);
+        log_info("Processing depends: %s", bdata(line));
+        int rc = Command_install(p, bdata(line), NULL, NULL, NULL);
+        check(rc == 0, "Failed to install: %s", bdata(line));
+        bdestroy(line);
+    }
+
+    fclose(in);
+    return 0;
+
+error:
+    if(line) bdestroy(line);
+    if(in) fclose(in);
+    return -1;
+}
+
+int Command_fetch(apr_pool_t *p, const char *url, int fetch_only)
+{
+    apr_uri_t info = {.port = 0};
+    int rc = 0;
+    const char *depends_file = NULL;
+    apr_status_t rv = apr_uri_parse(p, url, &amp;info);
+
+    check(rv == APR_SUCCESS, "Failed to parse URL: %s", url);
+
+    if(apr_fnmatch(GIT_PAT, info.path, 0) == APR_SUCCESS) {
+        rc = Shell_exec(GIT_SH, "URL", url, NULL);
+        check(rc == 0, "git failed.");
+    } else if(apr_fnmatch(DEPEND_PAT, info.path, 0) == APR_SUCCESS) {
+        check(!fetch_only, "No point in fetching a DEPENDS file.");
+
+        if(info.scheme) {
+            depends_file = DEPENDS_PATH;
+            rc = Shell_exec(CURL_SH, "URL", url, "TARGET", depends_file, NULL);
+            check(rc == 0, "Curl failed.");
+        } else {
+            depends_file = info.path;
+        }
+
+        // recursively process the devpkg list
+        log_info("Building according to DEPENDS: %s", url);
+        rv = Command_depends(p, depends_file);
+        check(rv == 0, "Failed to process the DEPENDS: %s", url);
+
+        // this indicates that nothing needs to be done
+        return 0;
+
+    } else if(apr_fnmatch(TAR_GZ_PAT, info.path, 0) == APR_SUCCESS) {
+        if(info.scheme) {
+            rc = Shell_exec(CURL_SH,
+                    "URL", url,
+                    "TARGET", TAR_GZ_SRC, NULL);
+            check(rc == 0, "Failed to curl source: %s", url);
+        }
+
+        rv = apr_dir_make_recursive(BUILD_DIR,
+                APR_UREAD | APR_UWRITE | APR_UEXECUTE, p);
+        check(rv == APR_SUCCESS, "Failed to make directory %s", BUILD_DIR);
+
+        rc = Shell_exec(TAR_SH, "FILE", TAR_GZ_SRC, NULL);
+        check(rc == 0, "Failed to untar %s", TAR_GZ_SRC);
+    } else if(apr_fnmatch(TAR_BZ2_PAT, info.path, 0) == APR_SUCCESS) {
+        if(info.scheme) {
+            rc = Shell_exec(CURL_SH, "URL", url, "TARGET", TAR_BZ2_SRC, NULL);
+            check(rc == 0, "Curl failed.");
+        }
+
+        apr_status_t rc = apr_dir_make_recursive(BUILD_DIR,
+                APR_UREAD | APR_UWRITE | APR_UEXECUTE, p);
+
+        check(rc == 0, "Failed to make directory %s", BUILD_DIR);
+        rc = Shell_exec(TAR_SH, "FILE", TAR_BZ2_SRC, NULL);
+        check(rc == 0, "Failed to untar %s", TAR_BZ2_SRC);
+    } else {
+        sentinel("Don't now how to handle %s", url);
+    }
+
+    // indicates that an install needs to actually run
+    return 1;
+error:
+    return -1;
+}
+
+int Command_build(apr_pool_t *p, const char *url, const char *configure_opts,
+        const char *make_opts, const char *install_opts)
+{
+    int rc = 0;
+
+    check(access(BUILD_DIR, X_OK | R_OK | W_OK) == 0,
+            "Build directory doesn't exist: %s", BUILD_DIR);
+
+    // actually do an install
+    if(access(CONFIG_SCRIPT, X_OK) == 0) {
+        log_info("Has a configure script, running it.");
+        rc = Shell_exec(CONFIGURE_SH, "OPTS", configure_opts, NULL);
+        check(rc == 0, "Failed to configure.");
+    }
+
+    rc = Shell_exec(MAKE_SH, "OPTS", make_opts, NULL);
+    check(rc == 0, "Failed to build.");
+
+    rc = Shell_exec(INSTALL_SH,
+            "TARGET", install_opts ? install_opts : "install",
+            NULL);
+    check(rc == 0, "Failed to install.");
+
+    rc = Shell_exec(CLEANUP_SH, NULL);
+    check(rc == 0, "Failed to cleanup after build.");
+
+    rc = DB_update(url);
+    check(rc == 0, "Failed to add this package to the database.");
+
+    return 0;
+
+error:
+    return -1;
+}
+
+int Command_install(apr_pool_t *p, const char *url, const char *configure_opts,
+        const char *make_opts, const char *install_opts)
+{
+    int rc = 0;
+    check(Shell_exec(CLEANUP_SH, NULL) == 0, "Failed to cleanup before building.");
+
+    rc = DB_find(url);
+    check(rc != -1, "Error checking the install database.");
+
+    if(rc == 1) {
+        log_info("Package %s already installed.", url);
+        return 0;
+    }
+
+    rc = Command_fetch(p, url, 0);
+
+    if(rc == 1) {
+        rc = Command_build(p, url, configure_opts, make_opts, install_opts);
+        check(rc == 0, "Failed to build: %s", url);
+    } else if(rc == 0) {
+        // no install needed
+        log_info("Depends successfully installed: %s", url);
+    } else {
+        // had an error
+        sentinel("Install failed: %s", url);
+    }
+
+    Shell_exec(CLEANUP_SH, NULL);
+    return 0;
+
+error:
+    Shell_exec(CLEANUP_SH, NULL);
+    return -1;
+}</code></pre>
+<p>在你输入并编译它之后，就可以开始分析了。如果到目前为止你完成了前面的挑战，你会理解如何使用<code>shell.c</code>函数来运行shell命令，以及参数如何被替换。如果没有则需要回退到前面的挑战，确保你真正理解了<code>Shell_exec</code>的工作原理。</p>
+<h3 id="%E6%8C%91%E6%88%983%EF%BC%9A%E8%AF%84%E5%88%A4%E6%88%91%E7%9A%84%E8%AE%BE%E8%AE%A1" name="%E6%8C%91%E6%88%983%EF%BC%9A%E8%AF%84%E5%88%A4%E6%88%91%E7%9A%84%E8%AE%BE%E8%AE%A1">挑战3：评判我的设计</h3>
+<p>像之前一样，完整地复查一遍代码来保证一模一样。接着浏览每个函数并且确保你知道他如何工作。你也应该跟踪这个文件或其它文件中，每个函数对其它函数的调用。最后，确认你理解了这里的所有调用APR的函数。</p>
+<p>一旦你正确编写并分析了这个文件，把我当成一个傻瓜一样来评判我的设计，我需要看看你是否可以改进它。不要真正修改代码，只是创建一个<code>notes.txt</code>并且写下你的想法和你需要修改的地方。</p>
+<h2 id="devpkg%E7%9A%84main%E5%87%BD%E6%95%B0" name="devpkg%E7%9A%84main%E5%87%BD%E6%95%B0"><code>devpkg</code>的<code>main</code>函数</h2>
+<p><code>devpkg.c</code>是最后且最重要的，但是也可能是最简单的文件，其中创建了<code>main</code>函数。没有与之配套的<code>.h</code>文件，因为这个文件包含其他所有文件。这个文件用于创建<code>devpkg</code>可执行程序，同时组装了来自<code>Makefile</code>的其它<code>.o</code>文件。在文件中输入代码并保证正确。</p>
+<pre><code class="c">#include &lt;stdio.h&gt;
+#include &lt;apr_general.h&gt;
+#include &lt;apr_getopt.h&gt;
+#include &lt;apr_strings.h&gt;
+#include &lt;apr_lib.h&gt;
+
+#include "dbg.h"
+#include "db.h"
+#include "commands.h"
+
+int main(int argc, const char const *argv[])
+{
+    apr_pool_t *p = NULL;
+    apr_pool_initialize();
+    apr_pool_create(&amp;p, NULL);
+
+    apr_getopt_t *opt;
+    apr_status_t rv;
+
+    char ch = '\0';
+    const char *optarg = NULL;
+    const char *config_opts = NULL;
+    const char *install_opts = NULL;
+    const char *make_opts = NULL;
+    const char *url = NULL;
+    enum CommandType request = COMMAND_NONE;
+
+
+    rv = apr_getopt_init(&amp;opt, p, argc, argv);
+
+    while(apr_getopt(opt, "I:Lc:m:i:d:SF:B:", &amp;ch, &amp;optarg) == APR_SUCCESS) {
+        switch (ch) {
+            case 'I':
+                request = COMMAND_INSTALL;
+                url = optarg;
+                break;
+
+            case 'L':
+                request = COMMAND_LIST;
+                break;
+
+            case 'c':
+                config_opts = optarg;
+                break;
+
+            case 'm':
+                make_opts = optarg;
+                break;
+
+            case 'i':
+                install_opts = optarg;
+                break;
+
+            case 'S':
+                request = COMMAND_INIT;
+                break;
+
+            case 'F':
+                request = COMMAND_FETCH;
+                url = optarg;
+                break;
+
+            case 'B':
+                request = COMMAND_BUILD;
+                url = optarg;
+                break;
+        }
+    }
+
+    switch(request) {
+        case COMMAND_INSTALL:
+            check(url, "You must at least give a URL.");
+            Command_install(p, url, config_opts, make_opts, install_opts);
+            break;
+
+        case COMMAND_LIST:
+            DB_list();
+            break;
+
+        case COMMAND_FETCH:
+            check(url != NULL, "You must give a URL.");
+            Command_fetch(p, url, 1);
+            log_info("Downloaded to %s and in /tmp/", BUILD_DIR);
+            break;
+
+        case COMMAND_BUILD:
+            check(url, "You must at least give a URL.");
+            Command_build(p, url, config_opts, make_opts, install_opts);
+            break;
+
+        case COMMAND_INIT:
+            rv = DB_init();
+            check(rv == 0, "Failed to make the database.");
+            break;
+
+        default:
+            sentinel("Invalid command given.");
+    }
+
+
+    return 0;
+
+error:
+    return 1;
+}</code></pre>
+<h3 id="%E6%8C%91%E6%88%984%EF%BC%9AREADME+%E5%92%8C%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6" name="%E6%8C%91%E6%88%984%EF%BC%9AREADME+%E5%92%8C%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6">挑战4：README 和测试文件</h3>
+<p>为这个文件设置的挑战是理解参数如何处理，以及参数是什么，之后创建含有使用指南的<code>README</code>文件。在编写<code>README</code>的同时，也编写一个简单的<code>simple.sh</code>，它运行<code>./devpkg</code>来检查每个命令都在实际环境下工作。在你的脚本顶端使用<code>set -e</code>，使它跳过第一个错误。</p>
+<p>最后，在<code>Valgrind</code>下运行程序，确保在进行下一步之前，所有东西都能正常运行。</p>
+<h2 id="%E6%9C%9F%E4%B8%AD%E6%A3%80%E6%B5%8B" name="%E6%9C%9F%E4%B8%AD%E6%A3%80%E6%B5%8B">期中检测</h2>
+<p>最后的挑战就是这个期中检测，它包含三件事情：</p>
+<ul>
+<li>将你的代码与我的在线代码对比，以100%的分数开始，每错一行减去1%。</li>
+<li>在你的<code>notes.txt</code>中记录你是如何改进代码和<code>devpkg</code>的功能，并且实现你的改进。</li>
+<li>编写一个<code>devpkg</code>的替代版本，使用其他你喜欢的语言，或者你觉得最适合编写它的语言。对比二者，之后基于你的结果改进你的<code>devpkg</code>的C版本。</li>
+</ul>
+<p>你可以执行下列命令来将你的代码与我的对比：</p>
+<pre><code class="sh">cd ..  # get one directory above your current one
+git clone git://gitorious.org/devpkg/devpkg.git devpkgzed
+diff -r devpkg devpkgzed</code></pre>
+<p>这将会克隆我的<code>devpkg</code>版本到<code>devpkgzed</code>目录中。之后使用工具<code>diff</code>来对比你的和我的代码。书中你所使用的这些文件直接来自于这个项目，所以如果出现了不同的行，肯定就有错误。</p>
+<p>要记住这个练习没有真正的及格或不及格，它只是一个方式来让你挑战自己，并尽可能变得精确和谨慎。</p>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/posts/41ABE0D9F5D3164C.html" title="编写第一个真正的程序">https://naka507.github.io/posts/41ABE0D9F5D3164C.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/4E20ABB99B7A3EF5/index.html" rel="tag"># 扩展</a>
+                                                                <a href="https://naka507.github.io/tag/3F0143988DDBF6CC/index.html" rel="tag"># make</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/posts/2852FA26A8BCFAD2.html" rel="next" title="变参函数">
+                                        <i class="fa fa-chevron-left"></i>
+                                        变参函数                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/posts/FFD032B7FC697307.html" rel="prev" title="创造性和防御性编程">
+                                        创造性和防御性编程                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#%E7%BC%96%E5%86%99%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%9C%9F%E6%AD%A3%E7%9A%84%E7%A8%8B%E5%BA%8F">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">编写第一个真正的程序</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFdevpkg%EF%BC%9F">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">什么是`devpkg`？</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E6%88%91%E4%BB%AC%E6%89%93%E7%AE%97%E5%88%9B%E5%BB%BA%E4%BB%80%E4%B9%88">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">我们打算创建什么</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E8%AE%BE%E8%AE%A1">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">设计</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#Apache+%E5%8F%AF%E7%A7%BB%E6%A4%8D%E8%BF%90%E8%A1%8C%E6%97%B6">
+                                <span class="nav-number">1.4.</span> 
+                                <span class="nav-text">Apache 可移植运行时</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%B8%83%E5%B1%80">
+                                <span class="nav-number">1.5.</span> 
+                                <span class="nav-text">项目布局</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%85%B6%E5%AE%83%E4%BE%9D%E8%B5%96">
+                                <span class="nav-number">1.6.</span> 
+                                <span class="nav-text">其它依赖</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#Makefile">
+                                <span class="nav-number">1.7.</span> 
+                                <span class="nav-text">Makefile</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E6%BA%90%E6%96%87%E4%BB%B6">
+                                <span class="nav-number">1.8.</span> 
+                                <span class="nav-text">源文件</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#DB%E5%87%BD%E6%95%B0">
+                                <span class="nav-number">1.9.</span> 
+                                <span class="nav-text">DB函数</span>
+                            </a>
+                                                        <ol class="nav-child">
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E6%8C%91%E6%88%981%EF%BC%9A%E4%BB%A3%E7%A0%81%E5%A4%8D%E6%9F%A5">
+                                        <span class="nav-number">1.9.1</span> 
+                                        <span class="nav-text">挑战1：代码复查</span>
+                                    </a>
+                                </li>
+                                                            </ol>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#Shell+%E5%87%BD%E6%95%B0">
+                                <span class="nav-number">1.10.</span> 
+                                <span class="nav-text">Shell 函数</span>
+                            </a>
+                                                        <ol class="nav-child">
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E6%8C%91%E6%88%982%EF%BC%9A%E5%88%86%E6%9E%90Shell_exec">
+                                        <span class="nav-number">1.10.1</span> 
+                                        <span class="nav-text">挑战2：分析`Shell_exec`</span>
+                                    </a>
+                                </li>
+                                                            </ol>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%87%BD%E6%95%B0">
+                                <span class="nav-number">1.11.</span> 
+                                <span class="nav-text">命令行函数</span>
+                            </a>
+                                                        <ol class="nav-child">
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E6%8C%91%E6%88%983%EF%BC%9A%E8%AF%84%E5%88%A4%E6%88%91%E7%9A%84%E8%AE%BE%E8%AE%A1">
+                                        <span class="nav-number">1.11.1</span> 
+                                        <span class="nav-text">挑战3：评判我的设计</span>
+                                    </a>
+                                </li>
+                                                            </ol>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#devpkg%E7%9A%84main%E5%87%BD%E6%95%B0">
+                                <span class="nav-number">1.12.</span> 
+                                <span class="nav-text">`devpkg`的`main`函数</span>
+                            </a>
+                                                        <ol class="nav-child">
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E6%8C%91%E6%88%984%EF%BC%9AREADME+%E5%92%8C%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6">
+                                        <span class="nav-number">1.12.1</span> 
+                                        <span class="nav-text">挑战4：README 和测试文件</span>
+                                    </a>
+                                </li>
+                                                            </ol>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E6%9C%9F%E4%B8%AD%E6%A3%80%E6%B5%8B">
+                                <span class="nav-number">1.13.</span> 
+                                <span class="nav-text">期中检测</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = '41ABE0D9F5D3164C';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: '编写第一个真正的程序',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,913 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="你已经学到了大多数C语言的基础，并且准备好开始成为一个更严谨的程序员了。这里就是从初学者走向专家的地方，不仅仅对于C，更对于核心的计算机科学概念。我将会教给你一些核心的数据结构和算法，它们是每个程序员都要懂的，还有一些我在真实程序中所使用的一些非常有趣的东西。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="创造性和防御性编程" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="你已经学到了大多数C语言的基础，并且准备好开始成为一个更严谨的程序员了。这里就是从初学者走向专家的地方，不仅仅对于C，更对于核心的计算机科学概念。我将会教给你一些核心的数据结构和算法，它们是每个程序员都要懂的，还有一些我在真实程序中所使用的一些非常有趣的东西。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="创造性和防御性编程" /> 
+    <meta name="twitter:description" content="你已经学到了大多数C语言的基础，并且准备好开始成为一个更严谨的程序员了。这里就是从初学者走向专家的地方，不仅仅对于C，更对于核心的计算机科学概念。我将会教给你一些核心的数据结构和算法，它们是每个程序员都要懂的，还有一些我在真实程序中所使用的一些非常有趣的东西。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>创造性和防御性编程 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/posts/FFD032B7FC697307.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">创造性和防御性编程</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:20:09">2019-02-27 16:20:09</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/74E8C34FA9AF373A/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习4</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">你已经学到了大多数C语言的基础，并且准备好开始成为一个更严谨的程序员了。这里就是从初学者走向专家的地方，不仅仅对于C，更对于核心的计算机科学概念。我将会教给你一些核心的数据结构和算法，它们是每个程序员都要懂的，还有一些我在真实程序中所使用的一些非常有趣的东西。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="%E5%88%9B%E9%80%A0%E6%80%A7%E5%92%8C%E9%98%B2%E5%BE%A1%E6%80%A7%E7%BC%96%E7%A8%8B" name="%E5%88%9B%E9%80%A0%E6%80%A7%E5%92%8C%E9%98%B2%E5%BE%A1%E6%80%A7%E7%BC%96%E7%A8%8B">创造性和防御性编程</h1>
+<p>你已经学到了大多数C语言的基础，并且准备好开始成为一个更严谨的程序员了。这里就是从初学者走向专家的地方，不仅仅对于C，更对于核心的计算机科学概念。我将会教给你一些核心的数据结构和算法，它们是每个程序员都要懂的，还有一些我在真实程序中所使用的一些非常有趣的东西。</p>
+<p>在我开始之前，我需要教给你一些基本的技巧和观念，它们能帮助你编写更好的软件。练习27到31会教给你高级的概念和特性，而不是谈论编程，但是这些之后你将会应用它们来编写核心库或有用的数据结构。</p>
+<p>编写更好的C代码（实际上是所有语言）的第一步是，学习一种新的观念叫做“防御性编程”。防御性编程假设你可能会制造出很多错误，之后尝试在每一步尽可能预防它们。这个练习中我打算教给你如何以防御性的思维来思考编程。</p>
+<h2 id="%E5%88%9B%E9%80%A0%E6%80%A7%E7%BC%96%E7%A8%8B%E6%80%9D%E7%BB%B4" name="%E5%88%9B%E9%80%A0%E6%80%A7%E7%BC%96%E7%A8%8B%E6%80%9D%E7%BB%B4">创造性编程思维</h2>
+<p>在这个简单的练习中要告诉你如何做到创造性是不可能的，但是我会告诉你一些涉及到任务风险和开放思维的创造力。恐惧会快速地扼杀创造力，所以我采用，并且许多程序员也采用的这种思维方式使我不会惧怕风险，并且看上去像个傻瓜。</p>
+<ul>
+<li>我不会犯错误。</li>
+<li>人们所想的并不重要。</li>
+<li>我脑子里面诞生的想法才是最好的。</li>
+</ul>
+<p>我只是暂时接受了这种思维，并且在应用中用了一些小技巧。为了这样做我会提出一些想法，寻找创造性的解决方案，开一些奇奇怪怪的脑洞，并且不会害怕发明一些古怪的东西。在这种思维方式下，我通常会编写出第一个版本的糟糕代码，用于将想法描述出来。</p>
+<p>然而，当我完成我的创造性原型时，我会将它扔掉，并且将它变得严谨和可考。其它人在这里常犯的一个错误就是将创造性思维引入它们的实现阶段。这样会产生一种非常不同的破坏性思维，它是创造性思维的阴暗面：</p>
+<ul>
+<li>编写完美的软件是可行的。</li>
+<li>我的大脑告诉我了真相，它不会发现任何错误，所以我写了完美的软件。</li>
+<li>我的代码就是我自己，批判它的人也在批判我。</li>
+</ul>
+<p>这些都是错误的。你经常会碰到一些程序员，它们对自己创造的软件具有强烈的荣誉感。这很正常，但是这种荣誉感会成为客观上改进作品的阻力。由于这种荣誉感和它们对作品的依恋，它们会一直相信它们编写的东西是完美的。只要它们忽视其它人的对这些代码的观点，它们就可以保护它们的玻璃心，并且永远不会改进。</p>
+<p>同时具有创造性思维和编写可靠软件的技巧是，采用防御性编程的思维。</p>
+<h2 id="%E9%98%B2%E5%BE%A1%E6%80%A7%E7%BC%96%E7%A8%8B%E6%80%9D%E7%BB%B4" name="%E9%98%B2%E5%BE%A1%E6%80%A7%E7%BC%96%E7%A8%8B%E6%80%9D%E7%BB%B4">防御性编程思维</h2>
+<p>在你做出创造性原型，并且对你的想法感觉良好之后，就应该切换到防御性思维了。防御性思维的程序员大致上会否定你的代码，并且相信下面这些事情：</p>
+<ul>
+<li>软件中存在错误。</li>
+<li>你并不是你的软件，但你需要为错误负责。</li>
+<li>你永远不可能消除所有错误，只能降低它们的可能性。</li>
+</ul>
+<p>这种思维方式让你诚实地对待你的代码，并且为改进批判地分析它。注意上面并没有说<strong>你</strong>充满了错误，只是说你的<strong>代码</strong>充满错误。这是一个需要理解的关键，因为它给了你编写下一个实现的客观力量。</p>
+<p>就像创造性思维，防御性编程思维也有阴暗面。防御性程序员是一个惧怕任何事情的偏执狂，这种恐惧使他们远离可能的错误或避免犯错误。当你尝试做到严格一致或正确时这很好，但是它是创造力和专注的杀手。</p>
+<h2 id="%E5%85%AB%E4%B8%AA%E9%98%B2%E5%BE%A1%E6%80%A7%E7%BC%96%E7%A8%8B%E7%AD%96%E7%95%A5" name="%E5%85%AB%E4%B8%AA%E9%98%B2%E5%BE%A1%E6%80%A7%E7%BC%96%E7%A8%8B%E7%AD%96%E7%95%A5">八个防御性编程策略</h2>
+<p>一旦你接受了这一思维，你可以重新编写你的原型，并且遵循下面的八个策略，它们被我用于尽可能把代码变得可靠。当我编写代码的“实际”版本，我会严格按照下面的策略，并且尝试消除尽可能多的错误，以一些会破坏我软件的人的方式思考。</p>
+<p>永远不要信任输入</p>
+<p>永远不要提供的输入，并总是校验它。</p>
+<p>避免错误</p>
+<p>如果错误可能发生，不管可能性多低都要避免它。</p>
+<p>过早暴露错误</p>
+<p>过早暴露错误，并且评估发生了什么、在哪里发生以及如何修复。</p>
+<p>记录假设</p>
+<p>清楚地记录所有先决条件，后置条件以及不变量。</p>
+<p>防止过多的文档</p>
+<p>不要在实现阶段就编写文档，它们可以在代码完成时编写。</p>
+<p>使一切自动化</p>
+<p>使一切自动化，尤其是测试。</p>
+<p>简单化和清晰化</p>
+<p>永远简化你的代码，在没有牺牲安全性的同时变得最小和最整洁。</p>
+<p>质疑权威</p>
+<p>不要盲目遵循或拒绝规则。</p>
+<p>这些并不是全部，仅仅是一些核心的东西，我认为程序员应该在编程可靠的代码时专注于它们。要注意我并没有真正说明如何具体做到这些，我接下来会更细致地讲解每一条，并且会布置一些覆盖它们的练习。</p>
+<h2 id="%E5%BA%94%E7%94%A8%E8%BF%99%E5%85%AB%E6%9D%A1%E7%AD%96%E7%95%A5" name="%E5%BA%94%E7%94%A8%E8%BF%99%E5%85%AB%E6%9D%A1%E7%AD%96%E7%95%A5">应用这八条策略</h2>
+<p>这些观点都是一些流行心理学的陈词滥调，但是你如何把它们应用到实际编程中呢？我现在打算向你展示这本书中的一些代码所做的事情，这些代码用具体的例子展示每一条策略。这八条策略并不止于这些例子，你应该使用它们作为指导，使你的代码更可靠。</p>
+<h3 id="%E6%B0%B8%E8%BF%9C%E4%B8%8D%E8%A6%81%E4%BF%A1%E4%BB%BB%E8%BE%93%E5%85%A5" name="%E6%B0%B8%E8%BF%9C%E4%B8%8D%E8%A6%81%E4%BF%A1%E4%BB%BB%E8%BE%93%E5%85%A5">永远不要信任输入</h3>
+<p>让我们来看一个坏设计和“更好”的设计的例子。我并不想称之为好设计，因为它可以做得更好。看一看这两个函数，它们都复制字符串，<code>main</code>函数用于测试哪个更好。</p>
+<pre><code class="c">undef NDEBUG
+#include "dbg.h"
+#include &lt;stdio.h&gt;
+#include &lt;assert.h&gt;
+
+/*
+ * Naive copy that assumes all inputs are always valid
+ * taken from K&amp;R C and cleaned up a bit.
+ */
+void copy(char to[], char from[])
+{
+    int i = 0;
+
+    // while loop will not end if from isn't '\0' terminated
+    while((to[i] = from[i]) != '\0') {
+        ++i;
+    }
+}
+
+/*
+ * A safer version that checks for many common errors using the
+ * length of each string to control the loops and termination.
+ */
+int safercopy(int from_len, char *from, int to_len, char *to)
+{
+    assert(from != NULL &amp;&amp; to != NULL &amp;&amp; "from and to can't be NULL");
+    int i = 0;
+    int max = from_len &gt; to_len - 1 ? to_len - 1 : from_len;
+
+    // to_len must have at least 1 byte
+    if(from_len &lt; 0 || to_len &lt;= 0) return -1;
+
+    for(i = 0; i &lt; max; i++) {
+        to[i] = from[i];
+    }
+
+    to[to_len - 1] = '\0';
+
+    return i;
+}
+
+
+int main(int argc, char *argv[])
+{
+    // careful to understand why we can get these sizes
+    char from[] = "0123456789";
+    int from_len = sizeof(from);
+
+    // notice that it's 7 chars + \0
+    char to[] = "0123456";
+    int to_len = sizeof(to);
+
+    debug("Copying '%s':%d to '%s':%d", from, from_len, to, to_len);
+
+    int rc = safercopy(from_len, from, to_len, to);
+    check(rc &gt; 0, "Failed to safercopy.");
+    check(to[to_len - 1] == '\0', "String not terminated.");
+
+    debug("Result is: '%s':%d", to, to_len);
+
+    // now try to break it
+    rc = safercopy(from_len * -1, from, to_len, to);
+    check(rc == -1, "safercopy should fail #1");
+    check(to[to_len - 1] == '\0', "String not terminated.");
+
+    rc = safercopy(from_len, from, 0, to);
+    check(rc == -1, "safercopy should fail #2");
+    check(to[to_len - 1] == '\0', "String not terminated.");
+
+    return 0;
+
+error:
+    return 1;
+}</code></pre>
+<p><code>copy</code>函数是典型的C代码，而且它是大量缓冲区溢出的来源。它有缺陷，因为它总是假设接受到的是合法的C字符串（带有<code>'\0'</code>），并且只是用一个<code>while</code>循环来处理。问题是，确保这些是十分困难的，并且如果没有处理好，它会使<code>while</code>循环无限执行。编写可靠代码的一个要点就是，不要编写可能不会终止的循环。</p>
+<p><code>safecopy</code>函数尝试通过要求调用者提供两个字符串的长度来解决问题。它可以执行有关这些字符串的、<code>copy</code>函数不具备的特定检查。他可以保证长度正确，<code>to</code>字符串具有足够的容量，以及它总是可终止。这个函数不像<code>copy</code>函数那样可能会永远执行下去。</p>
+<p>这个就是永远不信任输入的实例。如果你假设你的函数要接受一个没有终止标识的字符串（通常是这样），你需要设计你的函数，不要依赖字符串本身。如果你想让参数不为<code>NULL</code>，你应该对此做检查。如果大小应该在正常范围内，也要对它做检查。你只需要简单假设调用你代码的人会把它弄错，并且使他们更难破坏你的函数。</p>
+<p>这个可以扩展到从外部环境获取输入的的软件。程序员著名的临终遗言是，“没人会这样做。”我看到他们说了这句话后，第二天有人就这样做，黑掉或崩溃它们的应用。如果你说没有人会这样做，那就加固代码来保证他们不会简单地黑掉你的应用。你会因所做的事情而感到高兴。</p>
+<p>这种行为会出现收益递减。下面是一个清单，我会尝试对我用C写的每个函数做如下工作：</p>
+<ul>
+<li>对于每一个参数定义它的先决条件，以及这个条件是否导致失效或返回错误值。如果你在编写一个库，比起失效要更倾向于错误。</li>
+<li>对于每个先决条件，使用<code>assert(test &amp;&amp; "message");</code>在最开始添加<code>assert</code>检查。这句代码会执行检查，失败时OS通常会打印断言行，通常它包括信息。当你尝试弄清<code>assert</code>为什么在这里时，这会非常有用。</li>
+<li>对于其它先决条件，返回错误代码或者使用我的<code>check</code>宏来执行它并且提供错误信息。我在这个例子中没有使用<code>check</code>，因为它会混淆比较。</li>
+<li>记录为什么存在这些先决条件，当一个程序员碰到错误时，他可以弄清楚这些是否是真正必要的。</li>
+<li>如果你修改了输入，确保当函数退出或中止时它们也会正确产生。</li>
+<li>总是要检查所使用的函数的错误代码。例如，人们有时会忘记检查<code>fopen</code>或<code>fread</code>的返回代码，这会导致他们在错误下仍然使用这个资源。这会导致你的程序崩溃或者易受攻击。</li>
+<li>你也需要返回一致的错误代码，以便对你的每个函数添加相同的机制。一旦你熟悉了这一习惯，你就会明白为什么我的<code>check</code>宏这样工作。</li>
+</ul>
+<p>只是这些微小的事情就会改进你的资源处理方式，并且避免一大堆错误。</p>
+<h3 id="%E9%81%BF%E5%85%8D%E9%94%99%E8%AF%AF" name="%E9%81%BF%E5%85%8D%E9%94%99%E8%AF%AF">避免错误</h3>
+<p>上一个例子中你可能会听到别人说，“程序员不会经常错误地使用<code>copy</code>。”尽管大量攻击都针对这类函数，他们仍旧相信这种错误的概率非常低。概率是个很有趣的事情，因为人们不擅长猜测所有事情的概率，这非常难以置信。然而人们对于判断一个事情是否可能，是很擅长的。他们可能会说<code>copy</code>中的错误不常见，但是无法否认它可能发生。</p>
+<p>关键的原因是对于一些常见的事情，它首先是可能的。判断可能性非常简单，因为我们都知道事情如何发生。但是随后判断出概率就不是那么容易了。人们错误使用<code>copy</code>的情况会占到20%、10%，或1%？没有人知道。为了弄清楚你需要收集证据，统计许多软件包中的错误率，并且可能需要调查真实的程序员如何使用这个函数。</p>
+<p>这意味着，如果你打算避免错误，你不需要尝试避免可能发生的事情，而是要首先集中解决概率最大的事情。解决软件所有可能崩溃的方式并不可行，但是你可以尝试一下。同时，如果你不以最少的努力解决最可能发生的事件，你就是在不相关的风险上浪费时间。</p>
+<p>下面是一个决定避免什么的处理过程：</p>
+<ul>
+<li>列出所有可能发生的错误，无论概率大小，并带着它们的原因。不要列出外星人可能会监听内存来偷走密码这样的事情。</li>
+<li>评估每个的概率，使用危险行为的百分比来表示。如果你处理来自互联网的情况，那么则为可能出现错误的请求的百分比。如果是函数调用，那么它是出现错误的函数调用百分比。</li>
+<li>评估每个的工作量，使用避免它所需的代码量或工作时长来表示。你也可以简单给它一个“容易”或者“难”的度量。当需要修复的简单错误仍在列表上时，任何这种度量都可以让你避免做无谓的工作。</li>
+<li>按照工作量（低到高）和概率（高到低）排序，这就是你的任务列表。</li>
+<li>之后避免你在列表中列出的任何错误，如果你不能消除它的可能性，要降低它的概率。</li>
+<li>如果存在你不能修复的错误，记录下来并提供给可以修复的人。</li>
+</ul>
+<p>这一微小的过程会产生一份不错的待办列表。更重要的是，当有其它重要的事情需要解决时，它让你远离劳而无功。你也可以更正式或更不正式地处理这一过程。如果你要完成整个安全审计，你最好和团队一起做，并且有个更详细的电子表格。如果你只是编写一个函数，简单地复查代码之后划掉它们就够了。最重要的是你要停止假设错误不会发生，并且着力于消除它们，这样就不会浪费时间。</p>
+<h3 id="%E8%BF%87%E6%97%A9%E6%9A%B4%E9%9C%B2%E9%94%99%E8%AF%AF" name="%E8%BF%87%E6%97%A9%E6%9A%B4%E9%9C%B2%E9%94%99%E8%AF%AF">过早暴露错误</h3>
+<p>如果你遇到C中的错误，你有两个选择：</p>
+<ul>
+<li>返回错误代码。</li>
+<li>中止进程。</li>
+</ul>
+<p>这就是处理方法，你需要执行它来确保错误尽快发生，记录清楚，提供错误信息，并且易于程序员来避免它。这就是我提供的<code>check</code>宏这样工作的原因。对于每一个错误，你都要让它你打印信息、文件名和行号，并且强制返回错误代码。如果你使用了我的宏，你会以正确的方式做任何事情。</p>
+<p>我倾向于返回错误代码而不是终止程序。如果出现了大错误我会中止程序，但是实际上我很少碰到大错误。一个需要中止程序的很好例子是，我获取到了一个无效的指针，就像<code>safecopy</code>中那样。我没有让程序在某个地方产生“段错误”，而是立即捕获并中止。但是，如果传入<code>NULL</code>十分普遍，我可能会改变方式而使用<code>check</code>来检查，以保证调用者可以继续运行。</p>
+<p>然而在库中，我尽我最大努力永不中止。使用我的库的软件可以决定是否应该中止。如果这个库使用非常不当，我才会中止程序。</p>
+<p>最后，关于“暴露”的一大部分内容是，不要对多于一个错误使用相同的信息或错误代码。你通常会在外部资源的错误中见到这种情况。比如一个库捕获了套接字上的错误，之后简单报告“套接字错误”。它应该做的是返回具体的信息，比如套接字上发生了什么错误，使它可以被合理地调试和修复。当你设计错误报告时，确保对于不同的错误你提供了不同的错误消息。</p>
+<h3 id="%E8%AE%B0%E5%BD%95%E5%81%87%E8%AE%BE" name="%E8%AE%B0%E5%BD%95%E5%81%87%E8%AE%BE">记录假设</h3>
+<p>如果你遵循并执行了这个建议，你就构建了一份“契约”，关于函数期望这个世界是什么样子。你已经为每个参数预设了条件，处理潜在的错误，并且优雅地产生失败。下一步是完善这一契约，并且添加“不变量”和“后置条件”。</p>
+<p>不变量就是在函数运行时，一些场合下必须恒为真的条件。这对于简单的函数并不常见，但是当你处理复杂的结构时，它会变得很必要。一个关于不变量的很好的例子是，结构体在使用时都会合理地初始化。另一个是有序的数据结构在处理时总是排好序的。</p>
+<p>后置条件就是退出值或者函数运行结果的保证。这可以和不变了混在一起，但是也可以是一些很简单的事情，比如“函数应总是返回0，或者错误时返回-1”。通常这些都有文档记录，但是如果你的函数返回一个分配的资源，你应该添加一个后置条件，做检查来确保它返回了一个不为<code>NULL</code>的东西。或者，你可以使用<code>NULL</code>来表示错误，这种情况下，你的后置条件就是资源在任何错误时都会被释放。</p>
+<p>在C编程中，不变量和后置条件都通常比实际的代码和断言更加文档化。处理它们的最好当时就是尽可能添加<code>assert</code>调用，之后记录剩下的部分。如果你这么做了，当其它人碰到错误时，他们可以看到你在编写函数时做了什么假设。</p>
+<h3 id="%E9%81%BF%E5%85%8D%E8%BF%87%E5%A4%9A%E6%96%87%E6%A1%A3" name="%E9%81%BF%E5%85%8D%E8%BF%87%E5%A4%9A%E6%96%87%E6%A1%A3">避免过多文档</h3>
+<p>程序员编写代码时的一个普遍问题，就是他们会记录一个普遍的bug，而不是简单地修复它。我最喜欢的方式是，Ruby on Rails系统只是简单地假设所有月份都有30天。日历太麻烦了，所以与其修复它，不如在一些地方放置一个小的注释，说这是故意的，并且几年内都不会改正。每次一些人试图抱怨它时，他们都会说，“文档里面都有！”</p>
+<p>如果你能够实际修复问题，文档并不重要，并且，如果函数具有严重的缺陷，你在修复它之前可以不记录它。在Ruby on Rails的例子中，不包含日期函数会更好一些，而不是包含一个没人会用的错误的函数。</p>
+<p>当你为防御性编程执行清理时，尽可能尝试修复任何事情。如果你发现你记录了越来越多的，你不能修复的事情，需要考虑重新设计特性，或简单地移除它。如果你真的需要保留这一可怕的错误的特性，那么我建议你编写它、记录它，并且在你受责备之前找一份新的工作。</p>
+<h3 id="%E4%BD%BF%E4%B8%80%E5%88%87%E8%87%AA%E5%8A%A8%E5%8C%96" name="%E4%BD%BF%E4%B8%80%E5%88%87%E8%87%AA%E5%8A%A8%E5%8C%96">使一切自动化</h3>
+<p>你是个程序员，这意味着你的工作是通过自动化消灭其它人的工作。它的终极目标是使用自动化来使你自己也失业。很显然你不应该完全消除你做的东西，但如果你花了一整天在终端上重复运行手动测试，你的工作就不是编程。你只是在做QA，并且你应该使自己自动化，消除这个你可能并不是真的想干的QA工作。</p>
+<p>实现它的最简单方式就是编写自动化测试，或者单元测试。这本书里我打算讲解如何使它更简单，并且我会避免多数编写测试的信条。我只会专注于如何编写它们，测试什么，以及如何使测试更高效。</p>
+<p>下面是程序员没有但是应该自动化的一些事情：</p>
+<ul>
+<li>测试和校验。</li>
+<li>构建过程。</li>
+<li>软件部署。</li>
+<li>系统管理。</li>
+<li>错误报告。</li>
+</ul>
+<p>尝试花一些时间在自动化上面，你会有更多的时间用来处理一些有趣的事情。或者，如果这对你来说很有趣，也许你应该编写自动化完成这些事情的软件。</p>
+<h3 id="%E7%AE%80%E5%8D%95%E5%8C%96%E5%92%8C%E6%B8%85%E6%99%B0%E5%8C%96" name="%E7%AE%80%E5%8D%95%E5%8C%96%E5%92%8C%E6%B8%85%E6%99%B0%E5%8C%96">简单化和清晰化</h3>
+<p>“简单性”的概念对许多人来说比较微妙，尤其是一些聪明人。它们通常将“内涵”与“简单性”混淆起来。如果他们很好地理解了它，很显然非常简单。简单性的测试是通过将一个东西与比它更简单的东西比较。但是，你会看到编写代码的人会使用最复杂的、匪夷所思的数据结构，因为它们认为做同样事情的简单版本非常“恶心”。对复杂性的爱好是程序员的弱点。</p>
+<p>你可以首先通过告诉自己，“简单和清晰并不恶心，无论谁在干什么事情”来战胜这一弱点。如果其它人编写了愚蠢的观察者模式涉及到19个类，12个接口，而你只用了两个字符串操作就可以实现它，那么你赢了。他们就是错了，无论他们认为自己的复杂设计有多么高大上。</p>
+<p>对于要使用哪个函数的最简单测试是：</p>
+<ul>
+<li>确保所有函数都没有问题。如果它有错误，它有多快或多简单就不重要了。</li>
+<li>如果你不能修复问题，就选择另外一个。</li>
+<li>它们会产生相同结果嘛？如果不是就挑选具有所需结果的函数。</li>
+<li>如果它们会产生相同结果，挑选包含更少特性，更少分支的那个，或者挑选你认为最简单的那个。</li>
+<li>确保你没有只是挑选最具有表现力的那个。无论怎么样，简单和清晰，都会战胜复杂和恶心。</li>
+</ul>
+<p>你会注意到，最后我一般会放弃并告诉你根据你的判断。简单性非常讽刺地是一件复杂的事情，所以使用你的品位作为指引是最好的方式。只需要确保在你获取更多经验之后，你会调整你对于什么是“好”的看法。</p>
+<h3 id="%E8%B4%A8%E7%96%91%E6%9D%83%E5%A8%81" name="%E8%B4%A8%E7%96%91%E6%9D%83%E5%A8%81">质疑权威</h3>
+<p>最后一个策略是最重要的，因为它让你突破防御性编程思维，并且让你转换为创造性思维。防御性编程是权威性的，并且比较无情。这一思维方式的任务是让你遵循规则，因为否则你会错失一些东西或心烦意乱。</p>
+<p>这一权威性的观点的坏处是扼杀了独立的创造性思维。规则对于完成事情是必要的，但是做它们的奴隶会扼杀你的创造力。</p>
+<p>这条最后的策略的意思是你应该周期性地质疑你遵循的规则，并且假设它们都是错误的，就像你之前复查的软件那样。在一段防御性编程的时间之后，我通常会这样做，我会拥有一个不编程的休息并让这些规则消失。之后我会准备好去做一些创造性的工作，或按需做更多的防御型编程。</p>
+<h2 id="%E9%A1%BA%E5%BA%8F%E5%B9%B6%E4%B8%8D%E9%87%8D%E8%A6%81" name="%E9%A1%BA%E5%BA%8F%E5%B9%B6%E4%B8%8D%E9%87%8D%E8%A6%81">顺序并不重要</h2>
+<p>在这一哲学上我想说的最后一件事，就是我并不是告诉你要按照一个严格的规则，比如“创造！防御！创造！防御！”去做这件事。最开始你可能想这样做，但是我实际上会做不等量的这些事情，取决于我想做什么，并且我可能会将二者融合到一起，没有明确的边界。</p>
+<p>我也不认为其中一种思维会优于另一种，或者它们之间有严格的界限。你需要在编程上既有创造力也要严格，所以如果想要提升的话，需要同时做到它们。</p>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>到现在为止（以及以后）书中的代码都可能违反这些规则。回退并挑选一个练习，将你学到的应用在它上面，来看看你能不能改进它或发现bug。</li>
+<li>寻找一个开源项目，对其中一些文件进行类似的代码复查。如果你发现了bug，提交一个补丁来修复它。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/posts/FFD032B7FC697307.html" title="创造性和防御性编程">https://naka507.github.io/posts/FFD032B7FC697307.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/057F656AAC02C097/index.html" rel="tag"># 语言</a>
+                                                                <a href="https://naka507.github.io/tag/4AAF23EDE7CBA4D9/index.html" rel="tag"># 编程</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/posts/41ABE0D9F5D3164C.html" rel="next" title="编写第一个真正的程序">
+                                        <i class="fa fa-chevron-left"></i>
+                                        编写第一个真正的程序                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/posts/5C8A5BE0B219BE30.html" rel="prev" title="Makefile 进阶">
+                                        Makefile 进阶                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#%E5%88%9B%E9%80%A0%E6%80%A7%E5%92%8C%E9%98%B2%E5%BE%A1%E6%80%A7%E7%BC%96%E7%A8%8B">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">创造性和防御性编程</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%88%9B%E9%80%A0%E6%80%A7%E7%BC%96%E7%A8%8B%E6%80%9D%E7%BB%B4">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">创造性编程思维</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%98%B2%E5%BE%A1%E6%80%A7%E7%BC%96%E7%A8%8B%E6%80%9D%E7%BB%B4">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">防御性编程思维</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%85%AB%E4%B8%AA%E9%98%B2%E5%BE%A1%E6%80%A7%E7%BC%96%E7%A8%8B%E7%AD%96%E7%95%A5">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">八个防御性编程策略</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%BA%94%E7%94%A8%E8%BF%99%E5%85%AB%E6%9D%A1%E7%AD%96%E7%95%A5">
+                                <span class="nav-number">1.4.</span> 
+                                <span class="nav-text">应用这八条策略</span>
+                            </a>
+                                                        <ol class="nav-child">
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E6%B0%B8%E8%BF%9C%E4%B8%8D%E8%A6%81%E4%BF%A1%E4%BB%BB%E8%BE%93%E5%85%A5">
+                                        <span class="nav-number">1.4.1</span> 
+                                        <span class="nav-text">永远不要信任输入</span>
+                                    </a>
+                                </li>
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E9%81%BF%E5%85%8D%E9%94%99%E8%AF%AF">
+                                        <span class="nav-number">1.4.2</span> 
+                                        <span class="nav-text">避免错误</span>
+                                    </a>
+                                </li>
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E8%BF%87%E6%97%A9%E6%9A%B4%E9%9C%B2%E9%94%99%E8%AF%AF">
+                                        <span class="nav-number">1.4.3</span> 
+                                        <span class="nav-text">过早暴露错误</span>
+                                    </a>
+                                </li>
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E8%AE%B0%E5%BD%95%E5%81%87%E8%AE%BE">
+                                        <span class="nav-number">1.4.4</span> 
+                                        <span class="nav-text">记录假设</span>
+                                    </a>
+                                </li>
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E9%81%BF%E5%85%8D%E8%BF%87%E5%A4%9A%E6%96%87%E6%A1%A3">
+                                        <span class="nav-number">1.4.5</span> 
+                                        <span class="nav-text">避免过多文档</span>
+                                    </a>
+                                </li>
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E4%BD%BF%E4%B8%80%E5%88%87%E8%87%AA%E5%8A%A8%E5%8C%96">
+                                        <span class="nav-number">1.4.6</span> 
+                                        <span class="nav-text">使一切自动化</span>
+                                    </a>
+                                </li>
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E7%AE%80%E5%8D%95%E5%8C%96%E5%92%8C%E6%B8%85%E6%99%B0%E5%8C%96">
+                                        <span class="nav-number">1.4.7</span> 
+                                        <span class="nav-text">简单化和清晰化</span>
+                                    </a>
+                                </li>
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E8%B4%A8%E7%96%91%E6%9D%83%E5%A8%81">
+                                        <span class="nav-number">1.4.8</span> 
+                                        <span class="nav-text">质疑权威</span>
+                                    </a>
+                                </li>
+                                                            </ol>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E5%B9%B6%E4%B8%8D%E9%87%8D%E8%A6%81">
+                                <span class="nav-number">1.5.</span> 
+                                <span class="nav-text">顺序并不重要</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.6.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = 'FFD032B7FC697307';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: '创造性和防御性编程',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>

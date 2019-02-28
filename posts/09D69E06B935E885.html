@@ -1,0 +1,810 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="C语言编程的核心能力之一就是链接OS所提供的库。链接是一种为你的程序添加额外特性的方法，这些特性由其它人在系统中创建并打包。你已经使用了一些自动包含的标准库，但是我打算对库的不同类型和它们的作用做个解释。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="库和链接" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="C语言编程的核心能力之一就是链接OS所提供的库。链接是一种为你的程序添加额外特性的方法，这些特性由其它人在系统中创建并打包。你已经使用了一些自动包含的标准库，但是我打算对库的不同类型和它们的作用做个解释。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="库和链接" /> 
+    <meta name="twitter:description" content="C语言编程的核心能力之一就是链接OS所提供的库。链接是一种为你的程序添加额外特性的方法，这些特性由其它人在系统中创建并打包。你已经使用了一些自动包含的标准库，但是我打算对库的不同类型和它们的作用做个解释。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>库和链接 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/posts/09D69E06B935E885.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">库和链接</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:20:20">2019-02-27 16:20:20</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/44FBDC4D7D3B5CFE/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习5</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">C语言编程的核心能力之一就是链接OS所提供的库。链接是一种为你的程序添加额外特性的方法，这些特性由其它人在系统中创建并打包。你已经使用了一些自动包含的标准库，但是我打算对库的不同类型和它们的作用做个解释。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="%E5%BA%93%E5%92%8C%E9%93%BE%E6%8E%A5" name="%E5%BA%93%E5%92%8C%E9%93%BE%E6%8E%A5">库和链接</h1>
+<p>C语言编程的核心能力之一就是链接OS所提供的库。链接是一种为你的程序添加额外特性的方法，这些特性由其它人在系统中创建并打包。你已经使用了一些自动包含的标准库，但是我打算对库的不同类型和它们的作用做个解释。</p>
+<p>首先，库在每个语言中都没有良好的设计。我不知道为什么，但是似乎语言的设计者都将链接视为不是特别重要的东西。它们通常令人混乱，难以使用，不能正确进行版本控制，并以不同的方式链接到各种地方。</p>
+<p>C没有什么不同，但是C中的库和链接是Unix操作系统的组件，并且可执行的格式在很多年前就设计好了。学习C如何链接库有助于理解OS如何工作，以及它如何运行你的程序。</p>
+<p>C中的库有两种基本类型：</p>
+<p>静态</p>
+<p>你可以使用<code>ar</code>和<code>ranlib</code>来构建它，就像上个练习中的<code>libYOUR_LIBRARY.a</code>那样（Windows下后缀为<code>.lib</code>）。这种库可以当做一系列<code>.o</code>对象文件和函数的容器，以及当你构建程序时，可以当做是一个大型的<code>.o</code>文件。</p>
+<p>动态</p>
+<p>它们通常以<code>.so</code>（Linux）或<code>.dll</code>（Windows）结尾。在OSX中，差不多有一百万种后缀，取决于版本和编写它的人。严格来讲，OSX中的<code>.dylib</code>，<code>.bundle</code>和<code>framework</code>这三个之间没什么不同。这些文件都被构建好并且放置到指定的地方。当你运行程序时，OS会动态加载这些文件并且“凭空”链接到你的程序中。</p>
+<p>我倾向于对小型或中型项目使用静态的库，因为它们易于使用，并且工作在在更多操作系统上。我也喜欢将所有代码放入静态库中，之后链接它来执行单元测试，或者链接到所需的程序中。</p>
+<p>动态库适用于大型系统，它的空间十分有限，或者其中大量程序都使用相同的功能。这种情况下不应该为每个程序的共同特性静态链接所有代码，而是应该将它放到动态库中，这样它仅仅会为所有程序加载一份。</p>
+<p>在上一个练习中，我讲解了如何构建静态库（<code>.a</code>），我会在本书的剩余部分用到它。这个练习中我打算向你展示如何构建一个简单的<code>.so</code>库，并且如何使用Unix系统的<code>dlopen</code>动态加载它。我会手动执行它，以便你可以理解每件实际发生的事情。之后，附加题这部分会使用c项目框架来创建它。</p>
+<h2 id="%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%8A%A8%E6%80%81%E5%BA%93" name="%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%8A%A8%E6%80%81%E5%BA%93">动态加载动态库</h2>
+<p>我创建了两个源文件来完成它。一个用于构建<code>libex29.so</code>库，另一个是个叫做<code>ex29</code>的程序，它可以加载这个库并运行其中的程序：</p>
+<pre><code class="c">#include &lt;stdio.h&gt;
+#include &lt;ctype.h&gt;
+#include "dbg.h"
+
+
+int print_a_message(const char *msg)
+{
+    printf("A STRING: %s\n", msg);
+
+    return 0;
+}
+
+
+int uppercase(const char *msg)
+{
+    int i = 0;
+
+    // BUG: \0 termination problems
+    for(i = 0; msg[i] != '\0'; i++) {
+        printf("%c", toupper(msg[i]));
+    }
+
+    printf("\n");
+
+    return 0;
+}
+
+int lowercase(const char *msg)
+{
+    int i = 0;
+
+    // BUG: \0 termination problems
+    for(i = 0; msg[i] != '\0'; i++) {
+        printf("%c", tolower(msg[i]));
+    }
+
+    printf("\n");
+
+    return 0;
+}
+
+int fail_on_purpose(const char *msg)
+{
+    return 1;
+}</code></pre>
+<p>这里面没什么神奇之处。其中故意留了一些bug，看你是否注意到了。你需要在随后修复它们。</p>
+<p>我们将要使用<code>dlopen</code>，<code>dlsym</code>，和<code>dlclose</code>函数来处理上面的函数。</p>
+<pre><code class="c">#include &lt;stdio.h&gt;
+#include "dbg.h"
+#include &lt;dlfcn.h&gt;
+
+typedef int (*lib_function)(const char *data);
+
+
+int main(int argc, char *argv[])
+{
+    int rc = 0;
+    check(argc == 4, "USAGE: ex29 libex29.so function data");
+
+    char *lib_file = argv[1];
+    char *func_to_run = argv[2];
+    char *data = argv[3];
+
+    void *lib = dlopen(lib_file, RTLD_NOW);
+    check(lib != NULL, "Failed to open the library %s: %s", lib_file, dlerror());
+
+    lib_function func = dlsym(lib, func_to_run);
+    check(func != NULL, "Did not find %s function in the library %s: %s", func_to_run, lib_file, dlerror());
+
+    rc = func(data);
+    check(rc == 0, "Function %s return %d for data: %s", func_to_run, rc, data);
+
+    rc = dlclose(lib);
+    check(rc == 0, "Failed to close %s", lib_file);
+
+    return 0;
+
+error:
+    return 1;
+}</code></pre>
+<p>我现在会拆分这个程序，便于你理解这一小段代码其中的原理。</p>
+<p>ex29.c:5</p>
+<p>我随后会使用这个函数指针定义，来调用库中的函数。这没什么新东西，确保你理解了它的作用。</p>
+<p>ex29.c:17</p>
+<p>在为一个小型程序做必要的初始化后，我使用了<code>dlopen</code>函数来加载由<code>lib_file</code>表示的库。这个函数返回一个句柄，我们随后会用到它，就像来打开文件那样。</p>
+<p>ex29.c:18</p>
+<p>如果出现错误，我执行了通常的检查并退出，但是要注意最后我使用了<code>dlerror</code>来查明发生了什么错误。</p>
+<p>ex29.c:20</p>
+<p>我使用了<code>dlsym</code>来获取<code>lib</code>中的函数，通过它的字面名称<code>func_to_run</code>。这是最强大的部分，因为我动态获取了一个函数指针，基于我从命令行<code>argv</code>获得的字符串。</p>
+<p>ex29.c:23</p>
+<p>接着我调用<code>func</code>函数，获得返回值并进行检查。</p>
+<p>ex29.c:26</p>
+<p>最后，我像关闭文件那样关闭了库。通常你需要在程序的整个运行期间保证它们打开，所以关闭操作并不非常实用，我只是在这里演示它。</p>
+<blockquote>
+<p>译者注：由于能够使用系统调用加载，动态库可以被多种语言的程序调用，而静态库只能被C及兼容C的程序调用。</p>
+</blockquote>
+<h2 id="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88" name="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">你会看到什么</h2>
+<p>既然你已经知道这些文件做什么了，下面是我的shell会话，用于构建<code>libex29.so</code>和<code>ex29</code>并随后运行它。下面的代码中你可以学到如何手动构建：</p>
+<pre><code class="sh"># compile the lib file and make the .so
+# you may need -fPIC here on some platforms. add that if you get an error
+$ cc -c libex29.c -o libex29.o
+$ cc -shared -o libex29.so libex29.o
+
+# make the loader program
+$ cc -Wall -g -DNDEBUG ex29.c -ldl -o ex29
+
+# try it out with some things that work
+$ ex29 ./libex29.so print_a_message "hello there"
+-bash: ex29: command not found
+$ ./ex29 ./libex29.so print_a_message "hello there"
+A STRING: hello there
+$ ./ex29 ./libex29.so uppercase "hello there"
+HELLO THERE
+$ ./ex29 ./libex29.so lowercase "HELLO tHeRe"
+hello there
+$ ./ex29 ./libex29.so fail_on_purpose "i fail"
+[ERROR] (ex29.c:23: errno: None) Function fail_on_purpose return 1 for data: i fail
+
+# try to give it bad args
+$ ./ex29 ./libex29.so fail_on_purpose
+[ERROR] (ex29.c:11: errno: None) USAGE: ex29 libex29.so function data
+
+# try calling a function that is not there
+$ ./ex29 ./libex29.so adfasfasdf asdfadff
+[ERROR] (ex29.c:20: errno: None) Did not find adfasfasdf
+  function in the library libex29.so: dlsym(0x1076009b0, adfasfasdf): symbol not found
+
+# try loading a .so that is not there
+$ ./ex29 ./libex.so adfasfasdf asdfadfas
+[ERROR] (ex29.c:17: errno: No such file or directory) Failed to open
+    the library libex.so: dlopen(libex.so, 2): image not found
+$</code></pre>
+<p>需要注意，你可能需要在不同OS、不同OS的不同版本，以及不同OS的不同版本的不同编译器上执行构建，则需要修改构建共享库的方式。如果我构建<code>libex29.so</code>的方式在你的平台上不起作用，请告诉我，我会为其它平台添加一些注解。</p>
+<blockquote>
+<p>译者注：到处编写、到处调试、到处编译、到处发布。--vczh</p>
+</blockquote>
+<p>&zwj;</p>
+<blockquote>
+<p>注</p>
+</blockquote>
+<blockquote>
+<p>有时候你像往常一样运行<code>cc -Wall -g -DNDEBUG -ldl ex29.c -o ex29</code>，并且认为它能够正常工作，但是没有。在一些平台上，参数的顺序会影响到它是否生效，这也没什么理由。在Debian或者Ubuntu中你需要执行<code>cc -Wall -g -DNDEBUG ex29.c -ldl -o ex29</code>，这是唯一的方式。所以虽然我在这里使用了OSX，但是以后如果你链接动态库的时候它找不到某个函数，要试着自己解决问题。</p>
+</blockquote>
+<blockquote>
+<p>这里面比较麻烦的事情是，实际平台的不同会影响到命令参数的顺序。将<code>-ldl</code>放到某个位置没有理由与其它位置不同。它只是一个选项，还需要了解这些简直是太气人了。</p>
+</blockquote>
+<h2 id="%E5%A6%82%E4%BD%95%E4%BD%BF%E5%AE%83%E5%B4%A9%E6%BA%83" name="%E5%A6%82%E4%BD%95%E4%BD%BF%E5%AE%83%E5%B4%A9%E6%BA%83">如何使它崩溃</h2>
+<p>打开<code>lbex29.so</code>，并且使用能够处理二进制的编辑器编辑它。修改一些字节，然后关闭。看看你是否能使用<code>dlopen</code>函数来打开它，即使你修改了它。</p>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>你注意到我在<code>libex29.c</code>中写的不良代码了吗？我使用了一个<code>for</code>循环来检查<code>'\0'</code>的结尾，修改它们使这些函数总是接收字符串长度，并在函数内部使用。</li>
+<li>使用项目框架目录，来为这个练习创建新的项目。将<code>libex29.c</code>放入<code>src/</code>目录，修改<code>Makefile</code>使它能够构建<code>build/libex29.so</code>。</li>
+<li>将<code>ex29.c</code>改为<code>tests/ex29_tests.c</code>，使它做为单元测试执行。使它能够正常工作，意思是你需要修改它让它加载<code>build/libex29.so</code>文件，并且运行上面我手写的测试。</li>
+<li>阅读<code>man dlopen</code>文档，并且查询所有有关函数。尝试<code>dlopen</code>的其它选项，比如<code>RTLD_NOW</code>。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/posts/09D69E06B935E885.html" title="库和链接">https://naka507.github.io/posts/09D69E06B935E885.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/4AAF23EDE7CBA4D9/index.html" rel="tag"># 编程</a>
+                                                                <a href="https://naka507.github.io/tag/77329633533341C9/index.html" rel="tag"># 动态库</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/posts/5C8A5BE0B219BE30.html" rel="next" title="Makefile 进阶">
+                                        <i class="fa fa-chevron-left"></i>
+                                        Makefile 进阶                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/posts/866A23BE27D0D7E6.html" rel="prev" title="自动化测试">
+                                        自动化测试                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#%E5%BA%93%E5%92%8C%E9%93%BE%E6%8E%A5">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">库和链接</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%8A%A8%E6%80%81%E5%BA%93">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">动态加载动态库</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">你会看到什么</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E5%AE%83%E5%B4%A9%E6%BA%83">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">如何使它崩溃</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.4.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = '09D69E06B935E885';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: '库和链接',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>

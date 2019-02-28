@@ -1,0 +1,1087 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="这本书的目的是教给你计算机实际上如何工作，这也包括多种数据结构和算法函数。计算机自己其实并没有太大用处。为了让它们做一些有用的事情，你需要构建数据，之后在这些结构上组织处理。其它编程语言带有实现所有这些结构的库，或者带有直接的语法来创建它们。C需要你手动实现所有数据结构，这使它成为最“完美”的语言，让你知道它们的工作原理。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="双向链表" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="这本书的目的是教给你计算机实际上如何工作，这也包括多种数据结构和算法函数。计算机自己其实并没有太大用处。为了让它们做一些有用的事情，你需要构建数据，之后在这些结构上组织处理。其它编程语言带有实现所有这些结构的库，或者带有直接的语法来创建它们。C需要你手动实现所有数据结构，这使它成为最“完美”的语言，让你知道它们的工作原理。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="双向链表" /> 
+    <meta name="twitter:description" content="这本书的目的是教给你计算机实际上如何工作，这也包括多种数据结构和算法函数。计算机自己其实并没有太大用处。为了让它们做一些有用的事情，你需要构建数据，之后在这些结构上组织处理。其它编程语言带有实现所有这些结构的库，或者带有直接的语法来创建它们。C需要你手动实现所有数据结构，这使它成为最“完美”的语言，让你知道它们的工作原理。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>双向链表 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/posts/364477FB0CED1A03.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">双向链表</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:20:09">2019-02-27 16:20:09</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/96B2014CF0459681/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习7</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">这本书的目的是教给你计算机实际上如何工作，这也包括多种数据结构和算法函数。计算机自己其实并没有太大用处。为了让它们做一些有用的事情，你需要构建数据，之后在这些结构上组织处理。其它编程语言带有实现所有这些结构的库，或者带有直接的语法来创建它们。C需要你手动实现所有数据结构，这使它成为最&ldquo;完美&rdquo;的语言，让你知道它们的工作原理。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8" name="%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8">双向链表</h1>
+<p>这本书的目的是教给你计算机实际上如何工作，这也包括多种数据结构和算法函数。计算机自己其实并没有太大用处。为了让它们做一些有用的事情，你需要构建数据，之后在这些结构上组织处理。其它编程语言带有实现所有这些结构的库，或者带有直接的语法来创建它们。C需要你手动实现所有数据结构，这使它成为最“完美”的语言，让你知道它们的工作原理。</p>
+<p>我的目标是交给你这些数据结构，以及相关算法的知识，来帮助你完成下面这三件事：</p>
+<ul>
+<li>理解Python、Ruby或JavaScript的<code>data = {"name": "Zed"}</code>到底做了什么。</li>
+<li>使用数据结构来解决问题，使你成为更好的C程序员。</li>
+<li>学习数据结构和算法的核心部分，让你知道在特定条件下哪个最好。</li>
+</ul>
+<h2 id="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%98%AF%E4%BB%80%E4%B9%88%E3%80%82" name="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%98%AF%E4%BB%80%E4%B9%88%E3%80%82">数据结构是什么。</h2>
+<p>“数据结构”这个名称自己就能够解释。它是具有特性模型的数据组织方法。这一模型可能设计用于以新的方法处理数据，也可能只是用于将它们更高效地储存在磁盘上。这本书中我会遵循一些简单的模式来构建可用的数据结构：</p>
+<ul>
+<li>定义一个结构的主要“外部结构”。</li>
+<li>定义一个结构的内容，通常是带有链接的节点。</li>
+<li>创建函数操作它们的函数。</li>
+</ul>
+<p>C中还有其它样式的数据结构，但是这个模式效果很好，并且对于你创建的大部分数据结构都适用。</p>
+<h2 id="%E6%9E%84%E5%BB%BA%E5%BA%93" name="%E6%9E%84%E5%BB%BA%E5%BA%93">构建库</h2>
+<p>对于这本书的剩余部分，当你完成这本书之后，你将会创建一个可用的库。这个库会包含下列元素：</p>
+<ul>
+<li>为每个数据结构编写的头文件<code>.h</code>。</li>
+<li>为算法编写的实现文件<code>.c</code>。</li>
+<li>用于测试它们确保有效的单元测试。</li>
+<li>从头文件自动生成的文档。</li>
+</ul>
+<p>你已经实现了<code>c-skeleton</code>（项目框架目录），使用它来创建一个<code>liblcthw</code>项目：</p>
+<pre><code class="sh">$ cp -r c-skeleton liblcthw
+$ cd liblcthw/
+$ ls
+LICENSE  Makefile README.md  bin  build  src  tests
+$ vim Makefile
+$ ls src/
+dbg.h               libex29.c       libex29.o
+$ mkdir src/lcthw
+$ mv src/dbg.h src/lcthw
+$ vim tests/minunit.h
+$ rm src/libex29.* tests/libex29*
+$ make clean
+rm -rf build  tests/libex29_tests
+rm -f tests/tests.log
+find . -name "*.gc*" -exec rm {} \;
+rm -rf `find . -name "*.dSYM" -print`
+$ ls tests/
+minunit.h  runtests.sh
+$</code></pre>
+<p>这个会话中我执行了下列事情：</p>
+<ul>
+<li>复制了<code>c-skeleton</code>。</li>
+<li>编辑Makefile，将<code>libYOUR_LIBRARY.a</code>改为<code>liblcthw.a</code>作为新的<code>TARGET</code>。</li>
+<li>创建<code>src/lcthw</code>目录，我们会在里面放入代码。</li>
+<li>移动<code>src/dbg.h</code>文件到新的目录中。</li>
+<li>编辑<code>tests/minunit.h</code>，使它使用所包含的<code>#include &lt;lcthw/dbg.h&gt;</code>。</li>
+<li>移除<code>libex29.*</code>中我们不需要的源文件和测试文件。</li>
+<li>清理所有遗留的东西。</li>
+</ul>
+<p>执行完之后你就准备好开始构建库了，我打算构建第一个数据结构是双向链表。</p>
+<h2 id="%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8" name="%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8">双向链表</h2>
+<p>我们将要向<code>liblcthw</code>添加的第一个数据结构是双向链表。这是你能够构建的最简单的数据结构，并且它拥有针对特定操作的实用属性。单向链表通过指向下一个或上一个元素的节点来工作。“双向”链表持有全部这两个指针，而“单向”链表只持有下一个元素的指针。</p>
+<p>由于每个节点都有下一个和上一个元素的指针，并且你可以跟踪联保的第一个和最后的元素，你就可以快速地执行一些操作。任何涉及到插入和删除元素的操作会非常快。它对大多数人来说也易于实现。</p>
+<p>链表的主要缺点是，遍历它涉及到处理沿途每个单个的指针。这意味着搜索、多数排序以及迭代元素会表较慢。这也意味着你不能直接跳过链表的随机一部分。如果换成数组，你就可以直接索引到它的中央，但是链表不行。也就是说如果你想要访问第十个元素，你必须经过1~9。</p>
+<h3 id="%E5%AE%9A%E4%B9%89" name="%E5%AE%9A%E4%B9%89">定义</h3>
+<p>正如在这个练习的介绍部分所说，整个过程的第一步，是编程一个头文件，带有正确的C结构定义。</p>
+<pre><code class="c">#ifndef lcthw_List_h
+#define lcthw_List_h
+
+#include &lt;stdlib.h&gt;
+
+struct ListNode;
+
+typedef struct ListNode {
+    struct ListNode *next;
+    struct ListNode *prev;
+    void *value;
+} ListNode;
+
+typedef struct List {
+    int count;
+    ListNode *first;
+    ListNode *last;
+} List;
+
+List *List_create();
+void List_destroy(List *list);
+void List_clear(List *list);
+void List_clear_destroy(List *list);
+
+#define List_count(A) ((A)-&gt;count)
+#define List_first(A) ((A)-&gt;first != NULL ? (A)-&gt;first-&gt;value : NULL)
+#define List_last(A) ((A)-&gt;last != NULL ? (A)-&gt;last-&gt;value : NULL)
+
+void List_push(List *list, void *value);
+void *List_pop(List *list);
+
+void List_unshift(List *list, void *value);
+void *List_shift(List *list);
+
+void *List_remove(List *list, ListNode *node);
+
+#define LIST_FOREACH(L, S, M, V) ListNode *_node = NULL;\
+    ListNode *V = NULL;\
+    for(V = _node = L-&gt;S; _node != NULL; V = _node = _node-&gt;M)
+
+#endif</code></pre>
+<p>我所做的第一件事就是创建两个结构，<code>ListNode</code>和包含这些节点的<code>List</code>。这创建了是将在函数中使用的数据结构，以及随后定义的宏。如果你浏览这些函数，它们看起来非常简单。当我讲到实现时，我会解释他们，但我更希望你能猜出它们的作用。</p>
+<p>这些数据结构的工作方式，就是每个<code>ListNode</code>都有三个成员。</p>
+<ul>
+<li>值，它是无类型的指针，存储我们想在链表中放置的东西。</li>
+<li><code>ListNode *next</code>指针，它指向另一个储存下一个元素的<code>ListNode</code>。</li>
+<li><code>ListNode *prev</code>指针，它指向另一个储存上一个元素的<code>ListNode</code>。</li>
+</ul>
+<p><code>List</code>结构只是这些<code>ListNode</code>结构的容器，它们互联链接组成链型。它跟踪链表的<code>count</code>，<code>first</code>和<code>last</code>元素。</p>
+<p>最后，看一看<code>src/lcthw/list.h:37</code>，其中我定义了<code>LIST_FOREACH</code>宏。这是个常见的习语，你可以创建一个宏来生成迭代代码，使用者就不会弄乱了。正确使用这类执行过程来处理数据结构十分困难，所以可以编写宏来帮助使用者。当我讲到实现时，你可以看到我如何使用它。</p>
+<h3 id="%E5%AE%9E%E7%8E%B0" name="%E5%AE%9E%E7%8E%B0">实现</h3>
+<p>一旦你理解了它们之后，你很可能理解了双向链表如何工作。它只是带有两个指针的节点，指向链表中前一个和后一个元素。接下来你可以编写<code>src/lcthw/list.c</code>中的代码，来理解每个操作如何实现。</p>
+<pre><code class="c">#include &lt;lcthw/list.h&gt;
+#include &lt;lcthw/dbg.h&gt;
+
+List *List_create()
+{
+    return calloc(1, sizeof(List));
+}
+
+void List_destroy(List *list)
+{
+    LIST_FOREACH(list, first, next, cur) {
+        if(cur-&gt;prev) {
+            free(cur-&gt;prev);
+        }
+    }
+
+    free(list-&gt;last);
+    free(list);
+}
+
+
+void List_clear(List *list)
+{
+    LIST_FOREACH(list, first, next, cur) {
+        free(cur-&gt;value);
+    }
+}
+
+
+void List_clear_destroy(List *list)
+{
+    List_clear(list);
+    List_destroy(list);
+}
+
+
+void List_push(List *list, void *value)
+{
+    ListNode *node = calloc(1, sizeof(ListNode));
+    check_mem(node);
+
+    node-&gt;value = value;
+
+    if(list-&gt;last == NULL) {
+        list-&gt;first = node;
+        list-&gt;last = node;
+    } else {
+        list-&gt;last-&gt;next = node;
+        node-&gt;prev = list-&gt;last;
+        list-&gt;last = node;
+    }
+
+    list-&gt;count++;
+
+error:
+    return;
+}
+
+void *List_pop(List *list)
+{
+    ListNode *node = list-&gt;last;
+    return node != NULL ? List_remove(list, node) : NULL;
+}
+
+void List_unshift(List *list, void *value)
+{
+    ListNode *node = calloc(1, sizeof(ListNode));
+    check_mem(node);
+
+    node-&gt;value = value;
+
+    if(list-&gt;first == NULL) {
+        list-&gt;first = node;
+        list-&gt;last = node;
+    } else {
+        node-&gt;next = list-&gt;first;
+        list-&gt;first-&gt;prev = node;
+        list-&gt;first = node;
+    }
+
+    list-&gt;count++;
+
+error:
+    return;
+}
+
+void *List_shift(List *list)
+{
+    ListNode *node = list-&gt;first;
+    return node != NULL ? List_remove(list, node) : NULL;
+}
+
+void *List_remove(List *list, ListNode *node)
+{
+    void *result = NULL;
+
+    check(list-&gt;first &amp;&amp; list-&gt;last, "List is empty.");
+    check(node, "node can't be NULL");
+
+    if(node == list-&gt;first &amp;&amp; node == list-&gt;last) {
+        list-&gt;first = NULL;
+        list-&gt;last = NULL;
+    } else if(node == list-&gt;first) {
+        list-&gt;first = node-&gt;next;
+        check(list-&gt;first != NULL, "Invalid list, somehow got a first that is NULL.");
+        list-&gt;first-&gt;prev = NULL;
+    } else if (node == list-&gt;last) {
+        list-&gt;last = node-&gt;prev;
+        check(list-&gt;last != NULL, "Invalid list, somehow got a next that is NULL.");
+        list-&gt;last-&gt;next = NULL;
+    } else {
+        ListNode *after = node-&gt;next;
+        ListNode *before = node-&gt;prev;
+        after-&gt;prev = before;
+        before-&gt;next = after;
+    }
+
+    list-&gt;count--;
+    result = node-&gt;value;
+    free(node);
+
+error:
+    return result;
+}</code></pre>
+<p>我实现了双向链表上的所有操作，它们不能用简单的宏来完成。比起覆盖文件中的每一行，我打算为<code>list.h</code>和<code>list.c</code>中的每个操作提供一个高阶的概览。你需要自己阅读代码。</p>
+<p>list.h:List_count</p>
+<p>返回链表中元素数量，它在元素添加或移除时维护。</p>
+<p>list.h:List_first</p>
+<p>返回链表的首个元素，但是并不移除它。</p>
+<p>list.h:List_last</p>
+<p>返回链表的最后一个元素，但是不移除它。</p>
+<p>list.h:LIST_FOREACH</p>
+<p>遍历链表中的元素。</p>
+<p>list.c:List_create</p>
+<p>简单地创建主要的<code>List</code>结构。</p>
+<p>list.c:List_destroy</p>
+<p>销毁<code>List</code>以及其中含有的所有元素。</p>
+<p>list.c:List_clear</p>
+<p>为释放每个节点中的值（而不是节点本身）创建的辅助函数。</p>
+<p>list.c:List_clear_destroy</p>
+<p>清理并销毁链表。它并不十分搞笑因为它对每个元素遍历两次。</p>
+<p>list.c:List_push</p>
+<p>第一个操作演示了链表的有点。它向链表尾添加新的元素，由于只是一些指针赋值，所以非常快。</p>
+<p>list.c:List_pop</p>
+<p><code>List_push</code>的反向版本，它去除最后一个元素并返回它。</p>
+<p>list.c:List_unshift</p>
+<p>亦可以轻易对链表执行的另一件事，就是快速地向链表头部添加元素。由于找不到合适的词，这里我把它称为<code>unshift</code>。</p>
+<p>list.c:List_shift</p>
+<p>类似<code>List_pop</code>，但是它移除链表的首个元素并返回。</p>
+<p>list.c:List_remove</p>
+<p>当你执行<code>List_pop</code>或<code>List_shift</code>时，它执行实际的移除操作。在数据结构中移除数据总是看似比较困难，这个函数也不例外。它需要处理一些条件，取决于被移除的位置，在开头、在结尾、开头并且结尾，或者在中间。</p>
+<p>这些函数大多数都没什么特别的，你应该能够轻易描述出来，并且根据代码来理解它。你应该完全专注于<code>List_destroy</code>中的<code>LIST_FOREACH</code>如何使用来理解它如何简化通常的操作。</p>
+<h2 id="%E6%B5%8B%E8%AF%95" name="%E6%B5%8B%E8%AF%95">测试</h2>
+<p>在你编译它们之前，需要创建测试来确保它们正确执行。</p>
+<pre><code class="c">#include "minunit.h"
+#include &lt;lcthw/list.h&gt;
+#include &lt;assert.h&gt;
+
+static List *list = NULL;
+char *test1 = "test1 data";
+char *test2 = "test2 data";
+char *test3 = "test3 data";
+
+
+char *test_create()
+{
+    list = List_create();
+    mu_assert(list != NULL, "Failed to create list.");
+
+    return NULL;
+}
+
+
+char *test_destroy()
+{
+    List_clear_destroy(list);
+
+    return NULL;
+
+}
+
+
+char *test_push_pop()
+{
+    List_push(list, test1);
+    mu_assert(List_last(list) == test1, "Wrong last value.");
+
+    List_push(list, test2);
+    mu_assert(List_last(list) == test2, "Wrong last value");
+
+    List_push(list, test3);
+    mu_assert(List_last(list) == test3, "Wrong last value.");
+    mu_assert(List_count(list) == 3, "Wrong count on push.");
+
+    char *val = List_pop(list);
+    mu_assert(val == test3, "Wrong value on pop.");
+
+    val = List_pop(list);
+    mu_assert(val == test2, "Wrong value on pop.");
+
+    val = List_pop(list);
+    mu_assert(val == test1, "Wrong value on pop.");
+    mu_assert(List_count(list) == 0, "Wrong count after pop.");
+
+    return NULL;
+}
+
+char *test_unshift()
+{
+    List_unshift(list, test1);
+    mu_assert(List_first(list) == test1, "Wrong first value.");
+
+    List_unshift(list, test2);
+    mu_assert(List_first(list) == test2, "Wrong first value");
+
+    List_unshift(list, test3);
+    mu_assert(List_first(list) == test3, "Wrong last value.");
+    mu_assert(List_count(list) == 3, "Wrong count on unshift.");
+
+    return NULL;
+}
+
+char *test_remove()
+{
+    // we only need to test the middle remove case since push/shift
+    // already tests the other cases
+
+    char *val = List_remove(list, list-&gt;first-&gt;next);
+    mu_assert(val == test2, "Wrong removed element.");
+    mu_assert(List_count(list) == 2, "Wrong count after remove.");
+    mu_assert(List_first(list) == test3, "Wrong first after remove.");
+    mu_assert(List_last(list) == test1, "Wrong last after remove.");
+
+    return NULL;
+}
+
+
+char *test_shift()
+{
+    mu_assert(List_count(list) != 0, "Wrong count before shift.");
+
+    char *val = List_shift(list);
+    mu_assert(val == test3, "Wrong value on shift.");
+
+    val = List_shift(list);
+    mu_assert(val == test1, "Wrong value on shift.");
+    mu_assert(List_count(list) == 0, "Wrong count after shift.");
+
+    return NULL;
+}
+
+
+
+char *all_tests() {
+    mu_suite_start();
+
+    mu_run_test(test_create);
+    mu_run_test(test_push_pop);
+    mu_run_test(test_unshift);
+    mu_run_test(test_remove);
+    mu_run_test(test_shift);
+    mu_run_test(test_destroy);
+
+    return NULL;
+}
+
+RUN_TESTS(all_tests);</code></pre>
+<p>它简单地遍历了每个操作，并且确保它们有效。我在测试中做了简化，对于整个程序我只创建了一个<code>List *list</code>，这解决了为每个测试构建一个<code>List</code>的麻烦，但它同时意味着一些测试会受到之前测试的影响。这里我试着是每个测试不改变链表，或实际使用上一个测试的结果。</p>
+<h2 id="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88" name="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">你会看到什么</h2>
+<p>如果你正确完成了每件事，当你执行构建并且运行单元测试是，你会看到：</p>
+<pre><code class="sh">$ make
+cc -g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG  -fPIC   -c -o src/lcthw/list.o src/lcthw/list.c
+ar rcs build/liblcthw.a src/lcthw/list.o
+ranlib build/liblcthw.a
+cc -shared -o build/liblcthw.so src/lcthw/list.o
+cc -g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG  build/liblcthw.a    tests/list_tests.c   -o tests/list_tests
+sh ./tests/runtests.sh
+Running unit tests:
+----
+RUNNING: ./tests/list_tests
+ALL TESTS PASSED
+Tests run: 6
+tests/list_tests PASS
+$</code></pre>
+<p>确保6个测试运行完毕，以及构建时没有警告或错误，并且成功构建了<code>build/liblcthw.a</code>和<code>build/liblcthw.so</code>文件。</p>
+<h2 id="%E5%A6%82%E4%BD%95%E6%94%B9%E8%BF%9B" name="%E5%A6%82%E4%BD%95%E6%94%B9%E8%BF%9B">如何改进</h2>
+<p>我打算告诉你如何改进代码，而不是使它崩溃。</p>
+<ul>
+<li>你可以使用<code>LIST_FOREACH</code>并在循环中调用<code>free</code>来使<code>List_clear_destroy</code>更高效。</li>
+<li>你可以为一些先决条件添加断言，使其部结构<code>NULL</code>值作为<code>List *list</code>的参数。</li>
+<li>你可以添加不变了，来检查列表的内容始终正确，例如<code>count</code>永远不会<code>&lt; 0</code>，如果<code>count &gt; 0</code>，<code>first</code>不为<code>NULL</code>。</li>
+<li>你可以向头文件添加文档，在每个结构、函数和宏之前添加描述其作用的注释。</li>
+</ul>
+<p>这些改进执行了防御性编程实践，并且“加固”了代码来避免错误或使用不当。马上去做这些事情，之后找到尽可能多的办法来改进代码。</p>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>研究双向和单向链表，以及什么情况下其中一种优于另一种。</li>
+<li>研究双向链表的限制。例如，虽然它们对于插入和删除元素很高效，但是对于变量元素比较慢。</li>
+<li>还缺少什么你能想到的操作？比如复制、连接、分割等等。实现这些操作，并且为它们编写单元测试。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/posts/364477FB0CED1A03.html" title="双向链表">https://naka507.github.io/posts/364477FB0CED1A03.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/5937A91C89C704FA/index.html" rel="tag"># 函数</a>
+                                                                <a href="https://naka507.github.io/tag/A89772FB860BD0E2/index.html" rel="tag"># 算法</a>
+                                                                <a href="https://naka507.github.io/tag/77E19250B853AB38/index.html" rel="tag"># 结构</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/posts/B6E48A0ED7072528.html" rel="next" title="代码调试">
+                                        <i class="fa fa-chevron-left"></i>
+                                        代码调试                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/posts/219AB7A902A81B94.html" rel="prev" title="链表算法">
+                                        链表算法                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">双向链表</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%98%AF%E4%BB%80%E4%B9%88%E3%80%82">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">数据结构是什么。</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E5%BA%93">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">构建库</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">双向链表</span>
+                            </a>
+                                                        <ol class="nav-child">
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E5%AE%9A%E4%B9%89">
+                                        <span class="nav-number">1.3.1</span> 
+                                        <span class="nav-text">定义</span>
+                                    </a>
+                                </li>
+                                                                <li class="nav-item nav-level-3">
+                                    <a class="nav-link" href="#%E5%AE%9E%E7%8E%B0">
+                                        <span class="nav-number">1.3.2</span> 
+                                        <span class="nav-text">实现</span>
+                                    </a>
+                                </li>
+                                                            </ol>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E6%B5%8B%E8%AF%95">
+                                <span class="nav-number">1.4.</span> 
+                                <span class="nav-text">测试</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">
+                                <span class="nav-number">1.5.</span> 
+                                <span class="nav-text">你会看到什么</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%94%B9%E8%BF%9B">
+                                <span class="nav-number">1.6.</span> 
+                                <span class="nav-text">如何改进</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.7.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = '364477FB0CED1A03';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: '双向链表',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>

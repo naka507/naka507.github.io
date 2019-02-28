@@ -1,0 +1,1015 @@
+<!DOCTYPE HTML>
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <meta name="theme-color" content="#222" /> 
+    <meta http-equiv="Cache-Control" content="no-transform" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css" /> 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css" rel="stylesheet">
+    <link href="https://naka507.github.io/assets/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="https://naka507.github.io/assets/css/gitm.css" rel="stylesheet" type="text/css" /> 
+    <meta name="keywords" content="Naka1205" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
+    <meta name="description" content="这个练习中，我会向你展示可能是最快的字符串搜索算法之一，并且将它与`bstrlib.c`中现有的`binstr`比较。`binstr`的文档说它仅仅使用了“暴力搜索”的字符串算法来寻找第一个实例。我所实现的函数使用Boyer-Moore-Horspool（BMH）算法，如果你分析理论时间的话，一般认为它会更快。你也会看到，如果我的实现没有任何缺陷，BMH的实际时间会比`binstr`简单的暴力搜索更糟。" /> 
+    <meta property="og:type" content="website" /> 
+    <meta property="og:title" content="字符串算法" /> 
+    <meta property="og:url" content="https://naka507.github.io" /> 
+    <meta property="og:site_name" content="笨办法学C" /> 
+    <meta property="og:description" content="这个练习中，我会向你展示可能是最快的字符串搜索算法之一，并且将它与`bstrlib.c`中现有的`binstr`比较。`binstr`的文档说它仅仅使用了“暴力搜索”的字符串算法来寻找第一个实例。我所实现的函数使用Boyer-Moore-Horspool（BMH）算法，如果你分析理论时间的话，一般认为它会更快。你也会看到，如果我的实现没有任何缺陷，BMH的实际时间会比`binstr`简单的暴力搜索更糟。" /> 
+    <meta property="og:locale" content="zh-Hans" /> 
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="字符串算法" /> 
+    <meta name="twitter:description" content="这个练习中，我会向你展示可能是最快的字符串搜索算法之一，并且将它与`bstrlib.c`中现有的`binstr`比较。`binstr`的文档说它仅仅使用了“暴力搜索”的字符串算法来寻找第一个实例。我所实现的函数使用Boyer-Moore-Horspool（BMH）算法，如果你分析理论时间的话，一般认为它会更快。你也会看到，如果我的实现没有任何缺陷，BMH的实际时间会比`binstr`简单的暴力搜索更糟。" /> 
+    <script type="text/javascript" id="hexo.configurations">
+        var NexT = window.NexT || {};
+        var CONFIG = {
+            root: '/',
+            scheme: 'Mist',
+            sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+            fancybox: true,
+            tabs: true,
+            motion: true,
+            duoshuo: {
+                userId: '0',
+                author: '博主'
+            },
+            algolia: {
+                applicationID: '',
+                apiKey: '',
+                indexName: '',
+                hits: {"per_page":10},
+                labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+            }
+        };
+    </script> 
+    <link rel="canonical" href="/" /> 
+    <title>字符串算法 | 笨办法学C</title> 
+</head> 
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+    <div class="container sidebar-position-left page-post-detail ">
+        <div class="headband"></div>
+        <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+            <div class="header-inner">
+                <div class="site-brand-wrapper">
+                    <div class="site-meta ">
+                        <div class="custom-logo-site-title">
+                            <a href="https://naka507.github.io" class="brand" rel="start">
+                                <span class="logo-line-before"><i></i></span>
+                                <span class="site-title">笨办法学C</span>
+                                <span class="logo-line-after"><i</i></span>
+                            </a>
+                        </div>
+                        <p class="site-subtitle">Learn C The Hard Way</p></div>
+                    <div class="site-nav-toggle">
+                        <button>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                            <span class="btn-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <nav class="site-nav">
+                    <ul id="menu" class="menu">
+    <li class="menu-item menu-item-home">
+        <a href="https://naka507.github.io/index.html" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br />首页</a>
+    </li>
+    <li class="menu-item menu-item-categories">
+        <a href="https://naka507.github.io/categories.html" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br />分类</a>
+    </li>
+    <li class="menu-item menu-item-tags">
+        <a href="https://naka507.github.io/tags.html" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br />标签</a>
+    </li>
+    <li class="menu-item menu-item-about">
+        <a href="https://naka507.github.io/about.html" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br />关于</a>
+    </li>
+    <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br />搜索</a>
+    </li>
+</ul>
+                    <div class="site-search">
+                        <div class="popup search-popup local-search-popup">
+                            <div class="local-search-header clearfix">
+                                <span class="search-icon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span class="popup-btn-close">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <div class="local-search-input-wrapper">
+                                    <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input" /></div>
+                            </div>
+                            <div id="local-search-result"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            
+
+<div class="main-inner">
+    <div class="content-wrap">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+                    <div class="post-block">
+                        <link itemprop="mainEntityOfPage" href="https://naka507.github.io/posts/1D54A74DB0C212CF.html" />
+                        <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                            <meta itemprop="name" content="Naka1205" />
+                            <meta itemprop="description" content="" />
+                            <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/20264902?s=400&u=6f8f2aa8b92089dfd1be02963b714429b58334d7" /></span>
+                        <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+                            <meta itemprop="name" content="Naka1205's blog" /></span>
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">字符串算法</h1>
+                            <div class="post-meta">
+                                <span class="post-time">
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-calendar-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">发表于</span>
+                                    <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27 16:30:56">2019-02-27 16:30:56</time>
+                                </span>
+                                <span class="post-category">
+                                    <span class="post-meta-divider">|</span>
+                                    <span class="post-meta-item-icon">
+                                        <i class="fa fa-folder-o"></i>
+                                    </span>
+                                    <span class="post-meta-item-text">分类于</span>
+                                    <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                                        <a href="https://naka507.github.io/category/F61F9F47E9B5C5A0/index.html" itemprop="url" rel="index">
+                                            <span itemprop="name">练习14</span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <div class="post-description">这个练习中，我会向你展示可能是最快的字符串搜索算法之一，并且将它与`bstrlib.c`中现有的`binstr`比较。`binstr`的文档说它仅仅使用了&ldquo;暴力搜索&rdquo;的字符串算法来寻找第一个实例。我所实现的函数使用Boyer-Moore-Horspool（BMH）算法，如果你分析理论时间的话，一般认为它会更快。你也会看到，如果我的实现没有任何缺陷，BMH的实际时间会比`binstr`简单的暴力搜索更糟。</div></div>
+                        </header>
+                        <div class="post-body" itemprop="articleBody">
+                            <h1 id="%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%AE%97%E6%B3%95" name="%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%AE%97%E6%B3%95">字符串算法</h1>
+<p>这个练习中，我会向你展示可能是最快的字符串搜索算法之一，并且将它与<code>bstrlib.c</code>中现有的<code>binstr</code>比较。<code>binstr</code>的文档说它仅仅使用了“暴力搜索”的字符串算法来寻找第一个实例。我所实现的函数使用Boyer-Moore-Horspool（BMH）算法，如果你分析理论时间的话，一般认为它会更快。你也会看到，如果我的实现没有任何缺陷，BMH的实际时间会比<code>binstr</code>简单的暴力搜索更糟。</p>
+<p>这个练习的要点并不是真正解释算法本身，因为你可以直接去<a href="http://en.wikipedia.org/wiki/Boyer%E2%80%93Moore%E2%80%93Horspool_algorithm">Boyer-Moore-Horspool 的维基百科页面</a>去阅读它。这个算法的要点就是它会计算出“跳跃字符列表”作为第一步操作，之后它使用这个列表来快速扫描整个字符串。它应当比暴力搜索更快，所以让我们在文件里写出代码来看看吧。</p>
+<p>首先，创建头文件：</p>
+<pre><code class="c">#ifndef string_algos_h
+#define string_algos_h
+
+#include &lt;lcthw/bstrlib.h&gt;
+#include &lt;lcthw/darray.h&gt;
+
+typedef struct StringScanner {
+    bstring in;
+    const unsigned char *haystack;
+    ssize_t hlen;
+    const unsigned char *needle;
+    ssize_t nlen;
+    size_t skip_chars[UCHAR_MAX + 1];
+} StringScanner;
+
+int String_find(bstring in, bstring what);
+
+StringScanner *StringScanner_create(bstring in);
+
+int StringScanner_scan(StringScanner *scan, bstring tofind);
+
+void StringScanner_destroy(StringScanner *scan);
+
+#endif</code></pre>
+<p>为了观察“跳跃字符列表”的效果，我打算创建这个算法的两种版本：</p>
+<p>String_find</p>
+<p>只是在一个字符串中，寻找另一个字符串的首个实例，以一个动作执行整个算法。</p>
+<p>StringScanner_scan</p>
+<p>使用<code>StringScanner</code>状态结构，将跳跃列表的构建和实际的查找操作分开。这让我能看到什么影响了性能。这个模型有另一个优点，就是我可以在一个字符串中逐步搜索，并且快速地找到所有实例。</p>
+<p>一旦你完成了头文件，下面就是实现了：</p>
+<pre><code class="c">#include &lt;lcthw/string_algos.h&gt;
+#include &lt;limits.h&gt;
+
+static inline void String_setup_skip_chars(
+        size_t *skip_chars,
+        const unsigned char *needle, ssize_t nlen)
+{
+    size_t i = 0;
+    size_t last = nlen - 1;
+
+    for(i = 0; i &lt; UCHAR_MAX + 1; i++) {
+        skip_chars[i] = nlen;
+    }
+
+    for (i = 0; i &lt; last; i++) {
+        skip_chars[needle[i]] = last - i;
+    }
+}
+
+
+static inline const unsigned char *String_base_search(
+        const unsigned char *haystack, ssize_t hlen,
+        const unsigned char *needle, ssize_t nlen,
+        size_t *skip_chars)
+{
+    size_t i = 0;
+    size_t last = nlen - 1;
+
+    assert(haystack != NULL &amp;&amp; "Given bad haystack to search.");
+    assert(needle != NULL &amp;&amp; "Given bad needle to search for.");
+
+    check(nlen &gt; 0, "nlen can't be &lt;= 0");
+    check(hlen &gt; 0, "hlen can't be &lt;= 0");
+
+    while (hlen &gt;= nlen)
+    {
+        for (i = last; haystack[i] == needle[i]; i--) {
+            if (i == 0) {
+                return haystack;
+            }
+        }
+
+        hlen -= skip_chars[haystack[last]];
+        haystack += skip_chars[haystack[last]];
+    }
+
+error: // fallthrough
+    return NULL;
+}
+
+int String_find(bstring in, bstring what)
+{
+    const unsigned char *found = NULL;
+
+    const unsigned char *haystack = (const unsigned char *)bdata(in);
+    ssize_t hlen = blength(in);
+    const unsigned char *needle = (const unsigned char *)bdata(what);
+    ssize_t nlen = blength(what);
+    size_t skip_chars[UCHAR_MAX + 1] = {0};
+
+    String_setup_skip_chars(skip_chars, needle, nlen);
+
+    found = String_base_search(haystack, hlen, needle, nlen, skip_chars);
+
+    return found != NULL ? found - haystack : -1;
+}
+
+StringScanner *StringScanner_create(bstring in)
+{
+    StringScanner *scan = calloc(1, sizeof(StringScanner));
+    check_mem(scan);
+
+    scan-&gt;in = in;
+    scan-&gt;haystack = (const unsigned char *)bdata(in);
+    scan-&gt;hlen = blength(in);
+
+    assert(scan != NULL &amp;&amp; "fuck");
+    return scan;
+
+error:
+    free(scan);
+    return NULL;
+}
+
+static inline void StringScanner_set_needle(StringScanner *scan, bstring tofind)
+{
+    scan-&gt;needle = (const unsigned char *)bdata(tofind);
+    scan-&gt;nlen = blength(tofind);
+
+    String_setup_skip_chars(scan-&gt;skip_chars, scan-&gt;needle, scan-&gt;nlen);
+}
+
+static inline void StringScanner_reset(StringScanner *scan)
+{
+    scan-&gt;haystack = (const unsigned char *)bdata(scan-&gt;in);
+    scan-&gt;hlen = blength(scan-&gt;in);
+}
+
+int StringScanner_scan(StringScanner *scan, bstring tofind)
+{
+    const unsigned char *found = NULL;
+    ssize_t found_at = 0;
+
+    if(scan-&gt;hlen &lt;= 0) {
+        StringScanner_reset(scan);
+        return -1;
+    }
+
+    if((const unsigned char *)bdata(tofind) != scan-&gt;needle) {
+        StringScanner_set_needle(scan, tofind);
+    }
+
+    found = String_base_search(
+            scan-&gt;haystack, scan-&gt;hlen,
+            scan-&gt;needle, scan-&gt;nlen,
+            scan-&gt;skip_chars);
+
+    if(found) {
+        found_at = found - (const unsigned char *)bdata(scan-&gt;in);
+        scan-&gt;haystack = found + scan-&gt;nlen;
+        scan-&gt;hlen -= found_at - scan-&gt;nlen;
+    } else {
+        // done, reset the setup
+        StringScanner_reset(scan);
+        found_at = -1;
+    }
+
+    return found_at;
+}
+
+
+void StringScanner_destroy(StringScanner *scan)
+{
+    if(scan) {
+        free(scan);
+    }
+}</code></pre>
+<p>整个算法都在两个<code>static inline</code>的函数中，叫做<code>String_setup_skip_chars</code> 和 <code>String_base_search</code>。它们在别的函数中使用，用于实现我想要的的搜索形式。研究这两个函数，并且与维基百科的描述对比，你就可以知道它的工作原理。</p>
+<p>之后<code>String_find</code>使用这两个函数来寻找并返回所发现的位置。它非常简单并且我使用它来查看“跳跃字符列表”的构建如何影响到真实性能。要注意，你或许可以使它更快，但是我要教给你在你实现算法之后如何验证理论速度。</p>
+<p><code>StringScanner_scan</code>函数随后按照“创建、扫描、销毁”的常用模式，并且用于在一个字符串中逐步搜索另一个字符串。当我向你展示单元测试的时候，你会看到它如何使用。</p>
+<p>最后，我编写了单元测试来确保算法有效，之后在它的注释部分，我为三个搜索函数运行了简单的性能测试：</p>
+<pre><code class="c">#include "minunit.h"
+#include &lt;lcthw/string_algos.h&gt;
+#include &lt;lcthw/bstrlib.h&gt;
+#include &lt;time.h&gt;
+
+struct tagbstring IN_STR = bsStatic("I have ALPHA beta ALPHA and oranges ALPHA");
+struct tagbstring ALPHA = bsStatic("ALPHA");
+const int TEST_TIME = 1;
+
+char *test_find_and_scan()
+{
+    StringScanner *scan = StringScanner_create(&amp;IN_STR);
+    mu_assert(scan != NULL, "Failed to make the scanner.");
+
+    int find_i = String_find(&amp;IN_STR, &amp;ALPHA);
+    mu_assert(find_i &gt; 0, "Failed to find 'ALPHA' in test string.");
+
+    int scan_i = StringScanner_scan(scan, &amp;ALPHA);
+    mu_assert(scan_i &gt; 0, "Failed to find 'ALPHA' with scan.");
+    mu_assert(scan_i == find_i, "find and scan don't match");
+
+    scan_i = StringScanner_scan(scan, &amp;ALPHA);
+    mu_assert(scan_i &gt; find_i, "should find another ALPHA after the first");
+
+    scan_i = StringScanner_scan(scan, &amp;ALPHA);
+    mu_assert(scan_i &gt; find_i, "should find another ALPHA after the first");
+
+    mu_assert(StringScanner_scan(scan, &amp;ALPHA) == -1, "shouldn't find it");
+
+    StringScanner_destroy(scan);
+
+    return NULL;
+}
+
+char *test_binstr_performance()
+{
+    int i = 0;
+    int found_at = 0;
+    unsigned long find_count = 0;
+    time_t elapsed = 0;
+    time_t start = time(NULL);
+
+    do {
+        for(i = 0; i &lt; 1000; i++) {
+            found_at = binstr(&amp;IN_STR, 0, &amp;ALPHA);
+            mu_assert(found_at != BSTR_ERR, "Failed to find!");
+            find_count++;
+        }
+
+        elapsed = time(NULL) - start;
+    } while(elapsed &lt;= TEST_TIME);
+
+    debug("BINSTR COUNT: %lu, END TIME: %d, OPS: %f",
+            find_count, (int)elapsed, (double)find_count / elapsed);
+    return NULL;
+}
+
+char *test_find_performance()
+{
+    int i = 0;
+    int found_at = 0;
+    unsigned long find_count = 0;
+    time_t elapsed = 0;
+    time_t start = time(NULL);
+
+    do {
+        for(i = 0; i &lt; 1000; i++) {
+            found_at = String_find(&amp;IN_STR, &amp;ALPHA);
+            find_count++;
+        }
+
+        elapsed = time(NULL) - start;
+    } while(elapsed &lt;= TEST_TIME);
+
+    debug("FIND COUNT: %lu, END TIME: %d, OPS: %f",
+            find_count, (int)elapsed, (double)find_count / elapsed);
+
+    return NULL;
+}
+
+char *test_scan_performance()
+{
+    int i = 0;
+    int found_at = 0;
+    unsigned long find_count = 0;
+    time_t elapsed = 0;
+    StringScanner *scan = StringScanner_create(&amp;IN_STR);
+
+    time_t start = time(NULL);
+
+    do {
+        for(i = 0; i &lt; 1000; i++) {
+            found_at = 0;
+
+            do {
+                found_at = StringScanner_scan(scan, &amp;ALPHA);
+                find_count++;
+            } while(found_at != -1);
+        }
+
+        elapsed = time(NULL) - start;
+    } while(elapsed &lt;= TEST_TIME);
+
+    debug("SCAN COUNT: %lu, END TIME: %d, OPS: %f",
+            find_count, (int)elapsed, (double)find_count / elapsed);
+
+    StringScanner_destroy(scan);
+
+    return NULL;
+}
+
+
+char *all_tests()
+{
+    mu_suite_start();
+
+    mu_run_test(test_find_and_scan);
+
+    // this is an idiom for commenting out sections of code
+#if 0
+    mu_run_test(test_scan_performance);
+    mu_run_test(test_find_performance);
+    mu_run_test(test_binstr_performance);
+#endif
+
+    return NULL;
+}
+
+RUN_TESTS(all_tests);</code></pre>
+<p>我把它们写在<code>#if 0</code>中间，它是使用C预处理器来注释一段代码的方法。像这样输入，并且把它和<code>#endif</code>移除，你就可以运行性能测试。当你继续这本书时，需要简单地把它们再次注释，以防它们浪费你的开发时间。</p>
+<p>这个单元测试没有什么神奇之处，它只是在尊换种调用每个不同的函数，循环需要持续足够长的时间来得到一个几秒的样本。第一个测试（<code>test_find_and_scan</code>）只是确保我所编写的代码正常工作，因为测试无效的代码没有意义。之后，下面的三个函数使用三个函数中的每一个来执行大量的搜索。</p>
+<p>需要注意的一个技巧是，我在<code>start</code>中存储了起始时间，之后一直循环到至少过了<code>TEST_TIME</code>秒。这确保了我能或得到足够好的样本用于比较三者。我之后会使用不同的<code>TEST_TIME</code>设置来运行测试，并且分析结果。</p>
+<h2 id="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88" name="%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">你会看到什么</h2>
+<p>当我在我的笔记本上运行测试时，我得到的数据是这样的：</p>
+<pre><code class="sh">$ ./tests/string_algos_tests
+DEBUG tests/string_algos_tests.c:124: ----- RUNNING: ./tests/string_algos_tests
+----
+RUNNING: ./tests/string_algos_tests
+DEBUG tests/string_algos_tests.c:116:
+----- test_find_and_scan
+DEBUG tests/string_algos_tests.c:117:
+----- test_scan_performance
+DEBUG tests/string_algos_tests.c:105: SCAN COUNT: 110272000, END TIME: 2, OPS: 55136000.000000
+DEBUG tests/string_algos_tests.c:118:
+----- test_find_performance
+DEBUG tests/string_algos_tests.c:76: FIND COUNT: 12710000, END TIME: 2, OPS: 6355000.000000
+DEBUG tests/string_algos_tests.c:119:
+----- test_binstr_performance
+DEBUG tests/string_algos_tests.c:54: BINSTR COUNT: 72736000, END TIME: 2, OPS: 36368000.000000
+ALL TESTS PASSED
+Tests run: 4
+$</code></pre>
+<p>我看到了它，觉得每轮运行应该超过两秒。并且，我打算多次运行它，并且像之前一样使用R来验证。下面是我获得的10个样例，每个基本上是10秒：</p>
+<pre><code>scan find binstr
+71195200 6353700 37110200
+75098000 6358400 37420800
+74910000 6351300 37263600
+74859600 6586100 37133200
+73345600 6365200 37549700
+74754400 6358000 37162400
+75343600 6630400 37075000
+73804800 6439900 36858700
+74995200 6384300 36811700
+74781200 6449500 37383000</code></pre>
+<p>我在shell的一点点帮助下获取数据，之后编辑输出：</p>
+<pre><code class="sh">$ for i in 1 2 3 4 5 6 7 8 9 10; do echo "RUN --- $i" &gt;&gt; times.log; ./tests/string_algos_tests 2&gt;&amp;1 | grep COUNT &gt;&gt; times.log ; done
+$ less times.log
+$ vim times.log</code></pre>
+<p>现在你可以看到<code>scan</code>系统要优于另外两个，但是我会在R中打开它并且验证结果：</p>
+<pre><code class="r">&gt; times &lt;- read.table("times.log", header=T)
+&gt; summary(times)
+      scan               find             binstr        
+ Min.   :71195200   Min.   :6351300   Min.   :36811700  
+ 1st Qu.:74042200   1st Qu.:6358100   1st Qu.:37083800  
+ Median :74820400   Median :6374750   Median :37147800  
+ Mean   :74308760   Mean   :6427680   Mean   :37176830  
+ 3rd Qu.:74973900   3rd Qu.:6447100   3rd Qu.:37353150  
+ Max.   :75343600   Max.   :6630400   Max.   :37549700  
+&gt;</code></pre>
+<p>为了理解我为什么要生成这份概要统计，我必须对你解释一些统计学概念。我在这些数字中寻找的东西能够简单地告诉我，“这三个函数（<code>scan</code>、<code>find</code>、<code>binstr</code>）实际上不同吗？”我知道每次我运行测试函数的时候，我都会得到有些不同的数值，并且那些数值始终处理一个固定的范围。你可以看到两个四分位数反映了这一点。</p>
+<p>我首先会去看均值，并且我会观察每个样例的均值是否不同于其它的。我可以清楚地看到<code>scan</code>优于<code>binstr</code>，同时后者优于<code>find</code>。然而问题来了，如果我只使用均值，就可以出现每个样例的范围会重叠的可能性。</p>
+<p>如果均值不同，但是两个四分位点重叠会怎么用？这种情况下我只能说有这种可能性，并且如果我再次运行测试，均值就可能不同了。很可能出现的范围上的重叠是，我的两个样例（以及两个函数）并非实际上不同。任何我看到的差异都是随机产生的结果。</p>
+<p>统计学拥有大量工具来解决这一问题，但是在我们的例子中我可以仅仅观察两个四分位值，以及所有样例的均值。如果均值不同，并且四分位值不可能重叠，就可以说它们完全不同。</p>
+<p>在我的三个样例中，我可以说<code>scan</code>、<code>find</code>和<code>binstr</code>都是不同的，范围上没有重叠，并且（最重要的是）我可以相信数据。</p>
+<h2 id="%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C" name="%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C">分析结果</h2>
+<p>从结果中可以看出<code>String_find</code>比其它两个更慢。实际上，我认为慢的原因是我实现的方式有些问题。然而当我将它与<code>StringScanner_scan</code>比较时，我发现正是构造跳跃列表的那一部分最消耗时间。并且它的功能比<code>scan</code>要少，因为它仅仅找到了第一个位置，而<code>scan</code>找到了全部。</p>
+<p>我也可以发现<code>scan</code>以很大优势优于<code>binstr</code>。同时我可以说<code>scan</code>的功能比其他两个要多，速度也更快。</p>
+<p>下面是这个分析的一些注解：</p>
+<ul>
+<li>我可能将实现或测试弄乱了。现在我打算研究所有实现BMH的可能方式来改进它。我也会确保我所做的事情正确。</li>
+<li>如果你修改了测试运行的时间，你会得到不同的结果。这就是我没有考虑的”热身“环节。</li>
+<li><code>test_scan_performance</code>单元测试和其它两个并不相同，但是它比其它测试做得更多（并且也是按照时间和操作数量计算的），所以他可能是合理的。</li>
+<li>我只通过在一个字符串内搜索另一个来执行测试。我应该使所查找的字符串随机化，来移除它们的位置和长度，作为干扰因素。</li>
+<li><code>binstr</code>的实现可能比“暴力搜索”要好。（所以应该自己编写暴力搜索作为对照。）</li>
+<li>我可能以不幸的顺序来执行这些函数，并且随机化首先运行的测试可能会得到更好的结果。</li>
+</ul>
+<p>可以从中学到的是，你需要确保知己的性能，即使你“正确”实现了一个算法。在这里BMH算法应该优于<code>binstr</code>算法，但是一个简单的测试证明了它是错误。如果我没有这些测试，我可能就使用了一个劣等的算法实现而不自知。参照这些度量，我可以开始调优我的实现，或者只是抛弃它并寻找新的算法。</p>
+<h2 id="%E9%99%84%E5%8A%A0%E9%A2%98" name="%E9%99%84%E5%8A%A0%E9%A2%98">附加题</h2>
+<ul>
+<li>看看你能不能使<code>Scan_find</code>更快。为什么我的实现这么慢？</li>
+<li>尝试一些不同的搜索时长，看看你是否能得到不同的数值。当你改变<code>scan</code>的测试时间时，时间的长度会有什么影响？对于这些结果你能得出什么结论？</li>
+<li>修改单元测试，使它最开始执行每个函数一小段时间，来消除任何“热身”缓解。这样会修改所运行时长的依赖性吗？每秒可能出现多少次操作？</li>
+<li>使单元测试中的所查找字符串随机化，之后测量你的得到的性能。一种实现它的方式就是使用<code>bstrlib.h</code>中的<code>bsplit</code>函数在空格处分割<code>IN_STR</code>。之后使用你得到的<code>strList</code>结构访问它返回的每个字符串。这也教给你如何使用<code>bstrList</code>操作进行字符串处理。</li>
+<li>尝试一些不同顺序的测试，看看能否得到不同的结果。</li>
+</ul>                        </div>
+                        <div>
+                            <ul class="post-copyright">
+                                <li class="post-copyright-author">
+                                  <strong>本文作者：</strong>                                </li>
+                                <li class="post-copyright-link">
+                                    <strong>本文链接：</strong>
+                                    <a href="https://naka507.github.io/posts/1D54A74DB0C212CF.html" title="字符串算法">https://naka507.github.io/posts/1D54A74DB0C212CF.html</a>
+                                </li>
+                                <li class="post-copyright-license">
+                                    <strong>版权声明：</strong>本博客所有文章除特别声明外，均采用
+                                    <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a>许可协议。转载请注明出处！
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="post-footer">
+                            <div class="post-tags">
+                                                                <a href="https://naka507.github.io/tag/6BFE257C5C89656E/index.html" rel="tag"># bstrlib</a>
+                                                                <a href="https://naka507.github.io/tag/921FA2FA8D8BD72C/index.html" rel="tag"># 字符串</a>
+                                                            </div>
+                            <div class="post-nav">
+                                
+                                                                <div class="post-nav-next post-nav-item">
+                                    <a href="https://naka507.github.io/posts/8ACDB75ECC6C4448.html" rel="next" title="哈希算法">
+                                        <i class="fa fa-chevron-left"></i>
+                                        哈希算法                                    </a>
+                                </div>
+                                                                <span class="post-nav-divider"></span>
+                                                                <div class="post-nav-prev post-nav-item">
+                                    <a href="https://naka507.github.io/posts/64206F3FDC812F26.html" rel="prev" title="二叉搜索树">
+                                        二叉搜索树                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                                            </div>
+                        </footer>
+                    </div>
+                </article>
+                <div class="post-spread"></div>
+            </div>
+        </div>
+            </div>
+    <div class="sidebar-toggle">
+        <div class="sidebar-toggle-line-wrap">
+            <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+            <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+        </div>
+    </div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-inner">
+            <ul class="sidebar-nav motion-element">
+                <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li>
+                <li class="sidebar-nav-overview" data-target="site-overview">站点概览</li>
+            </ul>
+
+            <section class="site-overview sidebar-panel ">
+    <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                <p class="site-author-name" itemprop="name"></p>
+        <p class="site-description motion-element" itemprop="description">笨办法学C 中文版</p>
+    </div>
+    <nav class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+            <a href="/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-categories">
+            <a href="/categories.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">分类</span>
+            </a>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <a href="/tags.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+            </a>
+        </div>
+    </nav>
+    <div class="links-of-author motion-element"></div>
+</section> 
+
+            <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content">
+            <ol class="nav">
+                                <li class="nav-item nav-level-1">
+                    <a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%AE%97%E6%B3%95">
+                        <span class="nav-number">1.</span>
+                        <span class="nav-text">字符串算法</span>
+                    </a>
+                                        <ol class="nav-child">
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E4%BD%A0%E4%BC%9A%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">
+                                <span class="nav-number">1.1.</span> 
+                                <span class="nav-text">你会看到什么</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C">
+                                <span class="nav-number">1.2.</span> 
+                                <span class="nav-text">分析结果</span>
+                            </a>
+                                                    </li>
+                                                <li class="nav-item nav-level-2">
+                            <a class="nav-link" href="#%E9%99%84%E5%8A%A0%E9%A2%98">
+                                <span class="nav-number">1.3.</span> 
+                                <span class="nav-text">附加题</span>
+                            </a>
+                                                    </li>
+                                            </ol>
+                                    </li>
+                            </ol>
+        </div>
+    </div>
+</section>
+
+          </div>
+    </aside>
+</div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="footer-inner">
+    <div class="copyright">
+        &copy; 2016 - <span itemprop="copyrightYear">2019</span>
+        <span class="with-love">
+            <i class="fa fa-heart"></i>
+        </span>
+        <span class="author" itemprop="copyrightHolder"></span>
+    </div>
+    <div class="theme-info">Powered by <a class="theme-link" href="https://github.com/naka1205/pkbook">PKBOOK</a></div>
+    </div>
+        </footer> 
+        <div class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+    </div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/utils.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/motion.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/post-details.js?v=5.1.2"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/bootstrap.js?v=5.1.2"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<script type="text/javascript" src="https://naka507.github.io/assets/js/src/gitm.min.js?v=5.1.2"></script>
+<script>
+var page_id = '1D54A74DB0C212CF';
+if ( document.getElementById("comments") ) {
+    var config = {
+        id: page_id,
+        title: '字符串算法',
+        owner: 'naka507',
+        repo: 'naka507.github.io',
+        oauth: {
+            client_id: '7d2f367c268c0d8ba266',
+            client_secret: 'c9f3f21dd386a0fb13d27c4daf95b5c4b0d0d5ce'
+        },
+    };
+    var gm = new GitM(config)
+    gm.render('comments')   
+}
+</script>
+<script>
+
+// hljs.initHighlightingOnLoad();   
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightBlock(block);
+    block.innerHTML = "<ol><li>" + block.innerHTML.replace(/\n/g,"\n</li><li>")+"\n</li></ol>"
+  });
+});
+
+// Popup Window;
+var isfetched = false;
+// Search DB path;
+var path =  "https://naka507.github.io/search.json";
+// monitor main search box;
+
+var onPopupClose = function (e) {
+    $('.popup').hide();
+    $('#local-search-input').val('');
+    $('.search-result-list').remove();
+    $('#no-result').remove();
+    $(".local-search-pop-overlay").remove();
+    $('body').css('overflow', '');
+}
+
+function proceedsearch() {
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+    .css('overflow', 'hidden');
+    $('.search-popup-overlay').click(onPopupClose);
+    $('.popup').toggle();
+    var $localSearchInput = $('#local-search-input');
+    $localSearchInput.attr("autocapitalize", "none");
+    $localSearchInput.attr("autocorrect", "off");
+    $localSearchInput.focus();
+}
+
+// search function;
+var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+
+    // start loading animation
+    $("body")
+    .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+        '<div id="search-loading-icon">' +
+        '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+        '</div>' +
+        '</div>')
+    .css('overflow', 'hidden');
+    $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+    $.ajax({
+    url: path,
+    dataType: "json",
+    async: true,
+    success: function(datas) {
+        // get the contents from search data
+        isfetched = true;
+        $('.popup').detach().appendTo('.header-inner');
+
+        var input = document.getElementById(search_id);
+        var resultContent = document.getElementById(content_id);
+        var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+            keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+            // perform local searching
+            datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title.trim();
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content.trim().replace(/<[^>]+>/g,"");
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            if(title != '') {
+                keywords.forEach(function(keyword) {
+                function getIndexByWord(word, text, caseSensitive) {
+                    var wordLen = word.length;
+                    if (wordLen === 0) {
+                    return [];
+                    }
+                    var startPosition = 0, position = [], index = [];
+                    if (!caseSensitive) {
+                    text = text.toLowerCase();
+                    word = word.toLowerCase();
+                    }
+                    while ((position = text.indexOf(word, startPosition)) > -1) {
+                    index.push({position: position, word: word});
+                    startPosition = position + wordLen;
+                    }
+                    return index;
+                }
+
+                indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                });
+                if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                isMatch = true;
+                hitCount = indexOfTitle.length + indexOfContent.length;
+                }
+            }
+
+            // show search results
+
+            if (isMatch) {
+                // sort index by position of keyword
+
+                [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                    if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                    } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                    }
+                });
+                });
+
+                // merge hits into slices
+
+                function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                    if (word === searchText) {
+                    searchTextCountInSlice++;
+                    }
+                    hits.push({position: position, length: word.length});
+                    var wordEnd = position + word.length;
+
+                    // move to next position of hit
+
+                    index.pop();
+                    while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                        index.pop();
+                    } else {
+                        break;
+                    }
+                    }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                    hits: hits,
+                    start: start,
+                    end: end,
+                    searchTextCount: searchTextCountInSlice
+                };
+                }
+
+                var slicesOfTitle = [];
+                if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                }
+
+                var slicesOfContent = [];
+                while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                    start = 0;
+                }
+                if (end < position + word.length) {
+                    end = position + word.length;
+                }
+                if(end > content.length){
+                    end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                }
+
+                // sort slices in content by search text's count and hits' count
+
+                slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                    return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                    return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                    return sliceLeft.start - sliceRight.start;
+                }
+                });
+
+                // select top N slices in content
+
+                var upperBound = parseInt('1');
+                if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+                }
+
+                // highlight title and content
+
+                function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                    result += text.substring(prevEnd, hit.position);
+                    var end = hit.position + hit.length;
+                    result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                    prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+                }
+
+                var resultItem = '';
+
+                if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                } else {
+                resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                }
+
+                slicesOfContent.forEach(function (slice) {
+                resultItem += "<a href='" + articleUrl + "'>" +
+                    "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                    "...</p>" + "</a>";
+                });
+
+                resultItem += "</li>";
+                resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+                });
+            }
+            })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+            resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+            resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+                return resultRight.id - resultLeft.id;
+            }
+            });
+            var searchResultList = '<ul class=\"search-result-list\">';
+            resultItems.forEach(function (result) {
+            searchResultList += result.item;
+            })
+            searchResultList += "</ul>";
+            resultContent.innerHTML = searchResultList;
+        }
+        }
+
+        if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+        } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13) {
+            inputEventFunction();
+            }
+        });
+        }
+
+        // remove loading animation
+        $(".local-search-pop-overlay").remove();
+        $('body').css('overflow', '');
+
+        proceedsearch();
+    }
+    });
+}
+
+// handle and trigger popup window;
+$('.popup-trigger').click(function(e) {
+    e.stopPropagation();
+    if (isfetched === false) {
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    } else {
+    proceedsearch();
+    };
+});
+
+$('.popup-btn-close').click(onPopupClose);
+$('.popup').click(function(e){
+    e.stopPropagation();
+});
+$(document).on('keyup', function (event) {
+    var shouldDismissSearchPopup = event.which === 27 &&
+    $('.search-popup').is(':visible');
+    if (shouldDismissSearchPopup) {
+    onPopupClose();
+    }
+});
+
+</script>
+</body>
+</html>
